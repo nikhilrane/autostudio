@@ -1,0 +1,22 @@
+
+
+
+<form class='form-horizontal'>
+<div class='control-group'>
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="active"><a href="#dummy" role="tab" data-toggle="tab">Dummy</a></li>
+    		{{#paramList}}
+				<li><a href="#{{paramID}}" role="tab" data-toggle="tab">{{paramValue}}</a></li>
+			{{/paramList}}
+	</ul>
+
+		<!-- Tab panes -->
+	<div class="tab-content">
+		  <div class="tab-pane active" id="dummy">...</div>
+		  {{#paramList}}
+		  	<div class="tab-pane" id="{{paramID}}">...</div>
+		  {{/paramList}}
+	</div>
+<br>
+</div>
+</form>

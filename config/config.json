@@ -1,0 +1,14 @@
+{
+	"_comment" : "***I hold config data for whole app. Make sure there is no error here, else app won't start and I will not be able to help!***",
+	
+	"database" : {
+		"url" : "mongodb://",
+		"host" : "localhost",
+		"port": 27017,
+		"name" : "autostudio_db"
+	},
+
+	"aggregate": { "operator": "aggregate", "type": "example.shape.Aggregate", "noOfInputs": 1, "parameters.on.name": "on", "parameters.on.required": "true", "parameters.generate.name": "generate",
+							"parameters.generate.required": "true", "parameters.using.name": "using", "parameters.using.required": "true", "parameters.comment.name": "comment",
+							"parameters.comment.required": "false" }
+}

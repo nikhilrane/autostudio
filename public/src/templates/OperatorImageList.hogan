@@ -1,0 +1,23 @@
+{{#imgList}}
+<div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{operatorType}}">
+          {{operatorType}}
+        </a>
+      </h4>
+    </div>
+    <div id="collapse_{{operatorType}}" class="panel-collapse collapse in">
+      <div class="panel-body">
+      {{#operators}}
+
+                <p class="ops_hover" align="center"> 
+                    <img src="./public/images/{{src}}"   data-shape="{{type}}"     class="palette_node_element draw2d_droppable"></img><br>
+                    {{name}}
+                </p>
+
+      {{/operators}}
+      </div>
+    </div>
+</div>
+{{/imgList}}

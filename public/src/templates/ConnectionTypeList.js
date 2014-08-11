@@ -1,0 +1,2 @@
+if (!!!templates) var templates = {};
+templates["ConnectionTypeList"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("connectionTypes",c,p,1),c,p,0,20,144,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("	<option data-content='<div align=\"center\"><img src=\"");t.b(t.v(t.f("imagePath",c,p,0)));t.b("\" alt=\"");t.b(t.v(t.f("name",c,p,0)));t.b("\"</img></div>' value=\"");t.b(t.v(t.f("type",c,p,0)));t.b("\"></option>");t.b("\n" + i);});c.pop();}return t.fl(); },partials: {}, subs: {  }});

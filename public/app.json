@@ -1,0 +1,875 @@
+{
+    "_comment_line2": "---------------I hold whole *PipeStudio* app.---------------",
+    "appName" : "PipeStudio",
+    "_comment_line3": "---------------List of operator's images--------------------",
+    "imgList" : [
+        {
+            "operatorType": "Source",
+            "operators": [
+                {
+                    "src": "DBSource.png",
+                    "name": "DB Source",
+                    "type": "example.shape.DBSource"
+                },
+                {
+                    "src": "FileSource.png",
+                    "name": "File Source",
+                    "type": "example.shape.FileSource"
+                },
+                {
+                    "src": "MemorySource.png",
+                    "name": "Memory Source",
+                    "type": "example.shape.MemorySource"
+                },
+                {
+                    "src": "SocketSource.png",
+                    "name": "Socket Source",
+                    "type": "example.shape.SocketSource"
+                },
+                {
+                    "src": "TwitterReader.png",
+                    "name": "Twitter Reader",
+                    "type": "example.shape.TwitterReader"
+                },
+                {
+                    "src": "ZmqPull.png",
+                    "name": "Zmq Pull",
+                    "type": "example.shape.ZmqPull"
+                },
+                {
+                    "src": "ZmqSubscriber.png",
+                    "name": "Zmq Subscriber",
+                    "type": "example.shape.ZmqSubscriber"
+                }
+            ]
+        },
+        {
+            "operatorType": "Between",
+            "operators": [
+                {
+                    "src": "Aggregate.png",
+                    "name": "Aggregate",
+                    "type": "example.shape.Aggregate"
+                },
+                {
+                    "src": "DBJoin.png",
+                    "name": "DB Join",
+                    "type": "example.shape.DBJoin"
+                },
+                {
+                    "src": "DBWriter.png",
+                    "name": "DB Writer",
+                    "type": "example.shape.DBWriter"
+                },
+                {
+                    "src": "Filter.png",
+                    "name": "Filter",
+                    "type": "example.shape.Filter"
+                },
+                {
+                    "src": "Matcher.png",
+                    "name": "Matcher",
+                    "type": "example.shape.Matcher"
+                },
+                {
+                    "src": "Project.png",
+                    "name": "Project",
+                    "type": "example.shape.Project"
+                },
+                {
+                    "src": "RelationHashJoin.png",
+                    "name": "Relation Hash Join",
+                    "type": "example.shape.RelationHashJoin"
+                },
+                {
+                    "src": "RScript.png",
+                    "name": "RScript",
+                    "type": "example.shape.RScript"
+                },
+                {
+                    "src": "SlidingWindow.png",
+                    "name": "Sliding Window",
+                    "type": "example.shape.SlidingWindow"
+                },
+                {
+                    "src": "SocketSink.png",
+                    "name": "Socket Sink",
+                    "type": "example.shape.SocketSink"
+                },
+                {
+                    "src": "SPARQLJoin.png",
+                    "name": "SPARQL Join",
+                    "type": "example.shape.SPARQLJoin"
+                },
+                {
+                    "src": "StreamWriter.png",
+                    "name": "Stream Writer",
+                    "type": "example.shape.StreamWriter"
+                },
+                {
+                    "src": "SymmetricHashJoin.png",
+                    "name": "Symmetric Hash Join",
+                    "type": "example.shape.SymmetricHashJoin"
+                },
+                {
+                    "src": "Triplifier.png",
+                    "name": "Triplifier",
+                    "type": "example.shape.Triplifier"
+                },
+                {
+                    "src": "Tuplifier.png",
+                    "name": "Tuplifier",
+                    "type": "example.shape.Tuplifier"
+                },
+                {
+                    "src": "Union.png",
+                    "name": "Union",
+                    "type": "example.shape.Union"
+                },
+                {
+                    "src": "ZmqPublisher.png",
+                    "name": "Zmq Publisher",
+                    "type": "example.shape.ZmqPublisher"
+                },
+                {
+                    "src": "ZmqPush.png",
+                    "name": "Zmq Push",
+                    "type": "example.shape.ZmqPush"
+                }
+            ]
+        }
+    ],
+
+    "_comment_line142": "---------------Connection types and their images----",
+    "connectionTypes": [
+        {
+            "type": "example.connection.SimpleConnection",
+            "imagePath": "",
+            "name": "Simple"
+        },
+        {
+            "type": "example.connection.UniDirectional",
+            "imagePath": "",
+            "name": "Uni-Directional"
+        },
+        {
+            "type": "example.connection.BiDirectional",
+            "imagePath": "",
+            "name": "Bi-Directional"
+        },
+        {
+            "type": "example.connection.TargetSideBar",
+            "imagePath": "",
+            "name": "Target Side Bar"
+        },
+        {
+            "type": "example.connection.BothSideBar",
+            "imagePath": "",
+            "name": "Both Side Bar"
+        },
+        {
+            "type": "example.connection.TargetSideCircle",
+            "imagePath": "",
+            "name": "Target Side Circle"
+        },
+        {
+            "type": "example.connection.BothSideCircle",
+            "imagePath": "",
+            "name": "Both Side Circle"
+        },
+        {
+            "type": "example.connection.TargetSideDiamond",
+            "imagePath": "",
+            "name": "Target Side Diamond"
+        },
+        {
+            "type": "example.connection.BothSideDiamond",
+            "imagePath": "",
+            "name": "Both Side Diamond"
+        }
+    ],
+
+    "_comment_line191": "----------Connection types and their decorations----",
+    "example.connection.SimpleConnection": {
+        "type": "example.connection.SimpleConnection",
+        "color":"#A8120F",
+        "params": [
+            {
+                "on": ""
+            },
+            {
+                "generate": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+    "example.connection.UniDirectional": {
+        "type": "example.connection.UniDirectional",
+        "target": "draw2d.decoration.connection.ArrowDecorator"
+    },
+    "example.connection.BiDirectional": {
+        "type": "example.connection.BiDirectional",
+        "source": "draw2d.decoration.connection.ArrowDecorator",
+        "target": "draw2d.decoration.connection.ArrowDecorator"
+    },
+    "example.connection.TargetSideBar": {
+        "type": "example.connection.TargetSideBar",
+        "target": "draw2d.decoration.connection.BarDecorator"
+    },
+    "example.connection.BothSideBar": {
+        "type": "example.connection.BothSideBar",
+        "source": "draw2d.decoration.connection.BarDecorator",
+        "target": "draw2d.decoration.connection.BarDecorator"
+    },
+    "example.connection.TargetSideCircle": {
+        "type": "example.connection.TargetSideCircle",
+        "target": "draw2d.decoration.connection.CircleDecorator"
+    },
+    "example.connection.BothSideCircle": {
+        "type": "example.connection.BothSideCircle",
+        "source": "draw2d.decoration.connection.CircleDecorator",
+        "target": "draw2d.decoration.connection.CircleDecorator"
+    },
+    "example.connection.TargetSideDiamond": {
+        "type": "example.connection.TargetSideDiamond",
+        "target": "draw2d.decoration.connection.DiamondDecorator"
+    },
+    "example.connection.BothSideDiamond": {
+        "type": "example.connection.BothSideDiamond",
+        "source": "draw2d.decoration.connection.DiamondDecorator",
+        "target": "draw2d.decoration.connection.DiamondDecorator"
+    },
+
+    "_comment_line232": "-------------Operator types and their properties----",
+    "example.shape.FileSource": {
+        "type": "example.shape.FileSource",
+        "color": "#00B2BF",
+        "ports": [
+            {
+                "type": "output",
+                "location": "bottom"
+            }
+        ],
+        "label": "FS",
+        "params": [
+            {
+                "with": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Aggregate": {
+        "type": "example.shape.Aggregate",
+        "color": "#3F00ED",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Aggregate",
+        "params": [
+            {
+                "on": ""
+            },
+            {
+                "generate": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.DBJoin": {
+        "type": "example.shape.DBJoin",
+        "color": "#A8120F",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "DBJoin",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.DBSource": {
+        "type": "example.shape.DBSource",
+        "color": "#A8120F",
+        "ports": [
+            {
+                "type": "output",
+                "location": "bottom"
+            }
+        ],
+        "label": "DBSource",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.DBWriter": {
+        "type": "example.shape.DBWriter",
+        "color": "#962809",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "DBWriter",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Filter": {
+        "type": "example.shape.Filter",
+        "color": "#24A807",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Filter",
+        "params": [
+            {
+                "by": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Matcher": {
+        "type": "example.shape.Matcher",
+        "color": "#B6BF0D",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Matcher",
+        "params": [
+            {
+                "event": ""
+            },
+            {
+                "where": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.MemorySource": {
+        "type": "example.shape.MemorySource",
+        "color": "#A8120F",
+        "ports": [
+            {
+                "type": "output",
+                "location": "bottom "
+            }
+        ],
+        "label": "MemorySource",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Project": {
+        "type": "example.shape.Project",
+        "color": "#B6BF0D",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Project",
+        "params": [
+            {
+                "generate": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.RScript": {
+        "type": "example.shape.RScript",
+        "color": "#428bca",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "RScript",
+        "params": [
+            {
+                "on": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.RelationHashJoin": {
+        "type": "example.shape.RelationHashJoin",
+        "color": "#428bca",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "R_Hash Join",
+        "params": [
+            {
+                "on": ""
+            },
+            {
+                "by": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.SPARQLJoin": {
+        "type": "example.shape.SPARQLJoin",
+        "color": "#00B2BF",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "SPARQL Join",
+        "params": [
+            {
+                "with": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.SlidingWindow": {
+        "type": "example.shape.SlidingWindow",
+        "color": "#00B2BF",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Sliding Window",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.SocketSink": {
+        "type": "example.shape.SocketSink",
+        "color": "#3F00ED",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Socket Sink",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.SocketSource": {
+        "type": "example.shape.SocketSource",
+        "color": "#428bca",
+        "ports": [
+            {
+                "type": "output",
+                "location": "bottom"
+            }
+        ],
+        "label": "Socket Source",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.StreamWriter": {
+        "type": "example.shape.StreamWriter",
+        "color": "#3F00ED",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Stream Writer",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.SymmetricHashJoin": {
+        "type": "example.shape.SymmetricHashJoin",
+        "color": "#3F00ED",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "S_Hash Join",
+        "params": [
+            {
+                "on": ""
+            },
+            {
+                "by": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Triplifier": {
+        "type": "example.shape.Triplifier",
+        "color": "#962809",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Triplifier",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Tuplifier": {
+        "type": "example.shape.Tuplifier",
+        "color": "#00B2BF",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Tuplifier",
+        "params": [
+            {
+                "with": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.TwitterReader": {
+        "type": "example.shape.TwitterReader",
+        "color": "#03692A",
+        "ports": [
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "TR",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Union": {
+        "type": "example.shape.Union",
+        "color": "#D9534F",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "input",
+                "location": "top"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Union",
+        "params": [
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.ZmqPublisher": {
+        "type": "example.shape.ZmqPublisher",
+        "color": "#11F5F5",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "ZmqPublisher",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.ZmqPull": {
+        "type": "example.shape.ZmqPull",
+        "color": "#872BB5",
+        "ports": [
+            {
+                "type": "output",
+                "location": "bottom"
+            }
+        ],
+        "label": "ZmqPull",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.ZmqPush": {
+        "type": "example.shape.ZmqPush",
+        "color": "#3F00ED",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "ZmqPush",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+    
+    "example.shape.ZmqSubscriber": {
+        "type": "example.shape.ZmqSubscriber",
+        "color": "#872BB5",
+        "ports": [
+            {
+                "type": "output",
+                "location": "bottom"
+            }
+        ],
+        "label": "Zmq Subscriber",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    }
+}

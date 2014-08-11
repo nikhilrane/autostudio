@@ -1,0 +1,5 @@
+
+{{#connectionTypes}}
+	<option data-content='<div align="center"><img src="{{imagePath}}" alt="{{name}}"</img></div>' value="{{type}}"></option>
+{{/connectionTypes}}
+

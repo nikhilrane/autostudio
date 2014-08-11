@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="nikhilkrane">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>AutoStudio</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./public/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./public/css/starter-template.css" rel="stylesheet">
+
+    <style type='text/css'>
+      body
+      {
+        background-color:#eee;
+        counter-reset: Serial;           /* Set the Serial counter to 0 */
+      }
+
+      table
+      {
+          border-collapse: separate;
+      }
+
+      tr
+      {
+        text-align:left;
+      }
+
+      tr td:first-child:before
+      {
+        counter-increment: Serial;      /* Increment the Serial counter */
+        content: "" counter(Serial); /* Display the counter */
+      }
+  </style>
+
+  <script src="./public/js/hogan.min.js"></script>
+  <script src="./public/js/jquery-1.11.1.js"></script>
+    <script src="./public/js/bootstrap.js"></script>
+
+  <script type="text/javascript">
+      $( function() {
+        var templ= "<table class=\"table table-hover\">"+
+        "<thead>"+
+    "<tr>"+
+      "<th><b>#</b></th>"+
+      "<th><b>Name</b></th>"+
+      "<th><b>Launch</b></th>"+
+    "</tr>"+
+  "</thead>"+
+        "<tbody> {{#tuples}}"+
+          "<tr>"+
+        "<td></td>"+
+        "<td> {{name}} </td>"+
+        "<td>"+
+          "<button id=\"{{name}}\" onclick=\"{{location}}\" type=\"button\" class=\"btn btn-default btn-info btn-sm\">"+
+          "<span class=\"glyphicon glyphicon-play\"></span></button>"+
+        "</td>"+
+          "</tr> {{/tuples}}"+
+        "</tbody>"+
+        "</table>";
+        
+       var data = [{name: "pipestudio", location: "document.location='/pipestudio'"}, {name: "name 2", location: "document.location='/login'"},
+                    {name: "name 3", location: "document.location='/login'"} ];
+       var compiled = Hogan.compile(templ);
+       var view   = compiled.render( {tuples: data});
+
+       $("#apps_table").html(view);
+
+       templ = "<table class=\"table table-hover\">"+
+        "<thead>"+
+    "<tr>"+
+      "<th><b>#</b></th>"+
+      "<th><b>Job Name</b></th>"+
+      "<th><b>App Name</b></th>"+
+      "<th><b>Status</b></th>"+
+      "<th><b>Notify by Email</b></th>"+
+    "</tr>"+
+  "</thead>"+
+        "<tbody> {{#tuples}}"+
+        "<tr>"+
+        "<td></td>"+
+        "<td> {{job_name}} </td>"+
+        "<td> {{app_name}} </td>"+
+        "<td> {{status}} </td>"+
+        "<td> {{notify}} </td>"+
+          "</tr> {{/tuples}}"+
+        "</tbody>"+
+        "</table>";
+
+        data = [{job_name: "job name 1", app_name: "app name 1", status: "executing", notify: true}, 
+                {job_name: "job name 2", app_name: "app name 2", status: "parsing", notify: true},
+                {job_name: "job name 3", app_name: "app name 3", status: "executing", notify: false} ];
+       compiled = Hogan.compile(templ);
+       view   = compiled.render( {tuples: data});
+       $("#jobs_table").html(view);
+
+      });
+
+      function getDoc() {
+        $.ajax({
+                url: '/pipestudio/get',
+                // dataType: "jsonp",
+                data: { "name" : "test1.json"},
+                type: 'POST',
+                success: function (jsonData) {
+                    sessionStorage.setItem('docData', JSON.stringify(JSON.parse(jsonData).result));
+                    alert("Success in GET! " + JSON.stringify(JSON.parse(jsonData).result));
+                    $('#pipestudio').trigger('click');
+                },
+                error: function (err) {
+                    alert("Failure in GET" + JSON.stringify(err));
+                },
+            });
+      }
+  </script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">AutoStudio</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Apps</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Logout</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1> this is starter </h1>
+        Hello {{user}}!
+
+        <div>
+          <button type="submit" class="btn btn-primary" onclick="getDoc()"> Load </button>
+        </div>
+
+        <h3 style="text-align: left;"> Apps <br><small>Launch your apps, check status, etc.</small></h3>
+        <div id="apps_table"> </div>
+
+        <h3 style="text-align: left;"> Jobs <br></h3>
+        <div id="jobs_table"> </div>
+
+        
+
+      </div>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+  </body>
+</html>

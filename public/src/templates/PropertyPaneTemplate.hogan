@@ -1,0 +1,12 @@
+<form class='form-horizontal'>
+<div class='control-group'>
+    {{#paramList}}
+	<label class='control-label' for='{{paramID}}'>{{paramName}} </label>
+	<div class='controls'>
+	    <input id='{{paramID}}' class='input-xxlarge' type='text' value='{{paramValue}}'/>
+	</div>
+	<br>
+    {{/paramList}}
+<br>
+</div>
+</form>

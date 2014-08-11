@@ -1,0 +1,33 @@
+
+- Below Exception when creating a Circle related connection(Create/Read):
+MIGHT HAVE CHANGED TO jquery 1.11 instead of jquery-1.10.2.min.js due to jquery import update
+Uncaught TypeError: undefined is not a function (01:09:32:108 | error, javascript)
+    at draw2d.Connection.draw2d.shape.basic.PolyLine.extend.repaint (draw2d/src/Connection.js:310:38)
+    at prototype.(anonymous function) (draw2d/lib/Class.js:77:26)
+    at draw2d.Canvas.Class.extend.addFigure (draw2d/src/Canvas.js:763:14)
+    at (anonymous function) (draw2d/src/command/CommandConnect.js:53:25)
+    at x.isFunction.i (draw2d/lib/jquery-1.10.2.min.js:4:6426)
+    at draw2d.Connection.createConnection (src/Application.js:58:3)
+    at draw2d.command.CommandConnect.draw2d.command.Command.extend.execute (draw2d/src/command/CommandConnect.js:60:42)
+    at draw2d.command.CommandStack.Class.extend.execute (draw2d/src/command/CommandStack.js:111:16)
+    at draw2d.Port.draw2d.shape.basic.Circle.extend.onDrop (draw2d/src/Port.js:561:54)
+    at draw2d.policy.canvas.SingleSelectionPolicy.draw2d.policy.canvas.SelectionPolicy.extend.onMouseUp (draw2d/src/policy/canvas/SingleSelectionPolicy.js:199:43)
+    at draw2d.policy.canvas.BoundingboxSelectionPolicy.draw2d.policy.canvas.SingleSelectionPolicy.extend.onMouseUp (draw2d/src/policy/canvas/BoundingboxSelectionPolicy.js:212:14)
+    at prototype.(anonymous function) (draw2d/lib/Class.js:77:26)
+    at (anonymous function) (draw2d/src/Canvas.js:194:24)
+    at x.isFunction.i (draw2d/lib/jquery-1.10.2.min.js:4:6426)
+    at draw2d.util.ArrayList.Class.extend.each (draw2d/src/util/ArrayList.js:518:20)
+    at (anonymous function) (draw2d/src/Canvas.js:193:29)
+    at x.isFunction.i (draw2d/lib/jquery-1.10.2.min.js:4:6426)
+    at x.event.dispatch (draw2d/lib/jquery-1.10.2.min.js:5:14129)
+    at v.handle (draw2d/lib/jquery-1.10.2.min.js:5:10873)
+
+- Connections type list and layout polish
+- this._container error in markup-view.js
+
+
+
+Additions/Modifications to Draw2D
+-----------------------------------------------
+1. A shape which is like a container so that generic shapes could extend this shape
+2. Inplace label editor for connections does not work when connection is horizontal

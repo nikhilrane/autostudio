@@ -3,17 +3,17 @@
   "version": "0.0.1",
   "description": "AutoStudio: A generic web-app for creating script-flow-designs in UI and generating corresponding scripts.",
   "dependencies": {
-    "express": "~4.0.0",
     "body-parser": "~1.0.2",
+    "bunyan": "~0.23.1",
+    "connect-mongo": "git+https://github.com/kcbanner/connect-mongo.git#master",
+    "cookie-parser": "~1.0.1",
+    "express": "~4.0.0",
     "express-session": "~1.0.3",
     "express3-handlebars": "~0.5.0",
     "mongodb": "~1.4.2",
-    "connect-mongo": "git+https://github.com/kcbanner/connect-mongo.git#master",
-    "cookie-parser": "~1.0.1",
     "nconf": "~0.6.9",
-    "bunyan": "~0.23.1",
+    "socket.io": "^1.0.6",
     "string": "~1.9.0"
   },
   "engine": "node >=0.6.x"
 }
-

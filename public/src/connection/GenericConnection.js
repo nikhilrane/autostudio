@@ -203,13 +203,15 @@ example.connection.GenericConnection = draw2d.Connection.extend({
 
         this.label.setText(element.label);
 
-        for(var i=0; i < element.parameters.length; i++){
-          var current = element.parameters[i];
-          var key = Object.keys(current)[0];
-          this.parameters[key] = current[key];
-          
-          this.renderedPane.find("#" + this.id + "_" + key).val(current[key]);
-          // console.log("Finding: " + this.id + "_" + key);
+        if(element.parameters !== undefined) {
+            for(var i=0; i < element.parameters.length; i++){
+              var current = element.parameters[i];
+              var key = Object.keys(current)[0];
+              this.parameters[key] = current[key];
+              
+              this.renderedPane.find("#" + this.id + "_" + key).val(current[key]);
+              // console.log("Finding: " + this.id + "_" + key);
+            }
         }
 
 

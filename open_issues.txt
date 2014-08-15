@@ -1,5 +1,15 @@
 
-- Below Exception when creating a Circle related connection(Create/Read):
+App
+-----------------------------------------------
+*UI:
+ - Add button dropdowns for File, Edit, etc. instead of Button groups
+
+*Database:
+ - Make changes to load everything from DB.
+
+*Exceptions/Possible Errors:
+
+ - Below Exception when creating a Circle related connection(Create/Read):
 MIGHT HAVE CHANGED TO jquery 1.11 instead of jquery-1.10.2.min.js due to jquery import update
 Uncaught TypeError: undefined is not a function (01:09:32:108 | error, javascript)
     at draw2d.Connection.draw2d.shape.basic.PolyLine.extend.repaint (draw2d/src/Connection.js:310:38)

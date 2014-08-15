@@ -123,6 +123,15 @@ draw2d.shape.basic.Polygon = draw2d.VectorFigure.extend({
         return this;
     },
     
+    /**
+     * @method
+     * 
+     * @param start
+     * @param end
+     * @param distanceFromStart
+     * @private
+     * @returns
+     */
     insetPoint: function(start, end, distanceFromStart){
         if(start.equals(end)){
             return start;
@@ -203,6 +212,11 @@ draw2d.shape.basic.Polygon = draw2d.VectorFigure.extend({
      * @param y
      */
     setPosition : function(x, y) {
+        if (x instanceof draw2d.geo.Point) {
+            y = x.y;
+            x = x.x;
+        }
+
         var dx = x-this.minX;
         var dy = y-this.minY;
         this.translate(dx,dy);
@@ -320,12 +334,13 @@ draw2d.shape.basic.Polygon = draw2d.VectorFigure.extend({
     },
 
     /**
+     * @method
      * Insert a new vertex at the given index. All vertices will be shifted to 
      * free the requested index.
      * 
-     * @param index
-     * @param x
-     * @param y
+     * @param {Number} index
+     * @param {Number} x
+     * @param {Number} y
      */
     insertVertexAt:function(index, x, y) 
     {
@@ -355,7 +370,7 @@ draw2d.shape.basic.Polygon = draw2d.VectorFigure.extend({
      * @method
      * Remove a vertex from the polygon and return the removed point.
      * 
-     * @param index
+     * @param {Number} index
      * @returns {draw2d.geo.Point} the removed point
      */
     removeVertexAt:function(index) 

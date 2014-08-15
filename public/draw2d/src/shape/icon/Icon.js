@@ -21,7 +21,7 @@ draw2d.shape.icon.Icon = draw2d.SetFigure.extend({
     init: function(width, height) {
       this._super(width, height);
       this.setBackgroundColor("#333333");
-      this.keepAspectRatio = true;
+      this.keepAspectRatio = false;
     },
 
     /**
@@ -49,12 +49,34 @@ draw2d.shape.icon.Icon = draw2d.SetFigure.extend({
     },
 
     applyTransformation:function(){
-        if (this.isResizeable()===true) {
-            this.svgNodes.transform("S"+this.scaleX+","+this.scaleY+","+this.getAbsoluteX()+","+this.getAbsoluteY()+ "t"+ (this.getAbsoluteX()-this.offsetX) + "," + (this.getAbsoluteY()-this.offsetY));
-        }
-        else {
-            this.svgNodes.transform("T" + (this.getAbsoluteX()-this.offsetX) + "," + (this.getAbsoluteY()-this.offsetY));
-        }
+       var trans = [];
+         
+       
+       if(this.rotationAngle!==0){
+    	   trans.push("R"+this.rotationAngle);
+       }
+        
+       if(this.getRotationAngle()=== 90|| this.getRotationAngle()===270){
+           var ratio = this.getHeight()/this.getWidth();
+           trans.push("T"+(-this.offsetY) + "," + (-this.offsetX));
+           trans.push("S"+ratio+","+1/ratio+",0,0");
+       }
+       else{
+           trans.push("T"+(-this.offsetX) + "," + (-this.offsetY));
+
+       }
+       
+       if (this.isResizeable()===true) {
+            trans.push(
+              		   "T"+ this.getAbsoluteX() + "," + this.getAbsoluteY()+
+            		   "S"+this.scaleX+","+this.scaleY+","+this.getAbsoluteX()+","+this.getAbsoluteY()
+                       );
+       }
+       else {
+            trans.push("T" + this.getAbsoluteX() + "," + this.getAbsoluteY());
+       }
+
+       this.svgNodes.transform(trans.join(" "));
     },
     
     /**

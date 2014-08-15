@@ -22,9 +22,10 @@ draw2d.Figure = Class.extend({
      * @param {Number} [height] initial height of the shape
      */
     init: function( width, height ) {
+        // all figures has an unique id. Required for figure get and persistence storage
         this.id = draw2d.util.UUID.create();
         
-        // required in the SelectionEditPolicy to indicate the type of figure
+        // required for the SelectionEditPolicy to indicate the type of figure
         // which the user clicks
         this.isResizeHandle=false;
         
@@ -32,7 +33,10 @@ draw2d.Figure = Class.extend({
         // and execute it on the CommandStack if the user drop the figure.
         this.command = null;
         
+        // the assigned canvas
         this.canvas = null;
+        
+        // the RaphaelJS element reference
         this.shape  = null;
         
         // possible decorations ( e.g. a Label) of the Connection
@@ -63,6 +67,10 @@ draw2d.Figure = Class.extend({
         // @see: this.children
         this.parent = null;
         
+        // a figure can be part of a StrongComposite like a group, ...
+        //
+        this.composite = null;
+        
         // generic handle for the JSON read/write of user defined data
         this.userData = null;
        
@@ -76,6 +84,7 @@ draw2d.Figure = Class.extend({
         // add the name of the class to the css attribute
         this.cssClass = this.NAME.replace(new RegExp("[.]","g"), "_");
        
+        // set some good defaults for the width/height
         if(typeof height !== "undefined"){
             this.width  = width;
             this.height = height;
@@ -100,7 +109,7 @@ draw2d.Figure = Class.extend({
         this.moveListener = new draw2d.util.ArrayList();
         this.resizeListener = new draw2d.util.ArrayList();
 
-        
+        // install default selection handler. Can be overridden or replaced
         this.installEditPolicy(new draw2d.policy.figure.RectangleSelectionFeedbackPolicy());
     },
     
@@ -166,6 +175,8 @@ draw2d.Figure = Class.extend({
      */
     setUserData: function(object){
       this.userData = object;  
+      
+      return this;
     },
 
     /**
@@ -322,7 +333,8 @@ draw2d.Figure = Class.extend({
 
     /**
      * @method
-     * Set the canvas element of this figures.
+     * Set the canvas element of this figures. This can be used to determine whenever an element
+     * is added or removed to the canvas.
      * 
      * @param {draw2d.Canvas} canvas the new parent of the figure or null
      */
@@ -356,8 +368,7 @@ draw2d.Figure = Class.extend({
           e.figure.setCanvas(canvas);
       });
       
-      return this;
-      
+      return this;    
      },
      
      /**
@@ -374,7 +385,7 @@ draw2d.Figure = Class.extend({
     
      /**
       * @method
-      * Start a timer which calles the onTimer method in the given interval.
+      * Start a timer which calls the onTimer method in the given interval.
       * 
       * @param {Number} milliSeconds
       */
@@ -417,30 +428,104 @@ draw2d.Figure = Class.extend({
     	
      },
      
-     /**
-      * @method
-      * Moves the element so it is the closest to the viewer’s eyes, on top of other elements. Additional
-      * the internal model changed as well.
-      * 
-      * @since 3.0.0
-      */
-     toFront: function(){
-         this.getShapeElement().toFront();
-         if(this.canvas!==null){
-             var figures = this.canvas.getFigures();
-             var lines = this.canvas.getLines();
-             if(figures.remove(this)!==null){
-                 figures.add(this);
-             }else if(lines.remove(this)!==null){
-                 lines.add(this);
+    /**
+     * @method
+     * Moves the element so it is the closest to the viewer’s eyes, on top of other elements. Additional
+     * the internal model changed as well.
+     * 
+     * Optional: Inserts current object in front of the given one. 
+     * 
+     * @param {draw2d.Figure} [figure] move current object in front of the given one. 
+     * @since 3.0.0
+     */
+     toFront: function(figure){
+         // ensure that the z-oder is still correct if the figure is assigned
+         // to a StrongComposite
+         //
+         if(this.composite instanceof draw2d.shape.composite.StrongComposite && (typeof figure !=="undefined")){
+             var indexFigure = figure.getZOrder();
+             var indexComposite= this.composite.getZOrder();
+             if(indexFigure<indexComposite){
+                 figure = this.composite;
+             }
+         }
+         
+         if(typeof figure ==="undefined"){
+             this.getShapeElement().toFront();
+             
+             if(this.canvas!==null){
+                 var figures = this.canvas.getFigures();
+                 var lines = this.canvas.getLines();
+                 if(figures.remove(this)!==null){
+                     figures.add(this);
+                 }else if(lines.remove(this)!==null){
+                     lines.add(this);
+                 }
+             }
+         }
+         else{
+
+             this.getShapeElement().insertAfter(figure.getShapeElement());
+             
+             if(this.canvas!==null){
+                 
+                 var figures = this.canvas.getFigures();
+                 var lines = this.canvas.getLines();
+                 if(figures.remove(this)!==null){
+                     var index = figures.indexOf(figure);
+                     figures.insertElementAt(this, index+1);
+                 }else if(lines.remove(this)!==null){
+                     lines.add(this);
+                 }
              }
          }
          
          // bring all children figures in front of the parent
-         //
          this.children.each(function(i,child){
-             child.figure.toFront();
+             child.figure.toFront(figure);
          });
+         
+         return this;
+     },
+     
+     /**
+      * @method
+      * Moves the element to the background. Additional
+      * the internal model changed as well.
+      * 
+      * @since 4.7.2
+      */
+     toBack: function(figure ){
+         // it is not allowed that a figure is behind an assinged composite
+         //
+         if(this.composite instanceof draw2d.shape.composite.StrongComposite){
+             this.toFront(this.composite);
+             return;
+         }
+         
+         if(this.canvas!==null){
+             var figures = this.canvas.getFigures();
+             var lines = this.canvas.getLines();
+             if(figures.remove(this)!==null){
+                 figures.insertElementAt(this,0);
+             }else if(lines.remove(this)!==null){
+                 lines.insertElementAt(this,0);
+             }
+         }
+         
+         // bring all children figures in front of the parent
+         // run reverse to the collection to care about the z-order of the children)
+         this.children.each(function(i,child){
+             child.figure.toBack(figure);
+         }, true);
+         
+         if(typeof figure !=="undefined"){
+             this.getShapeElement().insertBefore(figure.getShapeElement());
+         }
+         else{
+             this.getShapeElement().toBack();
+         }
+         
          return this;
      },
      
@@ -472,6 +557,38 @@ draw2d.Figure = Class.extend({
          this.editPolicy.add(policy);
          
          return this;
+     },
+     
+     /**
+      * @method
+      * 
+      * UnInstall the edit policy from the figure. Either the instance itself if found
+      * or all kind of the given edit policies.
+      * 
+      * 
+      * @param {draw2d.policy.EditPolicy} policy
+      * @since 4.81
+      */
+     uninstallEditPolicy: function(policy){
+         var removedPolicy = this.editPolicy.remove(policy);
+         
+         // we found the policy and we are happy
+         //
+         if(removedPolicy !==null){
+             removedPolicy.onUninstall(this);
+             return; 
+         }
+         
+         // The policy isn'T part of the figure. In this case we "thinkk" the user want
+         // deinstall all instances of the policy
+         //
+         this.editPolicy.grep($.proxy(function(p){
+             if(p === policy || (p.NAME === policy.NAME)){
+                 p.onUninstall(this);
+                 return false;
+             }
+             return true;
+         },this));
      },
      
      /**
@@ -542,7 +659,8 @@ draw2d.Figure = Class.extend({
       * @method
       * Return all children/decorations of this shape
       */
-     getChildren : function(){
+     getChildren : function()
+     {
          var shapes = new draw2d.util.ArrayList();
          this.children.each(function(i,e){
              shapes.add(e.figure);
@@ -557,7 +675,8 @@ draw2d.Figure = Class.extend({
       * Remove all children/decorations of this shape
       * 
       */
-     resetChildren : function(){
+     resetChildren : function()
+     {
          this.children.each(function(i,e){
              e.figure.setCanvas(null);
          });
@@ -649,8 +768,10 @@ draw2d.Figure = Class.extend({
      
      /**
       * @private
+      * @template
       */
-     applyTransformation:function(){
+     applyTransformation:function()
+     {
      },
      
      /**
@@ -730,21 +851,16 @@ draw2d.Figure = Class.extend({
             }
       },this));
         
-      this.x = this.ox+dx;
-      this.y = this.oy+dy;
+      var newPos = new draw2d.geo.Point(this.ox+dx, this.oy+dy);
 
       // Adjust the new location if the object can snap to a helper
       // like grid, geometry, ruler,...
       //
-      if(this.getCanSnapToHelper())
-      {
-        var p = new draw2d.geo.Point(this.x,this.y);
-        p = this.getCanvas().snapToHelper(this, p);
-        this.x = p.x;
-        this.y = p.y;
+      if(this.getCanSnapToHelper()){
+        newPos = this.getCanvas().snapToHelper(this, newPos);
       }
-
-      this.setPosition(this.x, this.y);
+      
+      this.setPosition(newPos);
       
       // notify all installed policies
       //
@@ -811,7 +927,7 @@ draw2d.Figure = Class.extend({
 
     /**
      * @method
-     * Called by the framework during drag&drop operations.
+     * Called by the framework during drag&drop operations if the user drag a figure over this figure
      * 
      * @param {draw2d.Figure} draggedFigure The figure which is currently dragging
      * 
@@ -846,9 +962,27 @@ draw2d.Figure = Class.extend({
      * @param {Number} y the y-coordinate of the mouse up event
      * @param {Boolean} shiftKey true if the shift key has been pressed during this event
      * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
-     * @private
+     * @template
      **/
     onDrop:function(dropTarget, x, y, shiftKey, ctrlKey)
+    {
+    },
+
+    /**
+     * @method
+     * Called if the user dropped an figure onto this element. This event is ONLY fired if the
+     * shape return "this" in the onDragEnter method.
+     * 
+     * 
+     * @param {draw2d.Figure} droppedFigure The dropped figure.
+     * @param {Number} x the x-coordinate of the mouse up event
+     * @param {Number} y the y-coordinate of the mouse up event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @template
+     * @since 4.8.0
+     **/
+    onCatch:function(droppedFigure, x, y, shiftKey, ctrlKey)
     {
     },
    
@@ -867,7 +1001,7 @@ draw2d.Figure = Class.extend({
     
     /**
      * @method
-     * Callback method for the mouse leave event. Usefull for mouse hover-effects.
+     * Callback method for the mouse leave event. Useful for mouse hover-effects.
      * 
      * @template
      **/
@@ -880,9 +1014,9 @@ draw2d.Figure = Class.extend({
      * Called when a user dbl clicks on the element
      * 
      * @template
-     * @aside example interaction_dblclick
      */
-    onDoubleClick: function(){
+    onDoubleClick: function()
+    {
     },
     
     
@@ -892,13 +1026,14 @@ draw2d.Figure = Class.extend({
      * 
      * @template
      */
-    onClick: function(){
+    onClick: function()
+    {
     },
    
     /**
      * @method
-     * called by the framework if the figure should show the contextmenu.<br>
-     * The strategy to show the context menu depends on the plattform. Either loooong press or
+     * called by the framework if the figure should show the context menu.<br>
+     * The strategy to show the context menu depends on the platform. Either looong press or
      * right click with the mouse.
      * 
      * @param {Number} x the x-coordinate to show the menu
@@ -914,7 +1049,7 @@ draw2d.Figure = Class.extend({
      * @method
      * Set the alpha blending of this figure. 
      *
-     * @param {Number} percent Value between [0..1].
+     * @param {Number} percent value between [0..1].
      * @template
      **/
     setAlpha:function( percent)
@@ -947,7 +1082,7 @@ draw2d.Figure = Class.extend({
      * @method
      * set the rotation angle in degree [0..356]<br>
      * <br>
-     * <b>NOTE: this method is pre alpha and not for production.</b>
+     * <b>NOTE: this method is pre alpha and not for production. Only steps of 90 degree is working well</b>
      * <br>
      * @param {Number} angle the rotation angle in degree
      */
@@ -968,6 +1103,15 @@ draw2d.Figure = Class.extend({
         return this;
     },
     
+    /**
+     * @method
+     * return the rotation angle of the figure in degree of [0..356].
+     * 
+     * <br>
+     * <b>NOTE: this method is pre alpha and not for production. Only steps of 90 degree is working well</b>
+     * <br>
+     * @returns {Number}
+     */
     getRotationAngle : function(){
         return this.rotationAngle;
     },
@@ -1010,6 +1154,7 @@ draw2d.Figure = Class.extend({
      */
     setKeepAspectRatio: function( flag){
         this.keepAspectRatio = flag;
+        
         return this;
     },
     
@@ -1082,12 +1227,15 @@ draw2d.Figure = Class.extend({
     /**
      * @method
      * Set the hot spot for all snapTo### operations.
+     * (deprecated? Todo: check references in existing projects)
      * 
      * @param {draw2d.geo.Point} point
      **/
     setSnapToGridAnchor:function(point)
     {
       this.snapToGridAnchor = point;
+      
+      return this;
     },
 
     /**
@@ -1209,7 +1357,7 @@ draw2d.Figure = Class.extend({
     getAbsoluteY :function()
     {
         if(this.parent ===null){
-            // provide some good defaults of the figure not placed
+            // provide some good defaults if the figure not placed
             return this.getY()||0;
         }
         return this.getY() + this.parent.getAbsoluteY();  
@@ -1243,7 +1391,7 @@ draw2d.Figure = Class.extend({
      * @method
      * Set the position of the object.
      *
-     * @param {Number/draw2d.geo.Point} x The new x coordinate of the figure
+     * @param {Number/draw2d.geo.Point} x The new x coordinate of the figure or the x/y coordinate if it is an draw2d.geo.Point
      * @param {Number} [y] The new y coordinate of the figure 
      **/
     setPosition : function(x, y) {
@@ -1255,8 +1403,17 @@ draw2d.Figure = Class.extend({
             this.x = x;
             this.y = y;
         }
+
+        this.editPolicy.each($.proxy(function(i,e){
+            if(e instanceof draw2d.policy.figure.DragDropEditPolicy){
+                var newPos = e.adjustPosition(this,this.x,this.y);
+                this.x = newPos.x;
+                this.y = newPos.y;
+            }
+        },this));
+
         
-       this.repaint();
+        this.repaint();
         
         // Update the resize handles if the user change the position of the
         // element via an API call.
@@ -1287,8 +1444,8 @@ draw2d.Figure = Class.extend({
      * @method
      * Translate the figure with the given x/y offset.
      *
-     * @param {Number} dx The new x translate offset
-     * @param {Number} dy The new y translate offset
+     * @param {Number} dx The x offset to translate
+     * @param {Number} dy The y offset to translate 
      **/
     translate:function(dx , dy )
     {
@@ -1351,7 +1508,7 @@ draw2d.Figure = Class.extend({
 
         this.width = Math.max(this.getMinWidth(),w);
 		this.height= Math.max(this.getMinHeight(),h);
-		  
+
 		this.repaint();
 
         this.fireResizeEvent();
@@ -1370,6 +1527,22 @@ draw2d.Figure = Class.extend({
     },
 
 
+    /**
+     * @method
+     * Set the bounding box of the figure
+     * 
+     * @param {draw2d.geo.Rectangle} rect
+     * @since 4.8.0
+     */
+    setBoundingBox:function(rect){
+        this.repaintBlocked=true;
+        this.setPosition(rect.getTopLeft());
+        this.repaintBlocked=false;
+        this.setDimension(rect.w,rect.h);
+        
+        return this;
+    },
+    
     /**
      * @method
      * Return the bounding box of the figure in absolute position to the canvas.
@@ -1422,7 +1595,12 @@ draw2d.Figure = Class.extend({
      **/
     isDraggable:function()
     {
-      return this.draggable;
+        // delegate to the composite if given
+        if(this.composite!==null){
+            return this.composite.isMemberDraggable(this, this.draggable);
+        }
+        
+        return this.draggable;
     },
 
 
@@ -1459,7 +1637,12 @@ draw2d.Figure = Class.extend({
      **/
     isSelectable:function()
     {
-      return this.selectable;
+        // delegate to the composite if given
+        if(this.composite!==null){
+            return this.composite.isMemberSelectable(this, this.selectable);
+        }
+        
+        return this.selectable;
     },
 
 
@@ -1540,6 +1723,37 @@ draw2d.Figure = Class.extend({
     getParent:function()
     {
       return this.parent;
+    },
+
+    /**
+     * @method
+     * Set the assigned composite of this figure.
+     * 
+     * @param {draw2d.shape.composite.StrongComposite} composite The assigned composite of this figure
+     * @private
+     * @since 4.8.0
+     **/
+    setComposite:function( composite)
+    {
+        if(composite!==null && !(composite instanceof draw2d.shape.composite.StrongComposite)){
+            throw "'composite must inherit from 'draw2d.shape.composite.StrongComposite'";
+        }
+        
+        this.composite = composite;
+
+        return this;
+    },
+
+    /**
+     * @method
+     * Get the assigned composite of this figure.
+     *
+     * @return {draw2d.shape.composite.StrongComposite}
+     * @since 4.8.0
+     **/
+    getComposite:function()
+    {
+      return this.composite;
     },
 
     /**
@@ -1758,6 +1972,10 @@ draw2d.Figure = Class.extend({
             memento.cssClass= this.cssClass;
         }
         
+        if(this.composite!==null){
+            memento.composite = this.composite.getId();
+        }
+
         return memento;
     },
     

@@ -3,20 +3,38 @@
  *   Copyright (c) 2012 Andreas Herz
  ****************************************/
 /**
- * @class draw2d.shape.node.Start
+ * @class draw2d.shape.state.Connection
  * 
- * A generic Node which has an OutputPort. Mainly used for demo and examples.
+ * Connection designed for a state diagram with arrow decoration at the
+ * target of the connection and a label
  * 
  * See the example:
  *
  *     @example preview small frame
  *     
- *     var figure =  new draw2d.shape.node.Start();
- *     figure.setColor("#3d3d3d");
+ *     // create and add two nodes which contains Ports (In and OUT)
+ *     //
+ *     var start = new draw2d.shape.state.Start();
+ *     var end   = new draw2d.shape.state.End();
+        
+ *     // ...add it to the canvas 
+ *     canvas.addFigure( start, 50,50);
+ *     canvas.addFigure( end, 230,180);
+ *          
+ *     // Create a Connection and connect the Start and End node
+ *     //
+ *     var c = new draw2d.shape.state.Connection();
+ *      
+ *     // Connect the endpoints with the start and end port
+ *     //
+ *     c.setSource(start.getOutputPort(0));
+ *     c.setTarget(end.getInputPort(0));
+ *           
+ *     // and finally add the connection to the canvas
+ *     canvas.addFigure(c);
  *     
- *     canvas.addFigure(figure,50,10);
  *     
- * @extends draw2d.shape.basic.Rectangle
+ * @extends draw2d.Connection
  */
 draw2d.shape.state.Connection = draw2d.Connection.extend({
 
@@ -27,7 +45,7 @@ draw2d.shape.state.Connection = draw2d.Connection.extend({
 	init : function()
     {
         this._super();
-        this.setRouter(draw2d.shape.state.Connection.DEFAULT_ROUTER);
+        this.setRouter(null);
 
         this.setStroke(2);
         this.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator(17,8));
@@ -37,7 +55,7 @@ draw2d.shape.state.Connection = draw2d.Connection.extend({
         this.label.setStroke(1);
         this.label.setPadding(2);
         this.label.setBackgroundColor("#f0f0f0");
-        this.addFigure(this.label, new draw2d.layout.locator.PolylineMidpointLocator(this));
+        this.addFigure(this.label, new draw2d.layout.locator.ParallelMidpointLocator(this));
       
     },
     /**
@@ -101,6 +119,3 @@ draw2d.shape.state.Connection = draw2d.Connection.extend({
     }
 
 });
-
-draw2d.shape.state.Connection.DEFAULT_ROUTER = new draw2d.layout.connection.FanConnectionRouter();
-

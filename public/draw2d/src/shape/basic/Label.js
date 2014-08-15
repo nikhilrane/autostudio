@@ -224,6 +224,18 @@ draw2d.shape.basic.Label= draw2d.SetFigure.extend({
       this.bold = bold;
       this.repaint();
       
+      this.fireResizeEvent();
+      // just to be backward compatible....
+      this.fireMoveEvent();
+      
+      // Update the resize handles if the user change the position of the element via an API call.
+      //
+      this.editPolicy.each($.proxy(function(i,e){
+         if(e instanceof draw2d.policy.figure.DragDropEditPolicy){
+             e.moved(this.canvas, this);
+         }
+      },this));
+      
       return this;
     },
     

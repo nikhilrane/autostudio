@@ -26,13 +26,15 @@ draw2d.layout.anchor.ConnectionAnchor = Class.extend({
      * Returns the location where the Connection should be anchored in absolute coordinates. 
      * The anchor may use the given reference Point to calculate this location.
      * 
-     * @param
+     * @param {draw2d.geo.Point} reference the opposite reference point
+     * @param {draw2d.Connection} inquiringConnection the connection who ask for the location.
+     * 
      * @return {Number} reference The reference Point in absolute coordinates
      */
-    getLocation:function(reference)
+    getLocation:function(reference, inquiringConnection)
     {
        // return the center of the owner/port.
-       return this.getReferencePoint();
+       return this.getReferencePoint(inquiringConnection);
     },
     
     /**
@@ -77,9 +79,10 @@ draw2d.layout.anchor.ConnectionAnchor = Class.extend({
      * Returns the reference point for this anchor in absolute coordinates. This might be used
      * by another anchor to determine its own location.
      * 
+     * @param {draw2d.Connection} inquiringConnection the connection who ask for the location.
      * @return {draw2d.geo.Point} The reference Point
      */
-    getReferencePoint:function()
+    getReferencePoint:function(inquiringConnection)
     {
        return this.getOwner().getAbsolutePosition();
     }

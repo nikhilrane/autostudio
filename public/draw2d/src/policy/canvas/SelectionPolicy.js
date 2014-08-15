@@ -15,7 +15,7 @@ draw2d.policy.canvas.SelectionPolicy = draw2d.policy.canvas.CanvasPolicy.extend(
     
     /**
      * @constructor 
-     * Creates a new Router object
+     * Creates a new selection policy
      */
     init: function(){
         this._super();

@@ -25,6 +25,7 @@ var draw2d =
 
     shape : {
     	basic:{},
+    	composite:{},
         arrow:{},
         node: {},
         note: {},

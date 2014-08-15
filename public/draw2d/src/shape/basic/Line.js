@@ -36,7 +36,8 @@ draw2d.shape.basic.Line = draw2d.Figure.extend({
     
     /**
      * @constructor
-     * Creates a new figure element which are not assigned to any canvas.
+     * Creates a new figure element which are not assigned to any canvas witht he given start and
+     * end coordinate.
      * 
      * @param {Number} startX the x-coordinate of the start
      * @param {Number} startY the y-coordinate of the start
@@ -439,6 +440,27 @@ draw2d.shape.basic.Line = draw2d.Figure.extend({
 
        return this;
    },
+
+   /**
+    * @method
+    * return the bounding box of the line or polygon
+    * 
+    * TODO: precalculate or cache this values
+    * 
+    * @returns {draw2d.geo.Rectangle}
+    * @since 4.8.2
+    */
+   getBoundingBox: function(){
+       var minX = Math.min.apply(Math,$.map(this.vertices.asArray(),function(n,i){return n.x;}));
+       var minY = Math.min.apply(Math,$.map(this.vertices.asArray(),function(n,i){return n.y;}));
+       var maxX = Math.max.apply(Math,$.map(this.vertices.asArray(),function(n,i){return n.x;}));
+       var maxY = Math.max.apply(Math,$.map(this.vertices.asArray(),function(n,i){return n.y;}));
+       var width = maxX - minX;
+       var height= maxY - minY;
+       
+       return new draw2d.geo.Rectangle(minX, minY, width, height);
+   },
+   
 
    /**
     * @method
@@ -848,7 +870,6 @@ draw2d.shape.basic.Line.intersection = function(a1, a2, b1, b2) {
         var ub = ub_t / u_b;
 
         if ( 0 <= ua && ua <= 1 && 0 <= ub && ub <= 1 ) {
-//        if ( 0 < ua && ua < 1 && 0 < ub && ub < 1 ) {
             result = new draw2d.geo.Point((a1.x + ua * (a2.x - a1.x))|0, (a1.y + ua * (a2.y - a1.y))|0);
             
             // determine if the lines are crossing or just touching
@@ -856,15 +877,7 @@ draw2d.shape.basic.Line.intersection = function(a1, a2, b1, b2) {
             result.justTouching=( 0 == ua || ua == 1 || 0 == ub || ub == 1 );
         }
     }
-    /*
-    else {
-        if ( ua_t == 0 || ub_t == 0 ) {
-            result = null;// Coincident
-        } else {
-            result = null; // Parallel
-        }
-    }
-    */
+
     return result;
 };
 

@@ -3,20 +3,21 @@
  *   Copyright (c) 2012 Andreas Herz
  ****************************************/
 /**
- * @class draw2d.shape.node.Start
+ * @class draw2d.shape.state.End
  * 
- * A generic Node which has an OutputPort. Mainly used for demo and examples.
+ * The end node for a state diagram
  * 
  * See the example:
  *
  *     @example preview small frame
- *     
- *     var figure =  new draw2d.shape.node.Start();
- *     figure.setColor("#3d3d3d");
- *     
- *     canvas.addFigure(figure,50,10);
- *     
- * @extends draw2d.shape.basic.Rectangle
+ *     // create and add two nodes which contains Ports (In and OUT)
+ *     //
+ *     var end   = new draw2d.shape.state.End();
+        
+ *     // ...add it to the canvas 
+ *     canvas.addFigure( end, 230,80);
+  *     
+ * @extends draw2d.shape.basic.Circle
  */
 draw2d.shape.state.End = draw2d.shape.basic.Circle.extend({
 

@@ -119,17 +119,21 @@ draw2d.Port = draw2d.shape.basic.Circle.extend({
         this.connectionAnchor = anchor;
         this.connectionAnchor.setOwner(this);
 
+        // the anchor has changed. In this case all connections needs an change event to recalculate
+        // the anchor and the routing itself
+        this.fireMoveEvent();
+
         return this;
     },
  
-    getConnectionAnchorLocation:function(referencePoint)
+    getConnectionAnchorLocation:function(referencePoint, inquiringConnection)
     {
-    	return this.connectionAnchor.getLocation(referencePoint);
+    	return this.connectionAnchor.getLocation(referencePoint, inquiringConnection);
     },
     
-    getConnectionAnchorReferencePoint:function()
+    getConnectionAnchorReferencePoint:function(inquiringConnection)
     {
-    	return this.connectionAnchor.getReferencePoint();
+    	return this.connectionAnchor.getReferencePoint(inquiringConnection);
     },
  
     
@@ -375,7 +379,7 @@ draw2d.Port = draw2d.shape.basic.Circle.extend({
             this.onDragEnd( x, y, shiftKey, ctrlKey);
         }
                 
-        this.getShapeElement().toFront();
+        this.getShapeElement().insertAfter(this.parent.getShapeElement());
        // don't call the super method. This creates a command and this is not necessary for a port
        this.ox = this.x;
        this.oy = this.y;

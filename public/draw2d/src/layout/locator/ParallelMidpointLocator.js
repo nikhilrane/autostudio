@@ -31,8 +31,8 @@ draw2d.layout.locator.ParallelMidpointLocator= draw2d.layout.locator.ConnectionL
     {
       this._super(c);
       
-      if(distanceFromConnection){
-          this.distanceFromConnection = distanceFromConnection;
+      if(typeof distanceFromConnection!=="undefined"){
+          this.distanceFromConnection = parseFloat(distanceFromConnection);
       }
       else{
           this.distanceFromConnection = -5;
@@ -60,7 +60,7 @@ draw2d.layout.locator.ParallelMidpointLocator= draw2d.layout.locator.ConnectionL
        var p2 = points.get(segmentIndex + 1);
        
        // calculate the distance of the label (above or below the connection)
-       var distance = this.distanceFromConnection<0?this.distanceFromConnection-target.getHeight():this.distanceFromConnection; 
+       var distance = this.distanceFromConnection<=0?this.distanceFromConnection-target.getHeight():this.distanceFromConnection; 
        
        // get the angle of the segment
        var nx =p1.x-p2.x;

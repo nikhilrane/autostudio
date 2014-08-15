@@ -73,12 +73,14 @@ draw2d.shape.node.Hub = draw2d.shape.basic.Rectangle.extend({
         }
     },
     
-      /**
-      * @method
-      * 
-      * @param draggedFigure
-      * @return {draw2d.Figure} the figure which should receive the drop event or null if the element didnt want a drop event
-      */
+    /**
+     * @method
+     * Called by the framework during drag&drop operations if the user drag a figure over this figure
+     * 
+     * @param {draw2d.Figure} draggedFigure The figure which is currently dragging
+     * 
+     * @return {draw2d.Figure} the figure which should receive the drop event or null if the element didn't want a drop event
+     **/
      onDragEnter : function( draggedFigure )
      {
          // redirect the dragEnter handling to the hybrid port

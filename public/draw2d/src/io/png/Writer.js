@@ -21,7 +21,7 @@ draw2d.io.png.Writer = draw2d.io.Writer.extend({
     init:function(){
         this._super();
     },
-    
+
     /**
      * @method
      * Export the content to the implemented data format. Inherit class implements
@@ -51,6 +51,21 @@ draw2d.io.png.Writer = draw2d.io.Writer.extend({
         // add missing namespace for images in SVG
         //
         svg = svg.replace("<svg ", "<svg xmlns:xlink=\"http://www.w3.org/1999/xlink\" ");
+       
+        // required for IE9 support. 
+        // The following table contains ready-to-use conditions to detec IE Browser versions
+        //
+        // IE versions     Condition to check for
+        // ------------------------------------------------------------
+        // 10 or older     document.all
+        // 9 or older      document.all && !window.atob
+        // 8 or older      document.all && !document.addEventListener
+        // 7 or older      document.all && !document.querySelector
+        // 6 or older      document.all && !window.XMLHttpRequest
+        // 5.x             document.all && !document.compatMode
+        if(document.all){
+            svg = svg.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+        }
         
         canvasDomNode= $('<canvas id="canvas_png_export_for_draw2d" style="display:none"></canvas>');
         $('body').append(canvasDomNode);

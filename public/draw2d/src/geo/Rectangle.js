@@ -459,9 +459,7 @@ draw2d.geo.Rectangle = draw2d.geo.Point.extend({
      *    __|___|__
      *    6 | 5 | 4
      *
-     * @param r1
      * @param r2
-
      * @returns {Number}
      */
     determineOctant: function( r2){
@@ -627,7 +625,31 @@ draw2d.geo.Rectangle = draw2d.geo.Point.extend({
     	       && rect.hitTest(this.getBottomLeft()) 
     	       && rect.hitTest(this.getBottomRight());
     },
-    
+
+    /**
+     * @method
+     * return true if the this rectangle contains the hand over rectangle.
+     * 
+     *
+     * @param {draw2d.geo.Rectangle} rect
+     * @returns {Boolean}
+     * @since 4.7.2
+     */
+    contains : function ( rect)
+    {
+        return    this.hitTest(rect.getTopLeft()) 
+               && this.hitTest(rect.getTopRight())
+               && this.hitTest(rect.getBottomLeft()) 
+               && this.hitTest(rect.getBottomRight());
+    },
+ 
+    /**
+     * @method
+     * checks whenever the rectangles has an intersection.
+     * 
+     * @param rect
+     * @returns {Boolean}
+     */
     intersects: function (rect)
     {
         x11 = rect.x,
@@ -643,6 +665,48 @@ draw2d.geo.Rectangle = draw2d.geo.Point.extend({
         y_overlap = Math.max(0, Math.min(y12,y22) - Math.max(y11,y21));
  
         return x_overlap*y_overlap!==0;
+    },
+    
+    /**
+     * @method
+     * Merge this rectangle with the given one.
+     * 
+     * @param {draw2d.geo.Rectangle} rect
+     * @since 4.8.0
+     */
+    merge: function(rect){
+        var r= Math.max(rect.getRight(), this.getRight());
+        var b = Math.max(rect.getBottom(), this.getBottom());
+ 
+        this.setPosition(Math.min(this.x,rect.x),Math.min(this.y,rect.y));
+
+        this.w =r-this.x;
+        this.h = b-this.y;
+        
+        return this;
+    },
+    
+    /**
+     * returns the intersection points with the given line if any exists
+     * 
+     * @param {draw2d.geo.Point} start
+     * @param {draw2d.geo.Point} end
+     */
+    intersectionWithLine: function(start, end){
+        var result = new draw2d.util.ArrayList();
+        var v = this.getVertices();
+        v.add(v.first());
+        var p1 = v.first();
+        var p2 = null;
+        for(var i=1; i<5;i++){
+            p2 = v.get(i);
+            p1 = draw2d.shape.basic.Line.intersection(start,end,p1,p2);
+            if(p1!==null){
+                result.add(p1);
+            }
+            p1 = p2;
+        }
+        return result;
     },
     
     toJSON : function(){

@@ -26,6 +26,8 @@ draw2d.io.Reader = Class.extend({
      * 
      * @param {draw2d.Canvas} canvas the canvas to restore
      * @param {Object} document the document to read
+     * 
+     * @return {draw2d.ArrayList} the added elements
      * @template
      */
     unmarshal: function(canvas, document){

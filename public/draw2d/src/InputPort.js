@@ -31,15 +31,15 @@ draw2d.InputPort = draw2d.Port.extend({
     /**
      * @inheritdoc
      **/
-    onDragEnter : function(figure)
+    onDragEnter : function(draggedPort)
     {
         // User drag&drop a normal port
-        if (figure instanceof draw2d.OutputPort) {
-            return this._super(figure);
+        if (draggedPort instanceof draw2d.OutputPort) {
+            return this._super(draggedPort);
         }
         // User drag&drop a normal port
-        if (figure instanceof draw2d.HybridPort) {
-            return this._super(figure);
+        if (draggedPort instanceof draw2d.HybridPort) {
+            return this._super(draggedPort);
         }
         
         return null;

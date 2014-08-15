@@ -247,23 +247,32 @@ draw2d.ResizeHandle = draw2d.shape.basic.Rectangle.extend({
         var diffY = this.getAbsoluteY() - oldY;
 
         var obj = this.owner;
-        var objPosX = obj.getAbsoluteX();
-        var objPosY = obj.getAbsoluteY();
-        var objWidth = obj.getWidth();
+        var objPosX   = obj.getAbsoluteX();
+        var objPosY   = obj.getAbsoluteY();
+        var objWidth  = obj.getWidth();
         var objHeight = obj.getHeight();
 
-        switch (this.type) {
+        var newX=null;
+        var newY=null;
+        var corrPos=null;
+        switch(this.type) {
         case 1:
             obj.setDimension(objWidth - diffX, objHeight - diffY);
-            obj.setPosition(objPosX + (objWidth - obj.getWidth()), objPosY + (objHeight - obj.getHeight()));
+            newX=objPosX + (objWidth - obj.getWidth());
+            newY=objPosY + (objHeight - obj.getHeight());
+            obj.setPosition(newX, newY);
             break;
         case 2:
             obj.setDimension(objWidth, objHeight - diffY);
-            obj.setPosition(objPosX, objPosY + (objHeight - obj.getHeight()));
+            newX= objPosX;
+            newY= objPosY + (objHeight - obj.getHeight());
+            obj.setPosition(newX, newY);
             break;
         case 3:
             obj.setDimension(objWidth + diffX, objHeight - diffY);
-            obj.setPosition(objPosX, objPosY + (objHeight - obj.getHeight()));
+            newX= objPosX;
+            newY= objPosY + (objHeight - obj.getHeight());
+            obj.setPosition(newX, newY);
             break;
         case 4:
             obj.setDimension(objWidth + diffX, objHeight);
@@ -276,12 +285,26 @@ draw2d.ResizeHandle = draw2d.shape.basic.Rectangle.extend({
             break;
         case 7:
             obj.setDimension(objWidth - diffX, objHeight + diffY);
-            obj.setPosition(objPosX + (objWidth - obj.getWidth()), objPosY);
+            newX=objPosX + (objWidth - obj.getWidth());
+            newY=objPosY;
+            obj.setPosition(newX, newY);
             break;
         case 8:
             obj.setDimension(objWidth - diffX, objHeight);
-            obj.setPosition(objPosX + (objWidth - obj.getWidth()), objPosY);
+            newX = objPosX + (objWidth - obj.getWidth());
+            newY = objPosY;
+            obj.setPosition(newX, newY);
             break;
+        }
+        
+        if(newX!==null){
+            // may the setPosition has changed regarding any constraint or edit policies. In this case
+            // we must adjust the dimension with the related correction
+            //
+            corrPos = obj.getPosition();
+            if(corrPos.x!==newX || corrPos.y!==newY){
+                obj.setDimension(obj.getWidth() - (corrPos.x-newX), obj.getHeight()- (corrPos.y-newY));
+            }
         }
     },
 
@@ -418,7 +441,7 @@ draw2d.ResizeHandle = draw2d.shape.basic.Rectangle.extend({
       this.setCanvas(canvas);
     
       this.canvas.resizeHandles.add(this);
-      this.shape.toFront();
+      this.shape.insertAfter(this.owner.getShapeElement());
     },
     
     /**

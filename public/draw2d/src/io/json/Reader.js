@@ -54,6 +54,7 @@ draw2d.io.json.Reader = draw2d.io.Reader.extend({
      * @param {Object} document the json object to load.
      */
     unmarshal: function(canvas, json){
+        var result = new draw2d.util.ArrayList();
         
         if(typeof json ==="string"){
             json = JSON.parse(json);
@@ -94,12 +95,26 @@ draw2d.io.json.Reader = draw2d.io.Reader.extend({
                 }
                 o.setPersistentAttributes(element);
                 canvas.addFigure(o);
+                result.add(o);
             }
             catch(exc){
                 debug.group("Unable to instantiate figure type '"+element.type+"' with id '"+element.id+"' during unmarshal by "+this.NAME+". Skipping figure..");
                 debug.warn(exc);
                 debug.warn(element);
                 debug.groupEnd();
+            }
+        },this));
+        
+        // restore group assignment
+        //
+        $.each(json, $.proxy(function(i, element){
+            if(typeof element.composite !== "undefined"){
+               var figure = canvas.getFigure(element.id);
+               if(figure===null){
+                   figure =canvas.getLine(element.id);
+               }
+               var group = canvas.getFigure(element.composite);
+               group.assignFigure(figure);
             }
         },this));
         
@@ -113,5 +128,7 @@ draw2d.io.json.Reader = draw2d.io.Reader.extend({
         canvas.linesToRepaintAfterDragDrop = canvas.getLines().clone();
 
         canvas.showDecoration();
+        
+        return result;
     }
 });

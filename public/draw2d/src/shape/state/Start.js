@@ -3,15 +3,15 @@
  *   Copyright (c) 2012 Andreas Herz
  ****************************************/
 /**
- * @class draw2d.shape.node.Start
+ * @class draw2d.shape.state.Start
  * 
- * A generic Node which has an OutputPort. Mainly used for demo and examples.
+ * The start node for a state diagram
  * 
  * See the example:
  *
  *     @example preview small frame
  *     
- *     var figure =  new draw2d.shape.node.Start();
+ *     var figure =  new draw2d.shape.state.Start();
  *     figure.setColor("#3d3d3d");
  *     
  *     canvas.addFigure(figure,50,10);

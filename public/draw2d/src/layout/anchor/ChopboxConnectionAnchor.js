@@ -22,7 +22,8 @@ draw2d.layout.anchor.ChopboxConnectionAnchor = draw2d.layout.anchor.ConnectionAn
 	/**
 	 * @constructor
 	 * 
-	 * @param {draw2d.Figure} [owner] the figure to use for the anchor calculation
+	 * @param {draw2d.Figure} owner the figure to use for the anchor calculation
+
 	 */
 	init : function(owner) {
 		this._super(owner);
@@ -35,10 +36,12 @@ draw2d.layout.anchor.ChopboxConnectionAnchor = draw2d.layout.anchor.ConnectionAn
 	 * absolute coordinates. The anchor may use the given reference
 	 * Point to calculate this location.
 	 * 
-	 * @param reference The reference Point in absolute coordinates
+	 * @param {draw2d.geo.Point} reference The reference Point in absolute coordinates
+     * @param {draw2d.Connection} inquiringConnection the connection who ask for the location.
 	 * @return The anchor's location
 	 */
-	getLocation : function(reference) {
+	getLocation : function(reference, inquiringConnection) {
+	    
 		var r = new draw2d.geo.Rectangle(0,0);
 		r.setBounds(this.getBox());
 		r.translate(-1, -1);
@@ -46,8 +49,9 @@ draw2d.layout.anchor.ChopboxConnectionAnchor = draw2d.layout.anchor.ConnectionAn
 
 		var center = r.getCenter();
 
-		if (r.isEmpty()	|| (reference.x == center.x && reference.y == center.y))
+		if (r.isEmpty()	|| (reference.x === center.x && reference.y === center.y)){
 			return center; // This avoids divide-by-zero
+		}
 
 		var dx = reference.x - center.x;
 		var dy = reference.y - center.y;
@@ -76,13 +80,13 @@ draw2d.layout.anchor.ChopboxConnectionAnchor = draw2d.layout.anchor.ConnectionAn
 	/**
 	 * @method
 	 * 
-	 * Returns the bounds of this Anchor's owner. Subclasses can
-	 * override this method to adjust the box. Maybe you return the box
-	 * of the port parent (the parent figure)
+     * Returns the reference point for this anchor in absolute coordinates. This might be used
+     * by another anchor to determine its own location.
 	 * 
+     * @param {draw2d.Connection} inquiringConnection the connection who ask for the location.
 	 * @return The bounds of this Anchor's owner
 	 */
-	getReferencePoint : function() {
+	getReferencePoint : function(inquiringConnection) {
 		return this.getBox().getCenter();
 	}
 });

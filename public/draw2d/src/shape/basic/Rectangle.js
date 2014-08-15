@@ -77,6 +77,9 @@ draw2d.shape.basic.Rectangle = draw2d.VectorFigure.extend({
     },
     
     /**
+     * @method
+     * Apply additional  rotation and transformation to the raphael element.
+     * 
      * @private
      */
     applyTransformation:function(){

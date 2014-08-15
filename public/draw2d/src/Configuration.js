@@ -2,10 +2,13 @@
  *   Library is under GPL License (GPL)
  *   Copyright (c) 2012 Andreas Herz
  ****************************************/draw2d.Configuration = {
-    version : "4.5.0",
+    version : "4.9.0",
     i18n : {
         command : {
             move : "Move Shape",
+            assignShape : "Add Shapes to Composite",
+            groupShapes : "Group Shapes",
+            ungroupShapes : "Ungroup Shapes",
             deleteShape : "Delete Shape",
             moveShape : "Move Shape",
             moveLine : "Move Line",

@@ -157,29 +157,66 @@ draw2d.SetFigure = draw2d.shape.basic.Rectangle.extend({
      * Moves the element so it is the closest to the viewer’s eyes, on top of other elements. Additional
      * the internal model changed as well.
      * 
+     * Optional: Inserts current object in front of the given one. 
+     * 
+     * @param {draw2d.Figure} [figure] move current object in front of the given one. 
      * @since 3.0.0
      */
-    toFront: function(){
+    toFront: function(figure){
 
-        this._super();
+        this._super(figure);
  
         if(this.svgNodes!==null){
-            this.svgNodes.toFront();
+            if(typeof figure !=="undefined"){
+                this.svgNodes.insertAfter(figure.getShapeElement());
+            }
+            else{
+                this.svgNodes.toFront();
+            }
         }
          
         // the ports must always the top most
         //
         this.getPorts().each(function(i,port){
             port.getConnections().each(function(i,connection){
-                connection.toFront();
+                connection.toFront(figure);
             });
-            port.toFront();
+            port.toFront(figure);
         });
 
         
         return this;
     },
     
+    /**
+     * @method
+     * Moves the element to the background. Additional
+     * the internal model changed as well.
+     * 
+     * Optional: Inserts current object in front of the given one. 
+     * 
+     * @param {draw2d.Figure} [figure] move current object in front of the given one. 
+     * @since 4.7.2
+     */
+    toBack: function(figure){
+
+        if(this.svgNodes!==null){
+            this.svgNodes.toBack();
+        }
+         
+        // the ports must always the top most
+        //
+        this.getPorts().each(function(i,port){
+            port.getConnections().each(function(i,connection){
+                connection.toBack(figure);
+            });
+            port.toBack(figure);
+        });
+
+        this._super();
+        
+        return this;
+    },
     
     
     /**

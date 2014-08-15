@@ -39,15 +39,27 @@ draw2d.policy.figure.RegionEditPolicy = draw2d.policy.figure.DragDropEditPolicy.
         }
     },
 
+    /**
+     * @method
+     * Update the constraint bounding box for the policy.
+     * 
+     * @param {draw2d.geo.Rectangle} boundingBox the constraint rectangle
+     * @since 4.8.2
+     */
+    setBoundingBox: function(boundingBox){
+      this.constRect = boundingBox;  
+      
+      return this;
+    },
 
     /**
      * @method
-     * Adjust the coordinates to the rectangle/region of this contraint.
+     * Adjust the coordinates to the rectangle/region of this constraint.
      * 
      * @param figure
      * @param {Number|draw2d.geo.Point} x
      * @param {number} [y]
-     * @returns {draw2d.geo.Point} the contraint position of th efigure
+     * @returns {draw2d.geo.Point} the constraint position of the figure
      */
     adjustPosition : function(figure, x, y)
     {
@@ -60,5 +72,29 @@ draw2d.policy.figure.RegionEditPolicy = draw2d.policy.figure.DragDropEditPolicy.
         }
         r = this.constRect.moveInside(r);
         return r.getTopLeft();
+    },
+    
+    /**
+     * @method
+     * Adjust the dimension of the rectangle to fit ito the region of the policy
+     * 
+     * @param figure
+     * @param w
+     * @param h
+     * @returns {___anonymous2210_2219}
+     */
+    adjustDimension : function(figure, w, h)
+    {
+        var diffW = (figure.getAbsoluteX()+w)-this.constRect.getRight();
+        var diffH = (figure.getAbsoluteY()+h)-this.constRect.getBottom();
+
+        if(diffW>0){
+            w = w- diffW;
+        }
+        if(diffH>0){
+            h = h- diffH;
+        }
+        
+        return {w:w, h:h};
     }
 });

@@ -62,15 +62,25 @@ draw2d.policy.canvas.BoundingboxSelectionPolicy =  draw2d.policy.canvas.SingleSe
         // COPY_PARENT
         // this code part is copied from the parent implementation. The main problem is, that 
         // the sequence of unselect/select of elements is broken if we call the base implementation
-        // in this case a wrong of events is fired if we select a figure if alread a figure is selected!
+        // in this case a wrong of events is fired if we select a figure if already a figure is selected!
         // WRONG: selectNewFigure -> unselectOldFigure
-        // RIGHT: unselectOldFigure -> selectNEwFigure
+        // RIGHT: unselectOldFigure -> selectNewFigure
         // To ensure this I must copy the parent code and postpond the event propagation
         //
         this.mouseMovedDuringMouseDown  = false;
         var canDragStart = true;
 
         var figure = canvas.getBestFigure(x, y);
+
+        // may the figure is assigned to a composite. In this case the composite can
+        // override the event receiver
+        while(figure!==null && figure.getComposite() !== null){
+            var delegate = figure.getComposite().delegateSelectionHandling(figure);
+            if(delegate===figure){
+                break;
+            }
+            figure = delegate;
+        }
 
         // check if the user click on a child shape. DragDrop and movement must redirect
         // to the parent

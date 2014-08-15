@@ -88,30 +88,30 @@ draw2d.layout.connection.FanConnectionRouter = draw2d.layout.connection.DirectRo
      */
     route : function(conn, oldVertices)
     {
-        var lines = conn.getSource().getConnections();
-        var connections = new draw2d.util.ArrayList();
-        var index = 0;
-        for ( var i = 0; i < lines.getSize(); i++) 
-        {
-            var figure = lines.get(i);
-            if (figure.getTarget() === conn.getTarget() || figure.getSource() === conn.getTarget()) 
-            {
-                connections.add(figure);
-                if (conn === figure){
-                    index = connections.getSize();
-                }
-            }
-        }
-        if (connections.getSize() > 1){
-            this.routeCollision(conn, index);
+        var lines = conn.getSource().getConnections().clone();
+        lines.grep(function(other){
+            return other.getTarget() === conn.getTarget() || other.getSource() === conn.getTarget();
+        });
+ 
+        if (lines.getSize() > 1){
+            this.routeCollision(conn, lines.indexOf(conn));
         }
         else{
             this._super(conn);
         }
     },
 
-    routeCollision : function(/* :draw2d.Connection */conn, /* :int */index)
+    /**
+     * @method
+     * route the connection if connections overlap. Two connections overlap if the combination 
+     * of source and target anchors are equal.
+     * 
+     * @param {draw2d.Connection} conn
+     * @param {Number} index
+     */
+    routeCollision : function(conn, index)
     {
+        index = index+1;
         var start = conn.getStartPoint();
         var end = conn.getEndPoint();
 
@@ -148,13 +148,6 @@ draw2d.layout.connection.FanConnectionRouter = draw2d.layout.connection.DirectRo
 
         // calculate the path string for the SVG rendering
         //
-        var ps = conn.getVertices();
-        var p = ps.get(0);
-        var path = ["M",p.x," ",p.y];
-        for( var i=1;i<ps.getSize();i++){
-              p = ps.get(i);
-              path.push("L", p.x, " ", p.y);
-        }
-        conn.svgPathString = path.join("");
+        this._paint(conn);;
     }
 });

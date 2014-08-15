@@ -62,6 +62,16 @@ draw2d.policy.canvas.SingleSelectionPolicy =  draw2d.policy.canvas.SelectionPoli
 
         var figure = canvas.getBestFigure(x, y);
 
+        // may the figure is assigned to a composite. In this case the composite can
+        // override the event receiver
+        while(figure!==null && figure.getComposite() !== null){
+            var delegate = figure.getComposite().delegateSelectionHandling(figure);
+            if(delegate===figure){
+                break;
+            }
+            figure = delegate;
+        }
+        
         // check if the user click on a child shape. DragDrop and movement must redirect
         // to the parent
         // Exception: Port's
@@ -115,7 +125,6 @@ draw2d.policy.canvas.SingleSelectionPolicy =  draw2d.policy.canvas.SelectionPoli
      */
     onMouseDrag:function(canvas, dx, dy, dx2, dy2){
         this.mouseMovedDuringMouseDown = true;
-        
         if (this.mouseDraggingElement !== null) {
             // it is only necessary to repaint all connections if we change the layout of any connection
             // This can only happen if we:
@@ -184,22 +193,25 @@ draw2d.policy.canvas.SingleSelectionPolicy =  draw2d.policy.canvas.SelectionPoli
      */
     onMouseUp: function(canvas, x, y, shiftKey, ctrlKey){
         if (this.mouseDraggingElement !== null) {
+            canvas.getCommandStack().startTransaction();
+
             var sel =canvas.getSelection().getAll();
             if(!sel.contains(this.mouseDraggingElement)){
                 this.mouseDraggingElement.onDragEnd( x, y, shiftKey, ctrlKey);
             }
             else{
-                canvas.getCommandStack().startTransaction();
                 canvas.getSelection().getAll().each(function(i,figure){
                      figure.onDragEnd( x, y, shiftKey, ctrlKey);
                 });
-                canvas.getCommandStack().commitTransaction();
             }
-            if(canvas.currentDropTarget!==null){
+            if(canvas.currentDropTarget!==null && !this.mouseDraggingElement.isResizeHandle){
                 this.mouseDraggingElement.onDrop(canvas.currentDropTarget, x, y, shiftKey, ctrlKey);
                 canvas.currentDropTarget.onDragLeave(this.mouseDraggingElement);
-                canvas.currentDropTarget = null;
+                canvas.currentDropTarget.onCatch(this.mouseDraggingElement, x, y, shiftKey, ctrlKey);
+               canvas.currentDropTarget = null;
             }
+            canvas.getCommandStack().commitTransaction();
+            
             this.mouseDraggingElement = null;
         }
         

@@ -18,8 +18,11 @@ draw2d.shape.basic.PolyLine = draw2d.shape.basic.Line.extend({
     /**
      * @constructor
      * Creates a new figure element which are not assigned to any canvas.
+     * 
+     * @param {draw2d.layout.connection.ConnectionRouter} [router] the router to use
+     * @param {draw2d.util.ArrayList} vertices the initial vertices to use.
      */
-    init: function( router ) {
+    init: function( router , vertices) {
         
       // internal status handling for performance reasons
       //
@@ -32,7 +35,12 @@ draw2d.shape.basic.PolyLine = draw2d.shape.basic.Line.extend({
       this.radius = 2;
       
       // all line segments with start/end as simple object member
-      this.lineSegments = new draw2d.util.ArrayList();
+      if(typeof vertices !=="undefined" && vertices instanceof draw2d.util.ArrayList){
+          this.lineSegments = vertices;
+      }
+      else{
+          this.lineSegments = new draw2d.util.ArrayList();
+      }
 
       this._super();
     },

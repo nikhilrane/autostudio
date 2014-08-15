@@ -445,9 +445,9 @@ draw2d.Connection = draw2d.shape.basic.PolyLine.extend({
      {
       if(this.isMoving===false){
           if(refPoint){
-              return this.sourcePort.getConnectionAnchorLocation(refPoint);
+              return this.sourcePort.getConnectionAnchorLocation(refPoint, this);
           }
-          return this.sourcePort.getConnectionAnchorLocation(this.targetPort.getConnectionAnchorReferencePoint());
+          return this.sourcePort.getConnectionAnchorLocation(this.targetPort.getConnectionAnchorReferencePoint(this), this);
       }
 
       return this._super();
@@ -465,9 +465,9 @@ draw2d.Connection = draw2d.shape.basic.PolyLine.extend({
      {
       if(this.isMoving===false){
           if(refPoint){
-              return this.targetPort.getConnectionAnchorLocation(refPoint);
+              return this.targetPort.getConnectionAnchorLocation(refPoint, this);
           }
-         return this.targetPort.getConnectionAnchorLocation(this.sourcePort.getConnectionAnchorReferencePoint());
+         return this.targetPort.getConnectionAnchorLocation(this.sourcePort.getConnectionAnchorReferencePoint(this), this);
       }
       
       return this._super();
@@ -714,11 +714,10 @@ draw2d.Connection = draw2d.shape.basic.PolyLine.extend({
         // enforce a repaint of all connections which are related to this port
         // this is required for a "FanConnectionRouter" or "ShortesPathConnectionRouter"
         //
-       var connections = this.sourcePort.getConnections();
-       for(var i=0; i<connections.getSize();i++)
-       {
-          connections.get(i).repaint();
-       }
+       this.sourcePort.getConnections().each(function(i,conn){
+           conn.routingRequired = true;
+           conn.repaint();
+       });
     },
     
     /**
@@ -729,11 +728,10 @@ draw2d.Connection = draw2d.shape.basic.PolyLine.extend({
         // enforce a repaint of all connections which are related to this port
         // this is required for a "FanConnectionRouter" or "ShortesPathConnectionRouter"
         //
-       var connections = this.targetPort.getConnections();
-       for(var i=0; i<connections.getSize();i++)
-       {
-          connections.get(i).repaint();
-       }
+       this.targetPort.getConnections().each(function(i,conn){
+           conn.routingRequired = true;
+           conn.repaint();
+       });
     },
     
     

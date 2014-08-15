@@ -3,10 +3,10 @@
  *   Copyright (c) 2012 Andreas Herz
  ****************************************/
 /**
- * @class draw2d.shape.basic.Label
- * Implements a simple text with word wrapping.<br>
+ * @class draw2d.shape.basic.Text
+ * Implements a simple text with word wrapping.<br>The height of the element is automatic calculated. The widht of
+ * the element is changeable by the user and respect the minWidth constraint.
  * <br>
- * This very first implementation is pretty inchoate and must be revise fro performance reason.
  * 
  * See the example:
  *
@@ -18,7 +18,7 @@
  *     
  * @author Andreas Herz
  * @since 4.2.3
- * @extends draw2d.SetFigure
+ * @extends draw2d.shape.basic.Label
  */
 draw2d.shape.basic.Text= draw2d.shape.basic.Label.extend({
 
@@ -32,9 +32,10 @@ draw2d.shape.basic.Text= draw2d.shape.basic.Label.extend({
      */
     init : function(text)
     {
+        this.cachedWrappedAttr = null;
+
         this._super(text);
         
-        this.cachedWrappedAttr = null;
         
         // set some good defaults
         this.setDimension(100,50);

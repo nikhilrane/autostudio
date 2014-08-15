@@ -298,18 +298,17 @@ draw2d.util.ArrayList = Class.extend({
      * @param {Number} index the insert position.
      * 
      * @return {draw2d.util.ArrayList} self
-    */
+     */
      insertElementAt:function(obj, index) 
      {
-        if (this.size == this.capacity) 
-        {
+        if (this.size == this.capacity){
            this.resize();
         }
         
-        for (var i=this.getSize(); i > index; i--) 
-        {
+        for (var i=this.getSize(); i > index; i--){
            this.data[i] = this.data[i-1];
         }
+        
         this.data[index] = obj;
         this.size++;
         
@@ -318,7 +317,7 @@ draw2d.util.ArrayList = Class.extend({
 
     /**
      * @method
-     * removes an element at a specific index.
+     * Removes an element at a specific index.
      *
      * @param {Number} index the index of the element to remove
      * @return {Object} the removed object
@@ -431,41 +430,47 @@ draw2d.util.ArrayList = Class.extend({
     
      /**
       * @method
-      * Sorts the collection based on a field name - f
+      * Sorts the collection based on a field name or sort a function. See on http://www.w3schools.com/jsref/jsref_sort.asp
+      * if you use a sort function.
       * 
-      * @param {String} the fieldname for the sorting
+      * @param {String|Function} f the field name for the sorting or a sort function
       * 
       * @return {draw2d.util.ArrayList} self
       */
      sort:function(f) 
      {
-        var i, j;
-        var currentValue;
-        var currentObj;
-        var compareObj;
-        var compareValue;
-    
-        for(i=1; i<this.getSize();i++) 
-        {
-           currentObj = this.data[i];
-           currentValue = currentObj[f];
-    
-           j= i-1;
-           compareObj = this.data[j];
-           compareValue = compareObj[f];
-    
-           while(j >=0 && compareValue > currentValue) 
-           {
-              this.data[j+1] = this.data[j];
-              j--;
-              if (j >=0) {
-                       compareObj = this.data[j];
-                       compareValue = compareObj[f];
-              }
-           }
-           this.data[j+1] = currentObj;
+         if(typeof f ==="function"){
+             this.trimToSize();
+             this.data.sort(f);
+         }
+         else{
+             var i, j;
+             var currentValue;
+             var currentObj;
+             var compareObj;
+             var compareValue;
+             
+             for(i=1; i<this.getSize();i++) 
+             {
+                 currentObj = this.data[i];
+                 currentValue = currentObj[f];
+                 
+                 j= i-1;
+                 compareObj = this.data[j];
+                 compareValue = compareObj[f];
+                 
+                 while(j >=0 && compareValue > currentValue) 
+                 {
+                     this.data[j+1] = this.data[j];
+                     j--;
+                     if (j >=0) {
+                         compareObj = this.data[j];
+                         compareValue = compareObj[f];
+                     }
+                 }
+                 this.data[j+1] = currentObj;
+             }
         }
-        
         return this;
      },
     

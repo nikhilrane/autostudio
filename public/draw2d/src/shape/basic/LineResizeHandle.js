@@ -219,9 +219,10 @@ draw2d.shape.basic.LineResizeHandle = draw2d.shape.basic.Circle.extend({
         if (port !== null) {
             if (this.currentTarget !== null) {
                 
-                this.onDrop(this.currentTarget);
+                this.onDrop(this.currentTarget, x, y, shiftKey, ctrlKey);
                 this.currentTarget.onDragLeave(port);
                 this.currentTarget.setGlow(false);
+                this.currentTarget.onCatch(this, x, y, shiftKey, ctrlKey);
                 this.currentTarget = null;
             }
         }

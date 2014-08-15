@@ -55,6 +55,8 @@ draw2d.command.CommandStack = Class.extend({
     setUndoLimit:function( count)
     {
       this.maxundo = count;
+      
+      return this;
     },
     
     /**
@@ -70,6 +72,8 @@ draw2d.command.CommandStack = Class.extend({
 
        // fire an empty command to inform all listener that the stack has been changed
        this.notifyListeners(new draw2d.command.Command(), draw2d.command.CommandStack.POST_EXECUTE);
+       
+       return this;
     },
     
     /**
@@ -124,6 +128,8 @@ draw2d.command.CommandStack = Class.extend({
        this.notifyListeners(command, draw2d.command.CommandStack.POST_EXECUTE);
        
 //       window.history.pushState({length: this.undostack.length}, "title 1", "?undo="+this.undostack.length);
+       
+       return this;
     },
     
     /**
@@ -137,6 +143,8 @@ draw2d.command.CommandStack = Class.extend({
      */
     startTransaction: function(commandLabel){
         this.transactionCommand = new draw2d.command.CommandCollection(commandLabel);
+        
+        return this;
     },
     
     /**
@@ -154,6 +162,8 @@ draw2d.command.CommandStack = Class.extend({
         var cmd = this.transactionCommand;
         this.transactionCommand =null;
         this.execute(cmd);
+        
+        return this;
     },
     
     /**
@@ -171,6 +181,8 @@ draw2d.command.CommandStack = Class.extend({
           command.undo();
           this.notifyListeners(command, draw2d.command.CommandStack.POST_UNDO);
        }
+       
+       return this;
     },
     
     /** 
@@ -189,6 +201,8 @@ draw2d.command.CommandStack = Class.extend({
           command.redo();
           this.notifyListeners(command, draw2d.command.CommandStack.POST_REDO);
        }
+       
+       return this;
     },
     
     /**
@@ -275,6 +289,8 @@ draw2d.command.CommandStack = Class.extend({
         else{
           throw "Object doesn't implement required callback interface [draw2d.command.CommandStackListener]";
         }
+        
+        return this;
     },
     
     /**
@@ -292,6 +308,8 @@ draw2d.command.CommandStack = Class.extend({
                 return;
             }
          }
+        
+        return this;
     },
         
     /**
@@ -307,8 +325,10 @@ draw2d.command.CommandStack = Class.extend({
     {
       var event = new draw2d.command.CommandStackEvent(this, command, state);
       var size = this.eventListeners.getSize();
-      for (var i = 0; i < size; i++)
+      
+      for (var i = 0; i < size; i++){
          this.eventListeners.get(i).stackChanged(event);
+      }
     }
 });
 

@@ -49,23 +49,47 @@ draw2d.shape.node.Node = draw2d.Figure.extend({
     /**
      * @method
      * Moves the element so it is the closest to the viewer’s eyes, on top of other elements. Additional
-     * the internal model changed as well.
+     * the internal model changed as well.<br>
+     * <br>
+     * Optional: Inserts current object in front of the given one. 
      * 
+     * @param {draw2d.Figure} [figure] move current object in front of the given one. 
      * @since 3.0.0
      */
-    toFront: function(){
-        this._super();
+    toFront: function(figure){
+        this._super(figure);
         
         this.getPorts().each(function(i,port){
             port.getConnections().each(function(i,connection){
-                connection.toFront();
+                connection.toFront(figure);
             });
-            port.toFront();
+            port.toFront(figure);
         });
         
         return this;
     },
-    
+
+    /**
+     * @method
+     * Moves the element to the background - z-index below all other shapes. Additional
+     * the internal model changed as well.
+     * 
+     * @since 4.7.2
+     */
+    toBack: function(figure){
+        
+        this.getPorts().each(function(i,port){
+            port.getConnections().each(function(i,connection){
+                connection.toBack(figure);
+            });
+            port.toBack(figure);
+        });
+        
+        this._super(figure);
+        
+        return this;
+    },
+
     /**
      * @method
      * Return all ports of the node.

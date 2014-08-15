@@ -69,6 +69,14 @@ draw2d.Selection = Class.extend({
         }
     },
 
+    /**
+     * @method
+     * Add a figure to the selection. No events are fired or update the selection handle. This method just
+     * add the figure to the internal management data structure.
+     * 
+     * @param figure
+     * @private
+     */
     add: function(figure){
         if(figure!==null && !this.all.contains(figure)){
             this.all.add(figure);
@@ -85,6 +93,17 @@ draw2d.Selection = Class.extend({
      */
     contains: function(figure){
         return this.all.contains(figure);
+    },
+
+    /**
+     * @method
+     * Return the size of the selection
+     * 
+     * @since 4.8.0
+     */
+    getSize: function()
+    {
+        return this.all.getSize();
     },
     
     /**

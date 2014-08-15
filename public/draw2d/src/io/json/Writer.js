@@ -54,21 +54,12 @@ draw2d.io.json.Writer = draw2d.io.Writer.extend({
         }
         
         var result = [];
-        var figures = canvas.getFigures();
-        var i =0;
-        var f= null;
         
-        // conventional iteration over an array
-        //
-        for(i=0; i< figures.getSize(); i++){
-            f = figures.get(i);
-            result.push(f.getPersistentAttributes());
-        }
+        canvas.getFigures().each(function(i, figure){
+            result.push(figure.getPersistentAttributes());
+        });
         
-        // jQuery style to iterate
-        //
-        var lines = canvas.getLines();
-        lines.each(function(i, element){
+        canvas.getLines().each(function(i, element){
             result.push(element.getPersistentAttributes());
         });
         

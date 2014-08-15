@@ -36,9 +36,11 @@ draw2d.layout.anchor.CenterEdgeConnectionAnchor = draw2d.layout.anchor.Connectio
 	 * Point to calculate this location.
 	 * 
 	 * @param {draw2d.geo.Point} ref The reference Point in absolute coordinates
+     * @param {draw2d.Connection} inquiringConnection the connection who ask for the location.
+     * 
 	 * @return {draw2d.geo.Point} The anchor's location
 	 */
-	getLocation : function(ref) {
+	getLocation : function(ref, inquiringConnection) {
 		var r =  this.getOwner().getParent().getBoundingBox();
 	    
 	    var dir = r.getDirection(ref);
@@ -80,9 +82,10 @@ draw2d.layout.anchor.CenterEdgeConnectionAnchor = draw2d.layout.anchor.Connectio
 	 * override this method to adjust the box. Maybe you return the box
 	 * of the port parent (the parent figure)
 	 * 
+	 * @param {draw2d.Connection} inquiringConnection the connection who ask for the location.
 	 * @return The bounds of this Anchor's owner
 	 */
-	getReferencePoint : function() {
+	getReferencePoint : function(inquiringConnection) {
 		return this.getBox().getCenter();
 	}
 });

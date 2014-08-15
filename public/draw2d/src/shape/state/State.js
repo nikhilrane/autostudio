@@ -5,9 +5,30 @@
 /**
  * @class draw2d.shape.state.State
  * 
- * NOT FOR PRODUCTIVE
+ * a state shape for a state diagram
  * 
- * 
+ *     @example preview small frame
+ *     // create and add two nodes which contains Ports (In and OUT)
+ *     //
+ *     var start = new draw2d.shape.state.Start();
+ *     var state   = new draw2d.shape.state.State();
+        
+ *     // ...add it to the canvas 
+ *     canvas.addFigure( start, 50,50);
+ *     canvas.addFigure( state, 230,180);
+ *          
+ *     // Create a Connection and connect the Start and End node
+ *     //
+ *     var c = new draw2d.shape.state.Connection();
+ *      
+ *     // Connect the endpoints with the start and end port
+ *     //
+ *     c.setSource(start.getOutputPort(0));
+ *     c.setTarget(state.getInputPort(0));
+ *           
+ *     // and finally add the connection to the canvas
+ *     canvas.addFigure(c);
+ *   
  * @extends draw2d.shape.layout.VerticalLayout
  */
 draw2d.shape.state.State = draw2d.shape.layout.VerticalLayout.extend({

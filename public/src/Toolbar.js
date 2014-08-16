@@ -35,34 +35,42 @@ example.Toolbar = Class.extend({
 		// the branding
 		// buttonBar.append($("<b><span id='title' style='font-size:24px;color:#278A03;font-family:sans-serif' class='muted'>PipeStudio</span></b>"));
 		buttonBar.append($('<div class="col-xs-1"> <H4>' + pstudioJSON.appName + ' </H4> </div>'));
-		
-		
-        var buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
-        buttonBar.append(buttonGroup);
 
-        this.newButton  = $("<button class='btn btn-info btn-sm'>New</button>");
-        buttonGroup.append(this.newButton);
-        this.newButton.click($.proxy(function(){
-            (new example.dialog.NewDialog()).show();
-        },this));
-		
-        this.openButton  = $("<button class='btn btn-info btn-sm'>Open</button>");
-        buttonGroup.append(this.openButton);
-        this.openButton.click($.proxy( function() {
-        	// var user = sessionStorage.getItem('username');
-        	// alert("here: " + user);
+    var buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
+    buttonGroup.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Document <span class="caret"></span></button>');
+    buttonBar.append(buttonGroup);
 
-        	$.ajax({
-                url: '/pipestudio/getList',
-                // dataType: "jsonp",
-                data: { "username" : sessionStorage.getItem('username') },
-                type: 'GET',
-                success: function (json) {
-                    // alert("Success in storage! \nString: " + JSON.stringify(json));
+    var mainUL = $('<ul class="dropdown-menu" role="menu"></ul>');
+    buttonGroup.append(mainUL);
+    
+    
+    var li = $('<li></li>');
+    this.newButton  = $('<a href="#">New</a>');
+    buttonGroup.append(li);
+    this.newButton.click($.proxy(function(){
+        (new example.dialog.NewDialog()).show();
+    },this));
+    li.append(this.newButton);
+    mainUL.append(li);
+
+    li = $('<li></li>');
+    this.openButton  = $('<a href="#">Open</a>');
+    buttonGroup.append(li);
+    this.openButton.click($.proxy( function() {
+    	// var user = sessionStorage.getItem('username');
+    	// alert("here: " + user);
+
+    	$.ajax({
+            url: '/pipestudio/getList',
+            // dataType: "jsonp",
+            data: { "username" : sessionStorage.getItem('username') },
+            type: 'GET',
+            success: function (json) {
+                // alert("Success in storage! \nString: " + JSON.stringify(json));
 
 
-                  //TODO: Add this to a Hogan template
-                  var templ = "<style type='text/css'>"+
+              //TODO: Add this to a Hogan template
+              var templ = "<style type='text/css'>"+
 "      body"+
 "      {"+
 "        background-color:#eee;"+
@@ -135,126 +143,202 @@ example.Toolbar = Class.extend({
             "</div><!-- /.modal-dialog -->"+
           "</div><!-- /.modal -->";
                   
-                 var data = JSON.parse(json);
-                 var compiled = Hogan.compile(templ);
-                 var renderedTemplate = $(compiled.render(data));
+           var data = JSON.parse(json);
+           var compiled = Hogan.compile(templ);
+           var renderedTemplate = $(compiled.render(data));
 
-                 // alert($("#newModal").html());
-                 $("#newModal").html(compiled.render(data));
-                 $(".bs-example-modal-lg").modal();
-
-      
-
-                },
-                error: function (err) {
-                    alert("Failure in storage" + JSON.stringify(err));
-                },
-            });
-
-       		}, this)).attr("disabled",false);
-
-        // this.openButton.click($.proxy( function() {
-
-        //    var fileSelector = $("<input type='file' id='storage_files' name='files' />").on('change', $.proxy(function(event){
-        //    		$("#modal-background, #modal-content").remove();
-        //    		var f = event.target.files[0]; // FileList object
-        //    		f.title = f.name;
-        //    		var reader = new FileReader();
-        //    		// Closure to capture the file information.
-        //    		reader.onload = function(e) {
-        //        		app.loadDefinition(f.name, e.target.result);
-        //    		};
-        //    		// Read in the image file as a data URL.
-        //    		reader.readAsText(f);
-       	// 	}));
-
-        //    fileSelector.trigger('click');
-        // },this)).attr("disabled",false);
-
-
-        // this.newButton  = $("<button id='newDocument' class='btn btn-info'>New</button>");
-        // buttonGroup.append(this.newButton);
-        // this.newButton.click($.proxy(function(){
-        //     (new example.dialog.NewDialog()).show();
-        // },this));
-
-        
-        this.saveButton  = $("<button id='saveDocument' class='btn btn-info btn-sm'>Save</button>");
-        buttonGroup.append(this.saveButton);
-        this.saveButton.click($.proxy(function(){
-            app.saveDefinition();
-        },this)).attr("disabled",false);
-
-
-        this.generateScriptButton  = $("<button id='generateScriptDocument' class='btn btn-info btn-sm'>Generate Script</button>");
-        buttonGroup.append(this.generateScriptButton);
-        this.generateScriptButton.click($.proxy(function(){
-
-
-          var writer = new draw2d.io.json.Writer();
-          alert("calling parse...");
-          writer.marshal(this.view, $.proxy(function(jsonData) {
-            // alert("Inside marshal, cookie: " + document.cookie);
-
-            var documentObject = {
-              "documentData" : jsonData, 
-              "name": app.loadedDefinitionId,
-              "username" : sessionStorage.getItem('username')
-              };
-
-              alert("sending: " + JSON.stringify(documentObject));
-
-            $.ajax({
-                url: '/pipestudio/generateScript',
-                // dataType: "jsonp",
-                data: { "toGenerate" : documentObject },
-                type: 'POST',
-                success: function(script) {
-                    alert("Success in parse! \n" + JSON.stringify(script));
-                },
-                error: function(err) {
-                    alert("Failure in parse" + JSON.stringify(err));
-                },
-            });
-          },this));
+           // alert($("#newModal").html());
+           $("#newModal").html(compiled.render(data));
+           $(".bs-example-modal-lg").modal();
 
 
 
+          },
+          error: function (err) {
+              alert("Failure in storage" + JSON.stringify(err));
+          },
+      });
+
+ 		}, this)).attr("disabled",false);
+    li.append(this.openButton);
+    mainUL.append(li);
+
+    // this.newButton  = $("<button id='newDocument' class='btn btn-info'>New</button>");
+    // buttonGroup.append(this.newButton);
+    // this.newButton.click($.proxy(function(){
+    //     (new example.dialog.NewDialog()).show();
+    // },this));
 
 
-          // $.ajax({
-          //       url: '/pipestudio/generateScript',
-          //       // dataType: "jsonp",
-          //       data: { 
-          //         'documentName' : docName,
-          //         'documentData' : 
-          //         'username' : sessionStorage.getItem('username')
-          //       },
-          //       type: 'POST',
-          //       success: function () {
-          //           alert("Success in storage!");
-          //       },
-          //       error: function (err) {
-          //           alert("Failure in storage" + JSON.stringify(err));
-          //       },
-          //   });
+    li = $('<li></li>');
+    this.saveButton  = $('<a href="#">Save</a>');
+    buttonGroup.append(li);
+    this.saveButton.click($.proxy(function(){
+        app.saveDefinition();
+    },this)).attr("disabled",false);
+    li.append(this.saveButton);
+    mainUL.append(li);
+    mainUL.append('<li class="divider"></li>');
 
-        },this)).attr("disabled",false);
-        
-        // this.saveDropDown = $('<button class="btn dropdown-toggle" data-toggle="dropdown">'+
-        //                      '<span class="caret"></span>'+
-        //                      '</button>'+
-        //                      '<ul class="dropdown-menu">'+
-        //                      '<li><a tabindex="-1" href="#">Save as..</a></li>'+
-        //                      '</ul>');
-        // buttonGroup.append(this.saveDropDown);
-        // this.saveAsButton = this.saveDropDown.find("a").on("click",function(){
-        //     (new example.dialog.SaveAsDialog()).show();
-        // });
+    li = $('<li></li>');
+    this.importJSONButton  = $('<a href="#">Import JSON..</a>');
+    buttonGroup.append(li);
 
-        
-        buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
-        buttonBar.append(buttonGroup);
+    this.importJSONButton.click($.proxy( function() {
+
+       var fileSelector = $("<input type='file' id='storage_files' name='files' />").on('change', $.proxy(function(event){
+          $("#modal-background, #modal-content").remove();
+          var f = event.target.files[0]; // FileList object
+          f.title = f.name;
+          var reader = new FileReader();
+          // Closure to capture the file information.
+          reader.onload = function(e) {
+              app.loadDefinition(f.name, e.target.result);
+          };
+          // Read in the image file as a data URL.
+          reader.readAsText(f);
+      }));
+
+       fileSelector.trigger('click');
+    },this)).attr("disabled",false);
+
+    li.append(this.importJSONButton);
+    mainUL.append(li);
+    mainUL.append('<li class="divider"></li>');
+
+
+    li = $('<li></li>');
+    this.exportJSONButton  = $('<a href="#">Export as JSON...</a>');
+    buttonGroup.append(li);
+    this.exportJSONButton.click($.proxy(function(){
+      app.exportTo("json");       
+    },this)).attr("disabled", false);
+    li.append(this.exportJSONButton);
+    mainUL.append(li);
+
+
+    li = $('<li></li>');
+    this.exportPNGButton  = $('<a href="#">Export as PNG...</a>');
+    buttonGroup.append(li);
+    this.exportPNGButton.click($.proxy(function(){
+      app.exportTo("png");        
+    },this)).attr("disabled", false);
+    li.append(this.exportPNGButton);
+    mainUL.append(li);
+
+    li = $('<li></li>');
+    this.exportSVGButton  = $('<a href="#">Export as SVG...</a>');
+    buttonGroup.append(li);
+    this.exportSVGButton.click($.proxy(function(){
+      app.exportTo("svg");        
+    },this)).attr("disabled", false);
+    li.append(this.exportSVGButton);
+    mainUL.append(li);
+
+
+    mainUL.append('<li class="divider"></li>');
+
+    
+    li = $('<li></li>');
+    this.generateScriptButton  = $('<a href="#">Generate Script</a>');
+
+    buttonGroup.append(li);
+    this.generateScriptButton.click($.proxy(function()  {
+
+
+      var writer = new draw2d.io.json.Writer();
+      alert("calling parse...");
+      writer.marshal(this.view, $.proxy(function(jsonData) {
+        // alert("Inside marshal, cookie: " + document.cookie);
+
+        var documentObject = {
+          "documentData" : jsonData, 
+          "name": app.loadedDefinitionId,
+          "username" : sessionStorage.getItem('username')
+          };
+
+          alert("sending: " + JSON.stringify(documentObject));
+
+        $.ajax({
+            url: '/pipestudio/generateScript',
+            // dataType: "jsonp",
+            data: { "toGenerate" : documentObject },
+            type: 'POST',
+            success: function(script) {
+                alert("Success in parse! \n" + JSON.stringify(script));
+            },
+            error: function(err) {
+                alert("Failure in parse" + JSON.stringify(err));
+            },
+        });
+      },this));
+
+    },this)).attr("disabled",false);
+    li.append(this.generateScriptButton);
+    mainUL.append(li);
+
+
+    buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
+    buttonGroup.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></button>');
+    buttonBar.append(buttonGroup);
+
+    mainUL = $('<ul class="dropdown-menu" role="menu"></ul>');
+    buttonGroup.append(mainUL);
+
+    li = $('<li></li>');
+    this.zoomInButton  = $('<a href="#">Zoom In</a>');
+    this.zoomInButton.click($.proxy(function(){
+
+      this.view.setZoom(this.view.getZoom()*0.7,true);
+        app.resizeCanvas();     //this call is not necessary but example code has it hence keeping it here.
+    },this)).attr("disabled", false );
+    li.append(this.zoomInButton);
+    mainUL.append(li);
+
+    li = $('<li></li>');
+    this.zoomResetButton  = $('<a href="#">1:1</a>');
+    this.zoomResetButton.click($.proxy(function(){
+
+      this.view.setZoom(1.0,true);
+        app.resizeCanvas();     //this call is not necessary but example code has it hence keeping it here.
+    },this)).attr("disabled", false );
+    li.append(this.zoomResetButton);
+    mainUL.append(li);
+
+    li = $('<li></li>');
+    this.zoomOutButton  = $('<a href="#">Zoom Out</a>');
+    this.zoomOutButton.click($.proxy(function(){
+
+      this.view.setZoom(this.view.getZoom()*1.3,true);
+        app.resizeCanvas();     //this call is not necessary but example code has it hence keeping it here.
+    },this)).attr("disabled", false );
+    li.append(this.zoomOutButton);
+    mainUL.append(li);
+    mainUL.append('<li class="divider"></li>');
+
+    li = $('<li></li>');
+    this.showGridButton  = $('<a href="#">Show Grid <span id="showGridTick" style="display:none;" class="glyphicon glyphicon-ok"></span></a>');
+    this.showGridButton.click($.proxy(function(){
+
+        if(this.view.gridPolicy) {
+          this.view.gridPolicy = false;
+            this.view.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
+            this.showGridButton.find(".glyphicon").css('display', 'none');
+        } else {
+          this.view.gridPolicy = true;
+            this.view.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
+            this.showGridButton.find(".glyphicon").css('display', 'inline');
+        }
+
+    },this)).attr("disabled", false);
+    li.append(this.showGridButton);
+    mainUL.append(li);
+
+
+
+    
+    buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
+    buttonBar.append(buttonGroup);
 		 
 		// Inject the UNDO Button and the callbacks
 		//
@@ -287,84 +371,16 @@ example.Toolbar = Class.extend({
 			this.view.getCommandStack().execute(command);
 		},this)).attr("disabled", true );
 
-		this.zoomInButton  = $("<button class='btn btn-warning btn-sm'><span class='glyphicon glyphicon-zoom-in'></span></button>");
-		buttonGroup.append(this.zoomInButton);
-		this.zoomInButton.click($.proxy(function(){
 
-			this.view.setZoom(this.view.getZoom()*0.7,true);
-		    app.resizeCanvas();			//this call is not necessary but example code has it hence keeping it here.
-		},this)).attr("disabled", false );
-
-		this.zoomResetButton  = $("<button class='btn btn-warning btn-sm'>1:1</button>");
-		buttonGroup.append(this.zoomResetButton);
-		this.zoomResetButton.click($.proxy(function(){
-
-			this.view.setZoom(1.0,true);
-		    app.resizeCanvas();			//this call is not necessary but example code has it hence keeping it here.
-		},this)).attr("disabled", false );
-
-		this.zoomOutButton  = $("<button class='btn btn-warning btn-sm'><span class='glyphicon glyphicon-zoom-out'></span></button>");
-		buttonGroup.append(this.zoomOutButton);
-		this.zoomOutButton.click($.proxy(function(){
-
-			this.view.setZoom(this.view.getZoom()*1.3,true);
-		    app.resizeCanvas();			//this call is not necessary but example code has it hence keeping it here.
-		},this)).attr("disabled", false );
-
-
-		//Connection type dropdown
-    buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
+    //Connection type dropdown
+    buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
     buttonBar.append(buttonGroup);
     connectionMenu = $('<select id="connections_menu" class="selectpicker"></select>');
 
     var compiledTemplate = templates["ConnectionTypeList"];
     var renderedTemplate = $(compiledTemplate.render(pstudioJSON));
     connectionMenu.append(renderedTemplate);
-    buttonGroup.append(connectionMenu);
-
-
-    buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
-    buttonBar.append(buttonGroup);
-		 
-		// Inject the UNDO Button and the callbacks
-		//
-		this.showGridButton  = $("<button class='btn btn-default btn-sm' data-toggle='button'><span class='glyphicon glyphicon-th'></button>");
-		buttonGroup.append(this.showGridButton);
-		this.showGridButton.click($.proxy(function(){
-
-				if(this.view.gridPolicy) {
-					this.view.gridPolicy = false;
-		    		this.view.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
-				} else {
-					this.view.gridPolicy = true;
-		    		this.view.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
-				}
-				
-		},this)).attr("disabled", false);
-
-
-		buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
-        buttonBar.append(buttonGroup);
-		 
-		this.exportJSONButton  = $("<button class='btn btn-default btn-sm'>JSON</button>");
-		buttonGroup.append(this.exportJSONButton);
-		this.exportJSONButton.click($.proxy(function(){
-			app.exportTo("json");				
-		},this)).attr("disabled", false);
-
-
-		this.exportPNGButton  = $("<button class='btn btn-default btn-sm'>PNG</button>");
-		buttonGroup.append(this.exportPNGButton);
-		this.exportPNGButton.click($.proxy(function(){
-			app.exportTo("png");				
-		},this)).attr("disabled", false);
-
-		this.exportSVGButton  = $("<button class='btn btn-default btn-sm'>SVG</button>");
-		buttonGroup.append(this.exportSVGButton);
-		this.exportSVGButton.click($.proxy(function(){
-			app.exportTo("svg");				
-		},this)).attr("disabled", false);
-		
+    buttonGroup.append(connectionMenu);		
 		
 		buttonBar.append("<div id='loadedFileName'></div>");
 	},

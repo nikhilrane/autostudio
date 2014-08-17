@@ -7,6 +7,9 @@ App
 *Database:
  - Make changes to load everything from DB.
 
+*Logic:
+ - Check if a macro/UDO can have more than 1 inputs
+
 *Exceptions/Possible Errors:
 
  - Below Exception when creating a Circle related connection(Create/Read):
@@ -40,4 +43,5 @@ Uncaught TypeError: undefined is not a function (01:09:32:108 | error, javascrip
 Additions/Modifications to Draw2D
 -----------------------------------------------
 1. A shape which is like a container so that generic shapes could extend this shape
-2. Inplace label editor for connections does not work when connection is horizontal
+2. Inplace label editor for connections does not work when connection is horizontal or inside another shape, e.g.: Raft
+

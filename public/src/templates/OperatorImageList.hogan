@@ -2,17 +2,17 @@
 <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{operatorType}}">
-          {{operatorType}}
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{operatorsType}}">
+          {{operatorsTypeName}}
         </a>
       </h4>
     </div>
-    <div id="collapse_{{operatorType}}" class="panel-collapse collapse in">
+    <div id="collapse_{{operatorsType}}" class="panel-collapse collapse">
       <div class="panel-body">
       {{#operators}}
 
                 <p class="ops_hover" align="center"> 
-                    <img src="./public/images/{{src}}"   data-shape="{{type}}"     class="palette_node_element draw2d_droppable"></img><br>
+                    <img src="./public/images/{{src}}"   data-shape="{{type}}" data-nature="{{nature}}"     class="palette_node_element draw2d_droppable"></img><br>
                     {{name}}
                 </p>
 

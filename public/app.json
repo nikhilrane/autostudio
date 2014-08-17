@@ -4,7 +4,8 @@
     "_comment_line3": "---------------List of operator's images--------------------",
     "imgList" : [
         {
-            "operatorType": "Source",
+            "operatorsType": "source",
+            "operatorsTypeName" : "Source",
             "operators": [
                 {
                     "src": "DBSource.png",
@@ -44,7 +45,8 @@
             ]
         },
         {
-            "operatorType": "Between",
+            "operatorsType": "between",
+            "operatorsTypeName" : "Between",
             "operators": [
                 {
                     "src": "Aggregate.png",
@@ -65,6 +67,11 @@
                     "src": "Filter.png",
                     "name": "Filter",
                     "type": "example.shape.Filter"
+                },
+                {
+                    "src": "Map.png",
+                    "name": "Map",
+                    "type": "example.shape.Map"
                 },
                 {
                     "src": "Matcher.png",
@@ -137,6 +144,27 @@
                     "type": "example.shape.ZmqPush"
                 }
             ]
+        },
+        {
+            "operatorsType": "defines",
+            "operatorsTypeName" : "Containers and Defines",
+            "operators": [
+                {
+                    "src": "Macro_Def.png",
+                    "name": "M_Def",
+                    "type": "example.shape.Macro_Def"
+                },
+                {
+                    "src": "User_Defined.png",
+                    "name": "Use Defined",
+                    "type": "example.shape.User_Defined"
+                },
+                {
+                    "src": "Use_Predefined.png",
+                    "name": "Use Predefined",
+                    "type": "example.shape.Use_Predefined"
+                }
+            ]
         }
     ],
 
@@ -192,6 +220,7 @@
     "_comment_line191": "----------Connection types and their decorations----",
     "example.connection.SimpleConnection": {
         "type": "example.connection.SimpleConnection",
+        "nature" : "connection",
         "color":"#A8120F",
         "params": [
             {
@@ -210,37 +239,45 @@
     },
     "example.connection.UniDirectional": {
         "type": "example.connection.UniDirectional",
+        "nature" : "connection",
         "target": "draw2d.decoration.connection.ArrowDecorator"
     },
     "example.connection.BiDirectional": {
         "type": "example.connection.BiDirectional",
+        "nature" : "connection",
         "source": "draw2d.decoration.connection.ArrowDecorator",
         "target": "draw2d.decoration.connection.ArrowDecorator"
     },
     "example.connection.TargetSideBar": {
         "type": "example.connection.TargetSideBar",
+        "nature" : "connection",
         "target": "draw2d.decoration.connection.BarDecorator"
     },
     "example.connection.BothSideBar": {
         "type": "example.connection.BothSideBar",
+        "nature" : "connection",
         "source": "draw2d.decoration.connection.BarDecorator",
         "target": "draw2d.decoration.connection.BarDecorator"
     },
     "example.connection.TargetSideCircle": {
         "type": "example.connection.TargetSideCircle",
+        "nature" : "connection",
         "target": "draw2d.decoration.connection.CircleDecorator"
     },
     "example.connection.BothSideCircle": {
         "type": "example.connection.BothSideCircle",
+        "nature" : "connection",
         "source": "draw2d.decoration.connection.CircleDecorator",
         "target": "draw2d.decoration.connection.CircleDecorator"
     },
     "example.connection.TargetSideDiamond": {
         "type": "example.connection.TargetSideDiamond",
+        "nature" : "connection",
         "target": "draw2d.decoration.connection.DiamondDecorator"
     },
     "example.connection.BothSideDiamond": {
         "type": "example.connection.BothSideDiamond",
+        "nature" : "connection",
         "source": "draw2d.decoration.connection.DiamondDecorator",
         "target": "draw2d.decoration.connection.DiamondDecorator"
     },
@@ -248,6 +285,7 @@
     "_comment_line232": "-------------Operator types and their properties----",
     "example.shape.FileSource": {
         "type": "example.shape.FileSource",
+        "nature" : "operator",
         "color": "#00B2BF",
         "ports": [
             {
@@ -271,6 +309,7 @@
 
     "example.shape.Aggregate": {
         "type": "example.shape.Aggregate",
+        "nature" : "operator",
         "color": "#3F00ED",
         "ports": [
             {
@@ -301,6 +340,7 @@
 
     "example.shape.DBJoin": {
         "type": "example.shape.DBJoin",
+        "nature" : "operator",
         "color": "#A8120F",
         "ports": [
             {
@@ -328,6 +368,7 @@
 
     "example.shape.DBSource": {
         "type": "example.shape.DBSource",
+        "nature" : "operator",
         "color": "#A8120F",
         "ports": [
             {
@@ -351,6 +392,7 @@
 
     "example.shape.DBWriter": {
         "type": "example.shape.DBWriter",
+        "nature" : "operator",
         "color": "#962809",
         "ports": [
             {
@@ -375,6 +417,7 @@
 
     "example.shape.Filter": {
         "type": "example.shape.Filter",
+        "nature" : "operator",
         "color": "#24A807",
         "ports": [
             {
@@ -397,8 +440,49 @@
         ]
     },
 
+    "example.shape.Macro_Def": {
+        "type": "example.shape.Macro_Def",
+        "nature" : "container",
+        "color": "#92998E",
+        "ports": [],
+        "label": "Macro_Def",
+        "params": []
+    },
+
+    "example.shape.Map": {
+        "type": "example.shape.Map",
+        "nature" : "operator",
+        "color": "#FA6B6B",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Map",
+        "params": [
+            {
+                "on": ""
+            },
+            {
+                "do": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
     "example.shape.Matcher": {
         "type": "example.shape.Matcher",
+        "nature" : "operator",
         "color": "#B6BF0D",
         "ports": [
             {
@@ -429,6 +513,7 @@
 
     "example.shape.MemorySource": {
         "type": "example.shape.MemorySource",
+        "nature" : "operator",
         "color": "#A8120F",
         "ports": [
             {
@@ -452,6 +537,7 @@
 
     "example.shape.Project": {
         "type": "example.shape.Project",
+        "nature" : "operator",
         "color": "#B6BF0D",
         "ports": [
             {
@@ -476,6 +562,7 @@
 
     "example.shape.RScript": {
         "type": "example.shape.RScript",
+        "nature" : "operator",
         "color": "#428bca",
         "ports": [
             {
@@ -506,6 +593,7 @@
 
     "example.shape.RelationHashJoin": {
         "type": "example.shape.RelationHashJoin",
+        "nature" : "operator",
         "color": "#428bca",
         "ports": [
             {
@@ -536,6 +624,7 @@
 
     "example.shape.SPARQLJoin": {
         "type": "example.shape.SPARQLJoin",
+        "nature" : "operator",
         "color": "#00B2BF",
         "ports": [
             {
@@ -563,6 +652,7 @@
 
     "example.shape.SlidingWindow": {
         "type": "example.shape.SlidingWindow",
+        "nature" : "operator",
         "color": "#00B2BF",
         "ports": [
             {
@@ -587,6 +677,7 @@
 
     "example.shape.SocketSink": {
         "type": "example.shape.SocketSink",
+        "nature" : "operator",
         "color": "#3F00ED",
         "ports": [
             {
@@ -611,6 +702,7 @@
 
     "example.shape.SocketSource": {
         "type": "example.shape.SocketSource",
+        "nature" : "operator",
         "color": "#428bca",
         "ports": [
             {
@@ -634,6 +726,7 @@
 
     "example.shape.StreamWriter": {
         "type": "example.shape.StreamWriter",
+        "nature" : "operator",
         "color": "#3F00ED",
         "ports": [
             {
@@ -658,6 +751,7 @@
 
     "example.shape.SymmetricHashJoin": {
         "type": "example.shape.SymmetricHashJoin",
+        "nature" : "operator",
         "color": "#3F00ED",
         "ports": [
             {
@@ -685,6 +779,7 @@
 
     "example.shape.Triplifier": {
         "type": "example.shape.Triplifier",
+        "nature" : "operator",
         "color": "#962809",
         "ports": [
             {
@@ -709,6 +804,7 @@
 
     "example.shape.Tuplifier": {
         "type": "example.shape.Tuplifier",
+        "nature" : "operator",
         "color": "#00B2BF",
         "ports": [
             {
@@ -736,6 +832,7 @@
 
     "example.shape.TwitterReader": {
         "type": "example.shape.TwitterReader",
+        "nature" : "operator",
         "color": "#03692A",
         "ports": [
             {
@@ -756,6 +853,7 @@
 
     "example.shape.Union": {
         "type": "example.shape.Union",
+        "nature" : "operator",
         "color": "#D9534F",
         "ports": [
             {
@@ -779,8 +877,46 @@
         ]
     },
 
+    "example.shape.User_Defined": {
+        "type": "example.shape.User_Defined",
+        "nature" : "operator",
+        "color": "#567842",
+        "ports": [],
+        "label": "User Defined",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "with": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "example.shape.Use_Predefined": {
+        "type": "example.shape.Use_Predefined",
+        "nature" : "operator",
+        "color": "#567842",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Use Predefined",
+        "params": []
+    },
+
     "example.shape.ZmqPublisher": {
         "type": "example.shape.ZmqPublisher",
+        "nature" : "operator",
         "color": "#11F5F5",
         "ports": [
             {
@@ -805,6 +941,7 @@
 
     "example.shape.ZmqPull": {
         "type": "example.shape.ZmqPull",
+        "nature" : "operator",
         "color": "#872BB5",
         "ports": [
             {
@@ -828,6 +965,7 @@
 
     "example.shape.ZmqPush": {
         "type": "example.shape.ZmqPush",
+        "nature" : "operator",
         "color": "#3F00ED",
         "ports": [
             {
@@ -852,6 +990,7 @@
     
     "example.shape.ZmqSubscriber": {
         "type": "example.shape.ZmqSubscriber",
+        "nature" : "operator",
         "color": "#872BB5",
         "ports": [
             {

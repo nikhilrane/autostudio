@@ -40,7 +40,6 @@
 example.Reader = draw2d.io.Reader.extend({
     
     NAME : "example.Reader",
-    // connectionType : "draw2d.Connection",
     
     init: function(){
         this._super();
@@ -64,12 +63,24 @@ example.Reader = draw2d.io.Reader.extend({
         $.each(json, $.proxy(function(i, element){
             try{
                 var o = null;
-console.log("element.router: " + element.router);
-                if(element.router === undefined) {
-                    o = eval(new example.shape.GenericShape(element.type, element.id));
-                } else {
-                    o = eval(new example.connection.GenericConnection(element.type, element.id));
+console.log("element.userData.nature: " + element.userData.nature);
+                
+                switch(element.userData.nature) {
+                    case "operator": o = eval(new example.shape.GenericShape(element.type, element.id));
+                                     break;
+
+                    case "connection": o = eval(new example.connection.GenericConnection(element.type, element.id));
+                                       break;
+
+                    case "container": console.log("Going to make container");
+                    o = eval(new example.shape.GenericContainer(element.type, element.id));
+                    console.log("container made");
+                                      break;
+
+                    default: o = eval(new example.shape.GenericShape(element.type, element.id));
+                             break;
                 }
+
 console.log("instantiated: " + o.NAME);                
                 var source= null;
                 var target=null;

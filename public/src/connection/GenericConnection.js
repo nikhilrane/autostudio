@@ -30,6 +30,8 @@ example.connection.GenericConnection = draw2d.Connection.extend({
         if(id !== null) {
             this.id = id;
         }
+
+        this.nature = (props.nature !== undefined) ? props.nature : "";
         
         this.setGlow(true);      //TODO: Do we need this glow?
         if(props.color !== undefined) {
@@ -190,32 +192,24 @@ example.connection.GenericConnection = draw2d.Connection.extend({
      setPersistentAttributes: function(element)
      {
         
-        // this._super(element);
-        // this.withParameter = element.parameters[0].withParameter;
-        // this.usingParameter = element.parameters[1].usingParameter;
-        // this.commentParameter = element.parameters[2].commentParameter;
-
         this._super(element);
-
-         // console.log("in set, setting: " + JSON.stringify(element.parameters));
-
-        // this.parameters = element.parameters;
 
         this.label.setText(element.label);
 
-        if(element.parameters !== undefined) {
-            for(var i=0; i < element.parameters.length; i++){
-              var current = element.parameters[i];
-              var key = Object.keys(current)[0];
-              this.parameters[key] = current[key];
-              
-              this.renderedPane.find("#" + this.id + "_" + key).val(current[key]);
-              // console.log("Finding: " + this.id + "_" + key);
-            }
+        var userData = this.getUserData();      //userData is set by our Reader by default
+        this.nature = userData.nature;
+
+        if(userData.parameters !== undefined) {
+          for(var i=0; i < userData.parameters.length; i++){
+            var current = userData.parameters[i];
+            var key = Object.keys(current)[0];
+            this.parameters[key] = current[key];
+            
+            this.renderedPane.find("#" + this.id + "_" + key).val(current[key]);
+          }
         }
 
-
-             // console.log("this.parameters: " + JSON.stringify(this.parameters));
+        this.setUserData(null);   //this ensures we don't mess up later if we already have some data
 
      },
 
@@ -228,34 +222,23 @@ example.connection.GenericConnection = draw2d.Connection.extend({
      getPersistentAttributes: function()
      {
         
-        // var thisFigure = this._super();
-        // thisFigure.parameters = [];
-        // thisFigure.parameters.push( {"withParameter" : this.withParameter}, {"usingParameter" : this.usingParameter} );
-        // thisFigure.parameters.push( {"commentParameter" : this.commentParameter} );
-
-        // return thisFigure;
-
-        var thisFigure = this._super();
-        // thisFigure.parameters = [];
-        // thisFigure.parameters.push( {"withParameter" : this.withParameter}, {"usingParameter" : this.usingParameter} );
-        // thisFigure.parameters.push( {"commentParameter" : this.commentParameter} );
-
-        thisFigure.label = this.label.getText();
-        thisFigure.parameters = [];
+        var userData = {};
+        userData.parameters = [];
+        userData.nature = this.nature;
 
         for(var current in this.parameters){
           console.log("c in get: " + JSON.stringify(current));
           var temp = {};
           temp[current] = this.parameters[current];
-          thisFigure.parameters.push(temp);
+          userData.parameters.push(temp);
         }
 
+        this.setUserData(userData);
 
-        // thisFigure.parameters = this.parameters;
-        // thisFigure.parameters.push(this.parameters);
+        //all our userData is now set, hence call super method
+        var thisFigure = this._super();
+        thisFigure.label = this.label.getText();
 
-        // console.log("in get, final: " + JSON.stringify(thisFigure.parameters));
-        // var temp = this.getPorts();
         return thisFigure;
      }
     

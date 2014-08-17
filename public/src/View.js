@@ -48,20 +48,14 @@ example.View = draw2d.Canvas.extend({
     onDrop : function(droppedDomNode, x, y, shiftKey, ctrlKey)
     {
         var type = $(droppedDomNode).data("shape");
-        // var figure = eval("new "+type+"();");
-        // var initProps = '{  "name" : "example.shape.FileSource", "color" : "#00B2BF",  "ports" : [    {"type" : "output", "location" : "bottom"}  ],  "label" : "NewOp",  "params" : [    { "withParameter" : "aa" },    { "usingParameter" : "bb" },    { "commentParameter" : "cccccc" }  ]}'
-        // var figure = eval(new example.shape.GenericShape());
-//        console.log("type: " + type);
-        var figure = eval(new example.shape.GenericShape(type, null));
-        // var figure = eval(new draw2d.shape.node.Between());
-        // figure.prototype = {
-        //     construct: generic.logMe,
-
-        // }
-
-        // console.log("Going to log now!" + JSON.stringify(figure.construct));
-        // figure.construct();
-        // console.log("initialized GS!")
+        var nature = pstudioJSON[type].nature;
+        var figure = null;
+        if(nature === "container") {
+            figure = eval(new example.shape.GenericContainer(type, null));
+        } else {
+            figure = eval(new example.shape.GenericShape(type, null));
+        }
+        
         // create a command for the undo/redo support
         var command = new draw2d.command.CommandAdd(this, figure, x, y);
         this.getCommandStack().execute(command);

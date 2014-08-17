@@ -6,13 +6,13 @@
  * 
  * This class has been referred from src/shape/state/Start.js
  */
-example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
+example.shape.GenericContainer = draw2d.shape.composite.Raft.extend({
 
-    NAME : "example.shape.GenericShape",
+    NAME : "example.shape.GenericContainer",
 
 	DEFAULT_COLOR : new draw2d.util.Color("#00B2BF"),
-  parameters : null,
-  renderedPane: null,
+	parameters : null,
+	renderedPane: null,
 
 
 
@@ -51,7 +51,7 @@ example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
 
             this.nature = (props.nature !== undefined) ? props.nature : "";
 
-            if(ports !== undefined) {
+            if(ports !== undefined && ports.length > 0) {
 
               for(var i=0; i < ports.length; i++) { 
                 //TODO: Location is hardcoded here!!!
@@ -73,7 +73,7 @@ example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
             }
             
 
-            this.setDimension(70, 70);
+            this.setDimension(300, 200);
             this.setGlow(true);      //TODO: Do we need this glow?
             this.setBackgroundColor(props.color);
             this.installEditPolicy(new draw2d.policy.figure.AntSelectionFeedbackPolicy());
@@ -94,10 +94,10 @@ example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
             // console.log("Label: " + JSON.stringify(props.label));
             this.label = new draw2d.shape.basic.Label(props.label);
             this.label.setStroke(0);
-            this.label.setFontColor("#ffffff");
+            // this.label.setFontColor("#ffffff");
             this.label.setFontFamily('"Open Sans",sans-serif');
             this.label.installEditor(new draw2d.ui.LabelInplaceEditor());
-            this.addFigure(this.label, new draw2d.layout.locator.CenterLocator(this));
+            this.addFigure(this.label, new draw2d.layout.locator.TopLocator(this));
             // this.labelObject = label;
 
         //     this.label = new draw2d.shape.basic.Label("label1");
@@ -207,14 +207,22 @@ example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
 
         this.renderedPane = renderedTemplate;
       }
-
+      
+      // domId.append(renderedTemplate);
+      
+      // console.log("this" + JSON.stringify(this.toString()));
 
     },
 
+    // onCatch: function(droppedFigure, x, y, shiftKey, ctrlKey) {
+    // 	this._super(droppedFigure, x, y, shiftKey, ctrlKey);
+
+    // 	console.log("dropped (container.js): " + droppedFigure.NAME);
+    // },
+
     // onDragEnter: function(draggedFigure) {
-    //   this._super(draggedFigure);
-    //   console.log("Drag enter(shape.js): " + draggedFigure.NAME);
-    //   return this;
+    // 	this._super(draggedFigure);
+    // 	console.log("Drag enter(container.js): " + draggedFigure.NAME);
     // },
 
       injectPropertyView: function(domID) {
@@ -335,7 +343,7 @@ example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
        */
      setPersistentAttributes: function(element)
      {
-
+        
         this._super(element);
 
         this.label.setText(element.label);
@@ -376,11 +384,28 @@ example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
           userData.parameters.push(temp);
         }
 
+
+        var composites = [];
+
+        var figuresArray = this.getAboardFigures(true);
+        for(var i=0; i < figuresArray.getSize(); i++) {
+          // var figure = figuresArray.get(i);
+          // console.log("F: " + figuresArray.get(i).getId);
+
+          composites.push(figuresArray.get(i).getId());
+        }
+
+        // console.log("composites: " + JSON.stringify(composites) + ", length: " + figuresArray.getSize());
+
+        userData.composites = composites;
+
         this.setUserData(userData);
 
         //all our userData is now set, hence call super method
         var thisFigure = this._super();
         thisFigure.label = this.label.getText();
+
+
 
         return thisFigure;
      }

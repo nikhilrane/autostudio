@@ -1,300 +1,298 @@
 {
-	"_comment" : "***I hold all config data for ---PipeStudio--- app.***",
-
-	"example.shape.Aggregate" : { 
-		"operator": "aggregate",
-		"type": "example.shape.Aggregate",
-		"noOfInputs": 1,
-		"parameters.on.name": "on",
-		"parameters.on.required": "true",
-		"parameters.generate.name": "generate",
-		"parameters.generate.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	"example.shape.DBJoin" : {
-		"operator": "db_join",
-		"type": "example.shape.DBJoin",
-		"noOfInputs": 0,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false" },
-								 	
-	"example.shape.DBSource" : {
-		"operator": "db_source",
-		"type": "example.shape.DBSource",
-		"noOfInputs": 0,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	"example.shape.DBWriter" : {
-		"operator": "db_writer",
-		"type": "example.shape.DBWriter",
-		"noOfInputs": 1,
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-								 	
-	
-	"example.shape.FileSource" : {
-		"operator": "file_source",
-		"type": "example.shape.FileSource",
-		"noOfInputs": 0,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	"example.shape.Filter" : {
-		"operator": "filter",
-		"type": "example.shape.Filter",
-		"noOfInputs": 1,
-		"parameters.by.name": "by",
-		"parameters.by.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-								
-	"example.shape.Matcher" : {
-		"operator": "matcher",
-		"type": "example.shape.Matcher",
-		"noOfInputs": 1,
-		"parameters.event.name": "event",
-		"parameters.event.required": "true",
-		"parameters.where.name": "where",
-		"parameters.where.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	
-	"example.shape.MemorySource" : {
-		"operator": "memory_source",
-		"type": "example.shape.MemorySource",
-		"noOfInputs": 0,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	
-	"example.shape.Project" : {
-		"operator": "project",
-		"type": "example.shape.Project",
-		"noOfInputs": 1,
-		"parameters.generate.name": "generate",
-		"parameters.generate.required": "true",
-										"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	
-	"example.shape.RelationHashJoin" : {
-		"operator": "relation_hash_join",
-		"type": "example.shape.RelationHashJoin",
-		"noOfInputs": 2,
-		"parameters.on.name": "on","parameters.on.required": "true",
-		"parameters.by.name": "by","parameters.by.required": "true",
-		"parameters.using.name": "using","parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-								
-	"example.shape.RScript" : {
-		"operator": "rscript",
-		"type": "example.shape.RScript",
-		"noOfInputs": 1,
-		"parameters.on.name": "on",
-		"parameters.on.required": "true",
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	"example.shape.SlidingWindow" : {
-		"operator": "sliding_window",
-		"type": "example.shape.SlidingWindow",
-		"noOfInputs": 1,
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	"example.shape.SocketSink" : {
-		"operator": "socket_sink",
-		"type": "example.shape.SocketSink",
-		"noOfInputs": 1,
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	
-	"example.shape.SocketSource" : {
-		"operator": "socket_source",
-		"type": "example.shape.SocketSource",
-		"noOfInputs": 0,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-	
-	"example.shape.SPARQLJoin" : {
-		"operator": "sparql_join",
-		"type": "example.shape.SPARQLJoin",
-		"noOfInputs": 1,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.StreamWriter" : {
-		"operator": "stream_writer",
-		"type": "example.shape.StreamWriter",
-		"noOfInputs": 1,
-		"parameters.using.name": "using","parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.SymmetricHashJoin" : {
-		"operator": "symmetric_hash_join",
-		"type": "example.shape.SymmetricHashJoin",
-		"noOfInputs": 2,
-		"parameters.on.name": "on","parameters.on.required": "true",
-		"parameters.by.name": "by","parameters.by.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.Triplifier" : {
-		"operator": "triplifier",
-		"type": "example.shape.Triplifier",
-		"noOfInputs": 1,
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.Tuplifier" : {
-		"operator": "tuplifier",
-		"type": "example.shape.Tuplifier",
-		"noOfInputs": 1,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.TwitterReader" : {
-		"operator": "twitter_reader",
-		"type": "example.shape.TwitterReader",
-		"noOfInputs": 0,
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.Union" : {
-		"operator": "union",
-		"type": "example.shape.Union",
-		"noOfInputs": 2,
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.ZmqPublisher" : {
-		"operator": "zmq_publisher",
-		"type": "example.shape.ZmqPublisher",
-		"noOfInputs": 1,
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.ZmqPull" : {
-		"operator": "zmq_pull",
-		"type": "example.shape.ZmqPull",
-		"noOfInputs": 0,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.ZmqPush" : {
-		"operator": "zmq_push",
-		"type": "example.shape.ZmqPush",
-		"noOfInputs": 1,
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	},
-
-
-	"example.shape.ZmqSubscriber" : {
-		"operator": "zmq_subscriber",
-		"type": "example.shape.ZmqSubscriber",
-		"noOfInputs": 0,
-		"parameters.with.name": "with",
-		"parameters.with.required": "true",
-		"parameters.using.name": "using",
-		"parameters.using.required": "true",
-		"parameters.comment.name": "comment",
-		"parameters.comment.required": "false"
-	}
-								
-	
+    "_comment": "***I hold all config data for ---PipeStudio--- app.***",
+    "example.shape.Aggregate": {
+        "operator": "aggregate",
+        "type": "example.shape.Aggregate",
+        "noOfInputs": 1,
+        "parameters.on.name": "on",
+        "parameters.on.required": "true",
+        "parameters.generate.name": "generate",
+        "parameters.generate.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.DBJoin": {
+        "operator": "db_join",
+        "type": "example.shape.DBJoin",
+        "noOfInputs": 0,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.DBSource": {
+        "operator": "db_source",
+        "type": "example.shape.DBSource",
+        "noOfInputs": 0,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.DBWriter": {
+        "operator": "db_writer",
+        "type": "example.shape.DBWriter",
+        "noOfInputs": 1,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.FileSource": {
+        "operator": "file_source",
+        "type": "example.shape.FileSource",
+        "noOfInputs": 0,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Filter": {
+        "operator": "filter",
+        "type": "example.shape.Filter",
+        "noOfInputs": 1,
+        "parameters.by.name": "by",
+        "parameters.by.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Macro_Def": {
+        "operator": "define",
+        "type": "example.shape.Macro_Def",
+        "noOfInputs": 1
+    },
+    "example.shape.Map": {
+        "operator": "map",
+        "type": "example.shape.Map",
+        "noOfInputs": 1,
+        "parameters.on.name": "on",
+        "parameters.on.required": "true",
+        "parameters.do.name": "do",
+        "parameters.do.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Matcher": {
+        "operator": "matcher",
+        "type": "example.shape.Matcher",
+        "noOfInputs": 1,
+        "parameters.event.name": "event",
+        "parameters.event.required": "true",
+        "parameters.where.name": "where",
+        "parameters.where.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.MemorySource": {
+        "operator": "memory_source",
+        "type": "example.shape.MemorySource",
+        "noOfInputs": 0,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Project": {
+        "operator": "project",
+        "type": "example.shape.Project",
+        "noOfInputs": 1,
+        "parameters.generate.name": "generate",
+        "parameters.generate.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.RelationHashJoin": {
+        "operator": "relation_hash_join",
+        "type": "example.shape.RelationHashJoin",
+        "noOfInputs": 2,
+        "parameters.on.name": "on",
+        "parameters.on.required": "true",
+        "parameters.by.name": "by",
+        "parameters.by.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.RScript": {
+        "operator": "rscript",
+        "type": "example.shape.RScript",
+        "noOfInputs": 1,
+        "parameters.on.name": "on",
+        "parameters.on.required": "true",
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.SlidingWindow": {
+        "operator": "sliding_window",
+        "type": "example.shape.SlidingWindow",
+        "noOfInputs": 1,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.SocketSink": {
+        "operator": "socket_sink",
+        "type": "example.shape.SocketSink",
+        "noOfInputs": 1,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.SocketSource": {
+        "operator": "socket_source",
+        "type": "example.shape.SocketSource",
+        "noOfInputs": 0,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.SPARQLJoin": {
+        "operator": "sparql_join",
+        "type": "example.shape.SPARQLJoin",
+        "noOfInputs": 1,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.StreamWriter": {
+        "operator": "stream_writer",
+        "type": "example.shape.StreamWriter",
+        "noOfInputs": 1,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.SymmetricHashJoin": {
+        "operator": "symmetric_hash_join",
+        "type": "example.shape.SymmetricHashJoin",
+        "noOfInputs": 2,
+        "parameters.on.name": "on",
+        "parameters.on.required": "true",
+        "parameters.by.name": "by",
+        "parameters.by.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Triplifier": {
+        "operator": "triplifier",
+        "type": "example.shape.Triplifier",
+        "noOfInputs": 1,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Tuplifier": {
+        "operator": "tuplifier",
+        "type": "example.shape.Tuplifier",
+        "noOfInputs": 1,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.TwitterReader": {
+        "operator": "twitter_reader",
+        "type": "example.shape.TwitterReader",
+        "noOfInputs": 0,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Union": {
+        "operator": "union",
+        "type": "example.shape.Union",
+        "noOfInputs": 2,
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.User_Defined": {
+        "operator": "user_defined",
+        "type": "example.shape.User_Defined",
+        "noOfInputs": 0,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.Use_Predefined": {
+        "operator": "use_predefined",
+        "type": "example.shape.Use_Predefined",
+        "noOfInputs": 1,
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.ZmqPublisher": {
+        "operator": "zmq_publisher",
+        "type": "example.shape.ZmqPublisher",
+        "noOfInputs": 1,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.ZmqPull": {
+        "operator": "zmq_pull",
+        "type": "example.shape.ZmqPull",
+        "noOfInputs": 0,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.ZmqPush": {
+        "operator": "zmq_push",
+        "type": "example.shape.ZmqPush",
+        "noOfInputs": 1,
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    },
+    "example.shape.ZmqSubscriber": {
+        "operator": "zmq_subscriber",
+        "type": "example.shape.ZmqSubscriber",
+        "noOfInputs": 0,
+        "parameters.with.name": "with",
+        "parameters.with.required": "true",
+        "parameters.using.name": "using",
+        "parameters.using.required": "true",
+        "parameters.comment.name": "comment",
+        "parameters.comment.required": "false"
+    }
 }
-
-

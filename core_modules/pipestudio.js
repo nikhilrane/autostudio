@@ -2,12 +2,15 @@
 var pstudio_config = require('nconf');
 var S = require('string');
 var spawn = require('child_process').spawn;
+var path = require('path');
+var fs = require('fs');
 
 // We load config file blindly; its the developer's responsibility to keep it error-free!
 pstudio_config.file({ file : './config/pipestudio_parser_config.json' });
 
 //Constants
-
+const EXECUTIONS_DIR = "./executions/output";
+const COMPILER_PATH = "pflow_compiler";
 const DEFINE_KEY = "define ";
 
 //Generic constants
@@ -69,16 +72,59 @@ module.exports = function(app, mongo) {
  * - Check if parsing into a script is to be made async
  * - Log errors using bunyan
  */
-    function saveScriptToDB(generatedScript, fileName, user) {
-        var coll = mongo.collection('pstudio');
-        coll.update({name: fileName, username : user}, {$set:{script: generatedScript}}, function(err) {
-          if(err) { throw new Error("Error while saving: " + err); }
 
-          // res.end(JSON.stringify({result: true}));
 
-          console.log("Script saved!");
-        });
-    }
+  function writeScript(filePath, fileName, generatedScript) {
+    fs.writeFile(filePath, generatedScript, function (err) {
+      if (err) {
+        //FIXME Better error handling
+        throw err;
+      }
+
+      // We are here it means file is saved. Let's start execution
+      // TODO nodejs is not getting PATH variable correctly, see if there is a fix!
+      var outputFileName = path.basename(filePath);
+
+      if(path.extname(outputFileName).length > 1) {
+        outputFileName = S(outputFileName).replaceAll( path.extname(outputFileName), ".cpp").s;
+      } else {
+        outputFileName = outputFileName + ".cpp";
+      }
+      
+      var outputPath = path.join(path.dirname(filePath), outputFileName);
+
+      var scriptExecutor = spawn("./executions/scripts/first", [pstudio_config.get(COMPILER_PATH), filePath, outputPath]);
+
+
+      scriptExecutor.stdout.on('data', function(data) {
+        console.log("" + data);
+      });
+
+      scriptExecutor.stderr.on('data', function(data) {
+        console.log("stderr: " + data);
+      });
+
+      scriptExecutor.on('error', function(err) {
+        console.log("Error executing script: " + err);
+      })
+
+      scriptExecutor.once('exit', function(code, signal) {
+        console.log("continued execution, " + code + ", " + signal);
+      });
+    });
+  }
+
+
+  function saveScriptToDB(generatedScript, fileName, user) {
+      var coll = mongo.collection('pstudio');
+      coll.update({name: fileName, username : user}, {$set:{script: generatedScript}}, function(err) {
+        if(err) { throw new Error("Error while saving: " + err); }
+
+        // res.end(JSON.stringify({result: true}));
+
+        console.log("Script saved!");
+      });
+  }
 
 
 
@@ -148,15 +194,14 @@ module.exports = function(app, mongo) {
 
         } else {
 
-          //put the value in () brackets if not already inside one
-          if( S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
+          //put the value in () brackets if not already inside one, BELOW PART OF PUTTING () BRACKETS IS COMMENTED AS PIPEFLOW COMPLAINS ABOUT IT
+          if( operatorProps.parameters[key].bracketsRequired && S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
             value = ROUND_OPEN_KEY + value;
 
             //we assume that closing bracket is also missing and blindly append it; else parsing it will be complex.
             value = value + ROUND_CLOSE_KEY;
           }
 
-          // key = S(key).replaceAll("Parameter", "").s;
           currentStatement = currentStatement + key + BLANK_SPACE_KEY + value;
 
 
@@ -164,7 +209,7 @@ module.exports = function(app, mongo) {
           if(j == params.length - 2) {    //here it is '-2' because there is one "comment" parameter too
             currentStatement = currentStatement + SEMI_COLON_KEY;
           } else {
-            currentStatement = currentStatement + NEW_LINE_KEY;
+            currentStatement = currentStatement + BLANK_SPACE_KEY;   //This \n removed because pipeflow complains about it
           }
         }
 
@@ -538,7 +583,8 @@ app.post('/pipestudio/generateScript', function(req, res) {
 
   console.log("generated: " + generatedScript);
 
-  saveScriptToDB(generatedScript, fileName, user);  
+  saveScriptToDB(generatedScript, fileName, user);
+  res.end(JSON.stringify( { result: true }));
 });
 
 
@@ -547,20 +593,51 @@ app.post('/pipestudio/executeScript', function(req, res) {
     var fileName = req.body.toGenerate.name;
     var user = req.body.toGenerate.username;
 
-    console.log("in execute, file: " + fileName + ", user: " + user);
+    // console.log("in execute, file: " + fileName + ", user: " + user);
     
     //generate the script by default and save it to database so there are no inconsistencies
-    // var generatedScript = generateScript(parsedData);
+    var generatedScript = generateScript(parsedData);
     // saveScriptToDB(script, fileName, user);
+    var today = new Date();
+    var dateString = today.getDate() + UNDERSCORE_KEY + today.getMonth() + UNDERSCORE_KEY + today.getFullYear();
 
-    var createDirectory = spawn("mkdir", [fileName]);
+    // This will create a path: ./executions/output/<username>/<date_month_year>/<filename_dateTime>
+    // e.g.: 
+    var dirPath = path.join(EXECUTIONS_DIR, user, dateString, fileName + UNDERSCORE_KEY + today.toJSON());
 
-    createDirectory.on('exit', function(code) {
-      console.log("folder created with name: " + fileName);
+    console.log("final path: " + dirPath);
+
+    // var dirPath = EXECUTIONS_DIR user + UNDERSCORE_KEY + fileName + UNDERSCORE_KEY + (new Date().toJSON());
+
+    fs.exists(dirPath, function(exists) {
+      var filePath = path.join(dirPath, fileName);
+      
+      // We would probably always land up here as there is a timestamp involved.
+      if(!exists) {
+        // console.log(dirPath + " does not exist. Creating.");
+
+        var createDirectory = spawn("mkdir", ['-p', dirPath]);    //for creation of parents if they do no exist
+
+        // We schedule 'on exit' only once so that it does not fire in case 'on error' is executed
+        createDirectory.once('exit', function(code) {
+          // console.log("folder created with name: " + dirPath);
+          writeScript(filePath, fileName, generatedScript);
+        });
+
+        createDirectory.on('error', function(err) {
+          // logger.error("Error occured in " + MODULE + SEP + METHOD + CALLBACK_APPEND, {error: err});
+          // throw new Error('Could not connect to mongodb: ' + err);
+          //FIXME Do some better erorr handlings, currently just outputting to console
+          console.log("Could not create directory for execution. Error: " + err);
+        });
+      } else {
+        writeScript(filePath, fileName, generatedScript);
+      }
+
     });
 
-    console.log("Exiting");
-
+    // console.log("Exiting, path: " + dirPath);
+    res.end(JSON.stringify( { result: true }));
     
 
   });

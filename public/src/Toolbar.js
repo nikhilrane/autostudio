@@ -247,7 +247,7 @@ example.Toolbar = Class.extend({
 
 
       var writer = new draw2d.io.json.Writer();
-      alert("calling parse...");
+      // alert("calling parse...");
       writer.marshal(this.view, $.proxy(function(jsonData) {
         // alert("Inside marshal, cookie: " + document.cookie);
 
@@ -257,7 +257,7 @@ example.Toolbar = Class.extend({
           "username" : sessionStorage.getItem('username')
           };
 
-          alert("sending: " + JSON.stringify(documentObject));
+          // alert("sending: " + JSON.stringify(documentObject));
 
         $.ajax({
             url: '/pipestudio/generateScript',
@@ -265,16 +265,54 @@ example.Toolbar = Class.extend({
             data: { "toGenerate" : documentObject },
             type: 'POST',
             success: function(script) {
-                alert("Success in parse! \n" + JSON.stringify(script));
+                console.log("Success in parse! \n" + JSON.stringify(script));
             },
             error: function(err) {
-                alert("Failure in parse" + JSON.stringify(err));
+                console.log("Failure in parse" + JSON.stringify(err));
             },
         });
       },this));
 
     },this)).attr("disabled",false);
     li.append(this.generateScriptButton);
+    mainUL.append(li);
+
+    li = $('<li></li>');
+    this.executeScriptButton  = $('<a href="#">Generate & Execute Script</a>');
+
+    buttonGroup.append(li);
+    this.executeScriptButton.click($.proxy(function()  {
+
+
+      var writer = new draw2d.io.json.Writer();
+      // alert("calling parse...");
+      writer.marshal(this.view, $.proxy(function(jsonData) {
+        // alert("Inside marshal, cookie: " + document.cookie);
+
+        var documentObject = {
+          "documentData" : jsonData, 
+          "name": app.loadedDefinitionId,
+          "username" : sessionStorage.getItem('username')
+          };
+
+          // alert("sending: " + JSON.stringify(documentObject));
+
+        $.ajax({
+            url: '/pipestudio/executeScript',
+            // dataType: "jsonp",
+            data: { "toGenerate" : documentObject },
+            type: 'POST',
+            success: function(script) {
+                console.log("Success in execute script! \n" + JSON.stringify(script));
+            },
+            error: function(err) {
+                console.log("Failure in execute script" + JSON.stringify(err));
+            },
+        });
+      },this));
+
+    },this)).attr("disabled",false);
+    li.append(this.executeScriptButton);
     mainUL.append(li);
 
 

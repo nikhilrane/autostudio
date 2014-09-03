@@ -6,14 +6,17 @@
     "body-parser": "~1.0.2",
     "bunyan": "~0.23.1",
     "connect-mongo": "git+https://github.com/kcbanner/connect-mongo.git#master",
+    "cookie": "^0.1.2",
     "cookie-parser": "~1.0.1",
     "express": "~4.0.0",
     "express-session": "~1.0.3",
     "express3-handlebars": "~0.5.0",
+    "formidable": "^1.0.15",
     "mongodb": "~1.4.2",
     "nconf": "~0.6.9",
     "socket.io": "^1.0.6",
-    "string": "~1.9.0"
+    "string": "~1.9.0",
+    "walk": "^2.3.3"
   },
   "engine": "node >=0.6.x"
 }

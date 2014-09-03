@@ -1,6 +1,8 @@
 
 App
 -----------------------------------------------
+****Add tumbling_window and kinect_reader operators****
+
 *UI:
  - Add button dropdowns for File, Edit, etc. instead of Button groups
 
@@ -11,6 +13,7 @@ App
  - Check if a macro/UDO can have more than 1 inputs
 
 *Exceptions/Possible Errors:
+ - Better error handling and logging
 
  - Below Exception when creating a Circle related connection(Create/Read):
 MIGHT HAVE CHANGED TO jquery 1.11 instead of jquery-1.10.2.min.js due to jquery import update

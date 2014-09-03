@@ -1,0 +1,182 @@
+<div class='modal fade bs-example-modal-lg'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span>
+                    <span class='sr-only'></span>
+                </button>
+                <h4 class='modal-title'>Download output files of executions <br> <small>Use the links to download specific files.</small></h4>
+            </div>
+            <div id='modal-body' class='modal-body'>
+
+                <script>
+                    var replaceWith = "-";
+                    var toReplace = /[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g;
+                    var rootPath = "output";
+                    var data = JSON.parse('{{{list}}}');
+
+
+                    $(function() {
+                        createRoot();
+                        createTree();
+
+                        $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+                        $('.tree li').hide();
+                        $('.tree li:first').show();
+                        $('.tree li.parent_li > span').on('click', function(e) {
+                            var children = $(this).parent('li.parent_li').find(' > ul > li');
+                            if (children.is(":visible")) {
+                                children.hide('fast');
+                                $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-folder-close').removeClass('icon-folder-open');
+                            } else {
+                                children.show('fast');
+                                $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-folder-open').removeClass('icon-folder-close');
+                            }
+                            e.stopPropagation();
+                        });
+
+
+                    });
+
+
+
+                    function getDirHtml(folder, name) {
+
+                        var li = $('<li> </li>');
+                        li.attr('id', folder.replace(toReplace, replaceWith));
+                        //console.log("folder: " + folder.replace(toReplace, replaceWith));
+                        var node = $('<span class="badge badge-warning" data-folderName=""> </span>');
+                        node.data('path', folder);
+                        node.append('<i class="icon-folder-close"></i> &nbsp;' + name);
+                        li.append(node);
+                        var children_ul = $('<ul> </ul>');
+                        children_ul.attr('id', folder.replace(toReplace, replaceWith) + '_ul');
+                        li.append(children_ul);
+                        return li;
+                    }
+
+
+                    function getFileHtml(file, name) {
+                        var li = $('<li> </li>');
+                        var node = $('<span></span>');
+//downloadForm.append($('<label for="filePath">' + name + '</label>'));
+var downloadForm = $('<form action="/pipestudio/downloadFile" method="post"> </form>');
+downloadForm.append($('<i class="icon-file"></i>'));
+downloadForm.append($('<input style="display:none;" name="username" value="' + sessionStorage.getItem("username") + '"></input>'));
+downloadForm.append($('<input style="display:none;" name="fileToDownload" value="' + file + '"></input>'));
+downloadForm.append($('<button type="submit" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-download-alt" style="border:0px"></span>' + name + '</button>'));
+
+//                        link.on('click', function(e) {
+//                            e.preventDefault();
+//                            downloadFile($(this).data('path'));
+//                        });
+//                        link.html('&nbsp;' + name);
+//                        link.data('path', file);
+                        node.append(downloadForm);
+                        li.append(node);
+
+                        return li;
+                    }
+
+                    function downloadFile(filePath) {
+                        alert("path: " + filePath);
+                        $.ajax({
+                            url: '/pipestudio/downloadFile',
+                            data: {
+                                "username": sessionStorage.getItem('username'),
+								"fileToDownload": filePath
+                            },
+                            type: 'POST',
+                            success: function(fileData, fileName) {
+                                console.log("Success in download! \nFile name:\n" + fileName + "\nData:\n" + fileData); 
+                            },
+                            error: function(err) {
+                                console.log("Failure downloading file!" + JSON.stringify(err));
+                            },
+                        });
+
+                    }
+
+                    function createRoot() {
+                        var mainUl = $('<ul> </ul>');
+
+                        $.each(data["output"], function(key, value) {
+                            var path = rootPath + "/" + value;
+                            //console.log(key + " <=> " + value + " | " + path);
+
+                            if (data[path] !== undefined) {
+                                //this means current 'value' is a directory
+                                //var htmlCode = getDirHtml(path, value);
+                                mainUl.append(getDirHtml(path, value));
+                            } else {
+                                //var htmlCode = getFileHtml(path, value);
+                                mainUl.append(getFileHtml(path, value));
+                            }
+                        });
+
+                        //console.log("replaced: \n" + rootPath.replace(toReplace, replaceWith));
+                        //console.log("html: \n" + mainUl.html());
+                        //$('#-home-nikhilrane-git_rep-autostudio-executions-output-nik_ul').html(mainUl.html());
+                        $('#' + rootPath.replace(toReplace, replaceWith) + '_ul').html(mainUl.html());
+
+                        delete data["output"];
+
+                    }
+
+
+                    function createTree() {
+
+                        $.each(data, function(key, value) {
+                            //var folderPath = key + "/" + value;
+                            // console.log(key + " <=> " + value + " | " + folderPath);
+                            //Only folders are supposed to be here, and they are already created
+                            var mainUl = $('#' + key.replace(toReplace, replaceWith) + '_ul');
+                            //console.log("checking: " + key.replace(toReplace, replaceWith) + '_ul' + ", length: " + value.length);
+
+                            //console.log("before: " + mainUl.html());
+
+
+                            for (var i = 0; i < value.length; i++) {
+                                var current = value[i];
+                                //console.log("current: " + current);
+                                var path = key + "/" + current;
+                                if (data[path] !== undefined) {
+                                    //this means current 'value' is a directory
+                                    //var htmlCode = getDirHtml(path, value);
+                                    mainUl.append(getDirHtml(path, current));
+                                } else {
+                                    var htmlCode = getFileHtml(path, current);
+                                    //console.log("html: " + htmlCode.html());
+                                    mainUl.append(getFileHtml(path, current));
+                                }
+                            }
+
+                        });
+                    }
+                </script>
+
+
+                <div class="tree">
+                    <ul>
+                        <li id="output">
+                            <span data-path="output"><i class="icon-hdd"></i> Output </span>
+                            <ul id="output_ul">
+
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+
+
+            </div>
+            <div class='modal-footer'>
+                <button id="execClose" type='button' class='btn btn-danger' data-dismiss='modal'>Cancel</button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

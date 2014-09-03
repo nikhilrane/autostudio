@@ -118,7 +118,7 @@ example.Application = Class.extend(
                    closable:false,
                    spacing_open:5,
                    spacing_closed:5,
-                   size:200,
+                   size:220,
                    paneSelector: "#property",
                    onresize:$.proxy(function(){
                        this.propertyPane.onResize();
@@ -281,14 +281,19 @@ example.Application = Class.extend(
 
       //This is to save to DB
       var writer = new draw2d.io.json.Writer();
-      alert("calling save...");
+      // alert("calling save...");
       writer.marshal(this.view, $.proxy(function(jsonData) {
         // alert("Inside marshal, cookie: " + document.cookie);
 
         var documentObject = {
-          "documentData" : jsonData, 
           "name": this.loadedDefinitionId,
-          "username" : sessionStorage.getItem('username')
+          "appName": 'PipeStudio',
+          "documentData" : jsonData, 
+          "status": 'Unparsed',
+          "email_notification": '',
+          "username" : sessionStorage.getItem('username'),
+          "creationTimestamp" : (new Date()).toJSON(),
+          "accessedTimestamp" : (new Date()).toJSON(),
           };
 
         $.ajax({
@@ -309,13 +314,17 @@ example.Application = Class.extend(
     
     loadDefinition: function(definitionId, jsonDocument)
     {
-      console.log("data: " + definitionId + ", " + jsonDocument);
-        $("#loadedFileName").text("loading...");
+      // console.log("data: " + definitionId + ", " + jsonDocument);
+        $("#loadedFileName").text("Loading...");
         this.view.clear();
       	this.loadedDefinitionId = definitionId;
         var reader = new example.Reader();
         reader.unmarshal(this.view, jsonDocument);
         $("#loadedFileName").html("<span class='muted'>Document:</span> "+definitionId);
+    },
+
+    updateFigureParameter: function(paramName, paramValue) {
+        this.propertyPane.updateParameter(paramName, paramValue);
     },
 
     resizeCanvas: function() {

@@ -1,6 +1,7 @@
 {
     "_comment_line2": "---------------I hold whole *PipeStudio* app.---------------",
     "appName" : "PipeStudio",
+    "fileExtension": ".pflow",
     "_comment_line3": "---------------List of operator's images--------------------",
     "imgList" : [
         {
@@ -287,6 +288,7 @@
         "type": "example.shape.FileSource",
         "nature" : "operator",
         "color": "#00B2BF",
+        "helpText": "<h2 id='file_source'>File_source<a href='#file_source'></a></h2>&#x000A;<p><code>file_source</code> is an operator which reads data from a given file and publishes the content linewise as a stream of tuples. A file_source operator acts as a source and, therefore, doesn&#39;t need an input pipe. The main parameter is <code>filename</code>. If the filename extension is gz or bz2, the stream is decompressed while reading. The input format is CSV, but the field delimiter can be specified using the <code>ifs</code> parameter.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>filename</code>, <code>ifs</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := file_source() using (filename = &quot;input.csv&quot;) with (x int, y int);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "output",
@@ -310,7 +312,9 @@
     "example.shape.Aggregate": {
         "type": "example.shape.Aggregate",
         "nature" : "operator",
+        "templateName": "propsNew",
         "color": "#3F00ED",
+        "helpText": "<h2 id='aggregate'>Aggregate<a href='#aggregate'></a></h2>&#x000A;<p><code>aggregate</code> provides an operator implementing aggregation with optional grouping. The optional grouping criterion is specified in the <code>on</code> clause, the aggregation part is given in the <code>generate</code> clause. &#x000A;The aggregated result is either produces when punctuations  (e.g. end of the stream) are received (no <code>slide_len</code> parameter given), for each incoming tuple (<code>slide_len = 0</code>) or periodically as specified by the parameter <code>slide_len</code> where the interval is given in seconds. In case of a periodic aggregation the parameter <code>slide_publish</code> determines whether all aggregates are sent out (<code>slide_publish = &quot;full&quot;</code>) or only aggregates which have been updated since the last notification (<code>slide_publish = &quot;delta&quot;</code>). &#x000A;Finally, the parameter <code>realtime</code> determines whether the realtime clock is used for the notification intervals (`realtime = &quot;true&quot; as default) or the interval is derived from the timestamps of the tuples.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>on</code>, <code>generate</code>, <code>using</code> (parameters: <code>slide_len</code>, <code>slide_publish</code>, <code>realtime</code>)</li>&#x000A;<li>Available aggregation functions: <code>min</code>, <code>max</code>, <code>sum</code>, <code>count</code>, <code>dcount</code> (for distinct count), <code>median</code>, <code>mrecent</code> (most recent value), <code>lrecent</code> (least recent value) </li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := aggregate($in) on x, y generate x, y, count(z) as y using (slide_len = 60);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -342,6 +346,7 @@
         "type": "example.shape.DBJoin",
         "nature" : "operator",
         "color": "#A8120F",
+        "helpText": "<h2 id='db_join'>DB_Join<a href='#db_join'></a></h2>&#x000A;<p>The <code>db_join</code> operator is used to join a tuple from the input stream with data from a SQL database. For this purpose the SOCI library is used which provides interfaces to all major DBMS. The connection to the database is specified using the <code>db_connection</code> parameter, the query which is executed for each tuple is specified by <code>query</code>. In this query string the placeholders are denoted by <code>:name</code> where <code>name</code> is a field from the tuple. Additionally, the result columns to be added to the stream tuple are specified in the <code>with</code> clause. </p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>db_connection</code>, <code>query</code>), <code>with</code></li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := db_join($in) using (db_connection = &quot;sqlite3://test.db&quot;, &#x000A;                    query = &quot;SELECT col1, col2 FROM MyTable WHERE col1 = :x&quot;) &#x000A;            with (col1 int, col2 string);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -370,6 +375,7 @@
         "type": "example.shape.DBSource",
         "nature" : "operator",
         "color": "#A8120F",
+        "helpText": "<h2 id='db_source'>DB_Source<a href='#db_source'></a></h2>&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>db_connection</code>, <code>query</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := db_source() with (x int, y int, z string) &#x000A;                        using (db_connection = &quot;sqlite3://test.db&quot;, query = &quot;SELECT col1, col2, col3 FROM MyTable&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "output",
@@ -394,6 +400,7 @@
         "type": "example.shape.DBWriter",
         "nature" : "operator",
         "color": "#962809",
+        "helpText": "<h2 id='db_writer'>db_writer<a href='#db_writer'></a></h2>&#x000A;<p><code>db_writer</code> is an operator for writing the tuples to a SQL database (by SOCI library).  To use it, the connection and the query (insertion) to the database must be specified using the <code>db_connection</code> and <code>query</code> parameters. </p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>db_connection</code>, <code>query</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := db_writer($in) using (db_connection = &quot;sqlite3://test.db&quot;, query = &quot;insert into MyTable values (:id, :name,:age)&quot;)&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -419,6 +426,7 @@
         "type": "example.shape.Filter",
         "nature" : "operator",
         "color": "#24A807",
+        "helpText": "<h2 id='filter'>Filter<a href='#filter'></a></h2>&#x000A;<p><code>filter</code> implements a selection operator which produces a stream of those&#x000A;tuples from the input pipe which satisfy the condition given in the <code>by</code>&#x000A;clause.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>by</code></li>&#x000A;<li>Functions: <code>not_null()</code>, <code>is_null()</code></li>&#x000A;</ul>&#x000A;<h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := filter($in) by x &gt; 42;&#x000A;</code></pre>'",
         "ports": [
             {
                 "type": "input",
@@ -444,6 +452,7 @@
         "type": "example.shape.Macro_Def",
         "nature" : "container",
         "color": "#92998E",
+        "helpText": "<h2 id='macro-operators'>Macro Operators<a href='#macro-operators'></a></h2>&#x000A;<p>Macros define connected subgraphs of operators which can be (re-)used in the same way as standard operators. </p>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>define my_macro ($in) returns $out { &#x000A;     $out := filter($in) by x &gt; y + 2;&#x000A;}&#x000A;&#x000A;$var := file_source() using (filename = &quot;input1.csv&quot;) with (x int, y int);&#x000A;$res := my_macro($var);&#x000A;</code></pre>",
         "ports": [],
         "label": "Macro_Def",
         "params": []
@@ -453,6 +462,7 @@
         "type": "example.shape.Map",
         "nature" : "operator",
         "color": "#FA6B6B",
+        "helpText": "<h2 id='map'>Map<a href='#map'></a></h2>&#x000A;<p><code>map</code> is an operator for transparently partitioning the input stream, sending each stream partition to a subgraph for further processing, and finally merge the result streams into a single stream. The subgraph is specified in the <code>do</code> clause by a user-defined operator, the (hash-based) partitioning criterion is defined in the <code>on</code> clause. The <code>map</code> operator can be seen as a simplified version of MapReduce where the mapper part is defined by the <code>do</code> clause and the reduce part is simple stream merging.</p>&#x000A;&#x000A;<p><code>map</code> can work in two different ways: either by assigning the different partitions to separate threads (<code>mode = &quot;local&quot;</code>) or by distributing the graph over multiple nodes (<code>mode = &quot;distributed&quot;</code>) where the subgraphs exchange data via ZMQ.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>mode</code>, <code>npartitions</code>), <code>do</code>, <code>on</code></li>&#x000A;</ul>&#x000A;<h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>define calc_statistics ($in) returns $out {&#x000A;    $x := myOp($in);&#x000A;    $out := mySecondOp($x) ...;&#x000A;}; &#x000A;$res := map($in) on x do calc_statistics using (mode = &quot;local&quot;, npartitions = 10);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -484,6 +494,7 @@
         "type": "example.shape.Matcher",
         "nature" : "operator",
         "color": "#B6BF0D",
+        "helpText": "<h2 id='matcher'>Matcher<a href='#matcher'></a></h2>&#x000A;<p><code>matcher</code> implements a complex event processing operator. This operator try to find pattern matching over event streams and provide us with complex information. This is done by combining several primitive events together according to a set of rules. These rules include  disjunction(AND), sequence(SEQ), conjunction(OR) and some forms of negation(NOT).  Moreover, we should  provide a set of primitive event types, these events are used to construct complex events with the help of event rules in <code>where</code> clause . </p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>event</code>, <code>using</code> (parameters: <code>mode</code>, <code>within</code>)</li>&#x000A;</ul>&#x000A;&#x000A;<p><code>mode</code>: In the first_match mode, the earliest occurrence of each contributing primitive events is used to form the composite event output. In this mode, we have just one sequence in the system. recent_match: the most recent event events are used to form the composite event. We also have next_matches and all_matches modes.</p>&#x000A;&#x000A;<p><code>within</code>: specifies a window filter to constrain that the events sequence should be in a particular period</p>&#x000A;&#x000A;<p><code>partition</code>: we can use <code>partition</code> option only if we have &quot;equal&quot; dependency in a &quot;particular attribute&quot; between &quot;all&quot; the primitive events to be checked as below,  event B must have id equal to id of event A. This option can increase the perfomance of this operator and reduce the number of sequences checks.</p>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := matcher($in) event SEQ(A, B, OR(C, D)) where ( A = x &lt; 10, B = (id == A.id &amp;&amp; x &gt; 10) )  &#x000A;           using (mode=&quot;next_matches&quot;, within=60, partition=&quot;id&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -515,6 +526,7 @@
         "type": "example.shape.MemorySource",
         "nature" : "operator",
         "color": "#A8120F",
+        "helpText": "<h2 id='memory_source'>Memory_source<a href='#memory_source'></a></h2>&#x000A;<p><code>memory_source</code> is an operator which reads data from a given file completely and - after reading all data into main memory - publishes the content  as a stream of tuples. A memory_source operator acts as a source and, therefore, doesn&#39;t need an input pipe. The main parameter is <code>filename</code>. If the filename extension is gz or bz2, the stream is decompressed while reading. The input format is CSV, but the field delimiter can be specified using the <code>ifs</code> parameter.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>filename</code>, <code>ifs</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := memory_source() using (filename = &quot;input.csv&quot;) with (x int, y int);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "output",
@@ -539,6 +551,7 @@
         "type": "example.shape.Project",
         "nature" : "operator",
         "color": "#B6BF0D",
+        "helpText": "<h2 id='project'>Project<a href='#project'></a></h2>&#x000A;<p><code>project</code> represents the projection operator of the classic relational algebra. The output elements are constructed as specified in the <code>generate</code> clause. Note, that there is  special field <code>_timestamp</code> which refers to the system timestamp of a tuple. In this way, one can set the internal timestamp automatically. However, this should be done only if this doesn&#39;t break the order of the tuples.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>generate</code></li>&#x000A;</ul>&#x000A;<h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := project($in) generate x, (z * 2) as y;&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -564,6 +577,7 @@
         "type": "example.shape.RScript",
         "nature" : "operator",
         "color": "#428bca",
+        "helpText": "<h2 id='rscript'>RScript<a href='#rscript'></a></h2>&#x000A;<p><code>rsrcipt</code> represents an operator for integrating the R statistics package. Each incoming tuple is processed by the R code (specified by the <code>script</code> parameter). The tuple fields passed to the R script are specified in the <code>on</code> clause and are encapsulated in a R vector with the name defined by <code>param</code>. The fields computed in the R script are specified in the <code>with</code> clause and are added to the input tuple.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>on</code>, <code>using</code> (parameters: <code>script</code>, <code>param</code>), <code>with</code></li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := rscript($in) on x, y, z using (script = &quot;c(data[1] + data[2])&quot;, param = &quot;data&quot;)&#x000A;            with (res double);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -595,7 +609,12 @@
         "type": "example.shape.RelationHashJoin",
         "nature" : "operator",
         "color": "#428bca",
+        "helpText": "<h2 id='relationhashjoin'>RelationHashJoin<a href='#relationhashjoin'></a></h2>&#x000A;<p>The <code>relation_hash_join</code> operator joins two input streams by treating the second parameter stream as relation, i.e. storing the tuples in a hashtable. Tuples from the other stream are hashed and joined with tuples of the first relation, but are not stored in a hashtable. </p>&#x000A;&#x000A;<p>The <code>mode</code> parameter specifies whether an inner join (stream tuples without corresponding tuples in the relation are dropped) or an outer join (such stream tuples are filled with NULL values) is performed.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>on</code>, <code>by</code>, <code>using</code>(parameters: <code>mode</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := relation_hash_join($in1, $in2) on $in1.x, $in1.y, $in2.x, $in2.y by $in1.x == $in2.x &amp;&amp; $in1.y == $in2.y using (mode = &quot;outer&quot;);&#x000A;</code></pre>",
         "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
             {
                 "type": "input",
                 "location": "left"
@@ -626,6 +645,7 @@
         "type": "example.shape.SPARQLJoin",
         "nature" : "operator",
         "color": "#00B2BF",
+        "helpText": "<h2 id='sparql_join'>SPARQL_Join<a href='#sparql_join'></a></h2>&#x000A;<p>The <code>sparql_join</code> operator is used to join a tuple from the input stream with RDF data. The RDF data can be produced either by calling a SPARQL endpoint via a HTTP request or using a local SPARQL processor. Currently, only Redland and CameLOD are supported as backend. The <code>endpoint</code> parameter defines </p>&#x000A;&#x000A;<ul>&#x000A;<li>the URL of the remote endpoint supporting SPARQL queries (<code>http://...</code>)</li>&#x000A;<li>a local file in Turtle format (<code>file:data.nt</code>) for which the in-memory hash implementation of Redland is used as storage engine,</li>&#x000A;<li>a CameLOD database (<code>camelod:name.db:graph</code>) where <code>name.db</code> denotes the database name and <code>graph</code> the default graph for queries.</li>&#x000A;</ul>&#x000A;&#x000A;<p>The query to be executed for each tuple is specified by <code>query</code>. In this query string the placeholders are denoted by <code>:name</code> where <code>name</code> is a field from the tuple. Additionally, the result columns to be added to the stream tuple are specified in the <code>with</code> clause. </p>&#x000A;&#x000A;<p>The <code>mode</code> parameter specifies whether an inner join (stream tuples without corresponding tuples in the relation are dropped) or an outer join (such stream tuples are filled with NULL values) is performed.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>endpoint</code>, <code>query</code>, <code>mode</code>), <code>with</code></li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := sparql_join($in) using (endpoint = &quot;file:test.turtle&quot;, &#x000A;                    query = &quot;SELECT ?pred ?obj WHERE { :subj ?pred ?obj }&quot;) &#x000A;            with (pred string, obj string);&#x000A;</code></pre>&#x000A;  </div>&#x000A;</div>&#x000A;&#x000A;&#x000A;<p>Note, that the CameLOD backend doesn&#39;t support SPARQL yet, but only an algebraic representation of the query. Thus, the query above has to be written as:</p>&#x000A;&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := sparql_join($in) using (endpoint = &quot;camelod:data.db:mydata&quot;, &#x000A;                    query = &quot;scan(s-index, :subj )&quot;) &#x000A;            with (s string, p string, o string);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -654,6 +674,7 @@
         "type": "example.shape.SlidingWindow",
         "nature" : "operator",
         "color": "#00B2BF",
+        "helpText": "<h2 id='window'>Window<a href='#window'></a></h2>&#x000A;<p><code>sliding_window</code> represents a sliding window operator which invalidates tuples based on a given time interval. Each incoming tuple is forwarded to the output pipe and after the specified time interval (the window length) a corresponding outdated tuple is produced indicating the invalidation of the original tuple. In contrast, <code>tumbling_window</code>implements a tumbling window semantics where all tuples are outdated and the window is started from scratch as soon is the window size is exceeded. Currently, the following types of windows are supported: </p>&#x000A;&#x000A;<ul>&#x000A;<li>range windows where the <code>size</code> specifies a time interval and </li>&#x000A;<li>row windows where the <code>size</code> specifies the maximum number of valid tuples.</li>&#x000A;</ul>&#x000A;&#x000A;<p>A sliding window operator can spill tuples to disk in order to avoid memory overflow. If defined by <code>persistent = &quot;true&quot;</code> all valid tuples are written to a file organized as circular buffer and deleted. As soon as the invalidation time is reached, the tuple is read into memory again and sent as outdated tuple.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>type</code>, <code>size</code>, <code>slide_len</code>, <code>persistent</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := sliding_window($in) using (type = &quot;range&quot;, size = 120, slide_len = 60);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -679,6 +700,7 @@
         "type": "example.shape.SocketSink",
         "nature" : "operator",
         "color": "#3F00ED",
+        "helpText": "<h2 id='socket_sink'>Socket_sink<a href='#socket_sink'></a></h2>&#x000A;<p><code>socket_sink</code> is an operator sending tuples via a TCP or UDP socket. The <code>mode</code> parameter specified the format of the sent data (ascii or binary). The network address is either specified&#x000A;explicitly  via the <code>endpoint</code> parameter or by specifying a logical name via the <code>pipe</code> parameter which is later resolved by the execution environment (e.g. via the <code>--pipe</code> command line parameter).</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>mode</code>, <code>endpoint</code>, <code>pipe</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := socket_sink($in) using (pipe = &quot;my_output&quot;, mode = &quot;ascii&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -704,6 +726,7 @@
         "type": "example.shape.SocketSource",
         "nature" : "operator",
         "color": "#428bca",
+        "helpText": "<h2 id='socket_source'>Socket_source<a href='#socket_source'></a></h2>&#x000A;<p><code>socket_source</code> is an operator receiving tuples via a TCP or UDP socket. The <code>mode</code> parameter specified the format of the received data (ascii or binary). The network port is either specified explicitly via the <code>port</code> parameter or by specifying a logical name via the <code>pipe</code> parameter which is later resolved by the execution environment (e.g. via the <code>--pipe</code> command line parameter). If the ASCII mode is used, delimiters for fields (<code>ifs</code>), records (<code>its</code>, default &#39;\n&#39;) as well as the quote character (<code>quote</code>, default &#39;&quot;&#39;) can be specified. </p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>mode</code>, <code>port</code>, <code>pipe</code>, <code>ifs</code>, <code>irs</code>, <code>quote</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$in := socket_source() with (i1 timestamp, i2 int, i3 int) using (mode = &quot;ascii&quot;, port = &quot;3456&quot;, ifs = &quot;|&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "output",
@@ -728,6 +751,7 @@
         "type": "example.shape.StreamWriter",
         "nature" : "operator",
         "color": "#3F00ED",
+        "helpText": "<h2 id='stream_writer'>Stream_writer<a href='#stream_writer'></a></h2>&#x000A;<p><code>stream_writer</code> is an operator writing the tuples from the input pipe to a file given as parameter <code>file</code> or a standard C++ stream (parameter <code>stream</code>). Printing to standard output is also supported by just giving <code>std::cout</code> as the value of the <code>stream</code> parameter.</p>&#x000A;&#x000A;<p><code>stream_writer</code> supports an optional format string for the output.This is similar to a printf format string where the fields of the tuple are represented by <code>{1}</code>, <code>{2}</code>, etc.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>stream</code>, <code>file</code>, <code>format</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out1 := stream_writer($in) using (file = &quot;test.data&quot;);&#x000A;$out2 := stream_writer($in) using (format = &quot;( {1}, {2}, {3} )&quot;, stream = &quot;std::cout&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -753,6 +777,7 @@
         "type": "example.shape.SymmetricHashJoin",
         "nature" : "operator",
         "color": "#3F00ED",
+        "helpText": "<h2 id='symmetrichashjoin'>SymmetricHashJoin<a href='#symmetrichashjoin'></a></h2>&#x000A;<p><code>symmetric_hash_join</code> implements a symmetric hash join operator for joining tuples from two infinite streams. The join predicate is specified in the <code>by</code> clause, but the fields used for hashing have to be explicitly specified in the <code>on</code> clause.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>on</code>, <code>by</code></li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := symmetric_hash_join($in1, $in2) on $in1.x, $in2.y by $in.x == $in2.y;&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -781,6 +806,7 @@
         "type": "example.shape.Triplifier",
         "nature" : "operator",
         "color": "#962809",
+        "helpText": "<h2 id='triplifier'>Triplifier<a href='#triplifier'></a></h2>&#x000A;<p>The <code>triplifier</code> operator transforms a tuple into a set of RDF triples. The predicates for the individual triples are specified by the <code>uri_schema</code> parameter. The subject component of the triples can be either  </p>&#x000A;&#x000A;<ul>&#x000A;<li>obtained from a field of the tuple (<code>subject_field</code>) or </li>&#x000A;<li>a unique identifier is created and all related triples are connected by a blank node </li>&#x000A;</ul>&#x000A;&#x000A;<p>In the latter case a prefix URI for the subject key (<code>subject_prefix</code>) has to be given.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>subject_field</code>, <code>subject_prefix</code>, <code>uri_schema</code>)</li>&#x000A;</ul>&#x000A;&#x000A;<p>The output schema of the operator is (subject string, predicate string, object string).</p>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := triplifier($in) using(subject_field = &quot;key&quot;, uri_schema = &quot;http://www.tu-ilmenau.de/data/name, &#x000A;                        http://www.tu-ilmenau.de/phone, http://www.tu-ilmenau.de/email&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -806,6 +832,7 @@
         "type": "example.shape.Tuplifier",
         "nature" : "operator",
         "color": "#00B2BF",
+        "helpText": "<h2 id='tuplifier'>Tuplifier<a href='#tuplifier'></a></h2>&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>mode</code>, <code>uri_schema</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := tuplifier($in) with (id string, name string, phone string, email string) &#x000A;             using (mode = &quot;ordered&quot;, uri_schema = &quot;http://www.tu-ilmenau.de/data/name, &#x000A;                        http://www.tu-ilmenau.de/phone, http://www.tu-ilmenau.de/email&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -834,6 +861,7 @@
         "type": "example.shape.TwitterReader",
         "nature" : "operator",
         "color": "#03692A",
+        "helpText": "<h2 id='twitter_reader'>Twitter_reader<a href='#twitter_reader'></a></h2>&#x000A;<p><code>twitter_reader</code> is an operator for reading Twitter tweets using the Streaming API.&#x000A;Additionally required parameters are <code>user</code>, <code>password</code> and an&#x000A;optional <code>filter</code> value. If the <code>filter</code> value is given, Twitter&#x000A;filter are used, otherwise the sample interface is used.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>user</code>, <code>password</code>, <code>filter</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := twitter_reader() using (user = &quot;me&quot;, password = &quot;secret&quot;, filter=&quot;locations=-123.044,36.846,-121.591,38.352&quot;);&#x000A;</code></pre>&#x000A;  </div>&#x000A;</div>&#x000A;&#x000A;&#x000A;<p>The schema produces by the operator contains the following fields:</p>&#x000A;&#x000A;<ul>&#x000A;<li>id_str: string</li>&#x000A;<li>name: string</li>&#x000A;<li>text: string</li>&#x000A;<li>lang: string</li>&#x000A;<li>followers_count: int</li>&#x000A;<li>created_at: string</li>&#x000A;<li>utc_offset: int</li>&#x000A;<li>geo: string</li>",
         "ports": [
             {
                 "type": "output",
@@ -855,6 +883,7 @@
         "type": "example.shape.Union",
         "nature" : "operator",
         "color": "#D9534F",
+        "helpText": "<h2 id='union'>Union<a href='#union'></a></h2>&#x000A;<p><code>union</code> implements an operator for merging two input streams into a single stream. Both streams must have the same number of compatible fields.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: -</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := union($in1, $in2);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -881,6 +910,7 @@
         "type": "example.shape.User_Defined",
         "nature" : "operator",
         "color": "#567842",
+        "helpText": "<h2 id='user-defined-operators'>User-defined Operators<a href='#user-defined-operators'></a></h2>&#x000A;<p>PipeFlow allows to include user-defined operators in dataflow programs. These operators are implemented as C++ classes derived from the <code>qoperator</code> class. The name of the this class as well as the schema produced by this operator have to be specified with the <code>using</code> and <code>with</code> clause. Note, that the <code>class</code> parameter refers to a name where both the header (<code>&lt;name&gt;.hpp</code>) as well as the C++ implementation (<code>&lt;name&gt;.cpp</code>) are expected. </p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>class</code>, <code>mode</code>, <code>init</code>, <code>parameters</code> (additional constructor parameters))</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<p>First, the operator has to be specified:</p>&#x000A;&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>define MyOp() using (class = &quot;MyOpImpl&quot;, mode = &quot;operator&quot;) with (x int, y double, z string);&#x000A;</code></pre>&#x000A;  </div>&#x000A;</div>&#x000A;&#x000A;&#x000A;<p>Then, the name <code>MyOp</code> can be used in data flow programs in the same way as standard operators:</p>&#x000A;&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$data := file_source() using (filename = &quot;test.data&quot;) with (x int, y double, z string);&#x000A;$out := MyOp($data);&#x000A;</code></pre>",
         "ports": [],
         "label": "User Defined",
         "params": [
@@ -900,6 +930,7 @@
         "type": "example.shape.Use_Predefined",
         "nature" : "operator",
         "color": "#567842",
+        "helpText": "FIXME: Write help text for me!",
         "ports": [
             {
                 "type": "input",
@@ -918,6 +949,7 @@
         "type": "example.shape.ZmqPublisher",
         "nature" : "operator",
         "color": "#11F5F5",
+        "helpText": "<h2 id='zmq_publisher'>ZMQ_Publisher<a href='#zmq_publisher'></a></h2>&#x000A;<p><code>zmq_publisher</code> is an operator sending tuples using the 0MQ middleware. It uses the publish-subscribe pattern and plays the role of the publisher. The <code>mode</code> parameter specified the format&#x000A;of the sent data (ascii or binary). The network address is either specified&#x000A;explicitly in 0MQ notation via the <code>endpoint</code> parameter or by specifying a logical&#x000A;name via the <code>pipe</code> parameter which is later resolved by the execution environment&#x000A;(e.g. via the <code>--pipe</code> command line parameter).</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>mode</code>, <code>endpoint</code>, <code>pipe</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := zmq_publisher($in) using (endpoint = &quot;tcp://*:5555&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -943,6 +975,7 @@
         "type": "example.shape.ZmqPull",
         "nature" : "operator",
         "color": "#872BB5",
+        "helpText": "<h2 id='zmq_pull'>ZMQ_Pull<a href='#zmq_pull'></a></h2>&#x000A;<p><code>zmq_pull</code> is an operator receiving tuples using the 0MQ middleware. It uses the push-pull pattern and plays the pull role. The <code>mode</code> parameter specified the format of the received data (ascii or binary). The network address is either specified explicitly in 0MQ notation via the <code>endpoint</code> parameter or by specifying a logical name via the <code>pipe</code> parameter which is later resolved by the execution environment (e.g. via the <code>--pipe</code> command line parameter).</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>mode</code>, <code>endpoint</code>, <code>pipe</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$in := zmq_pull() with (i1 timestamp, i2 int, i3 int) using (mode = &quot;binary&quot;, pipe = &quot;endpoint2&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "output",
@@ -967,6 +1000,7 @@
         "type": "example.shape.ZmqPush",
         "nature" : "operator",
         "color": "#3F00ED",
+        "helpText": "<h2 id='zmq_push'>ZMQ_Push<a href='#zmq_push'></a></h2>&#x000A;<p><code>zmq_push</code> is an operator sending tuples using the 0MQ middleware. It uses the push-pull pattern and plays the push role. The <code>mode</code> parameter specified the format of the sent data (ascii or binary). The network address is either specified explicitly in 0MQ notation via the <code>endpoint</code> parameter or by specifying a logical name via the <code>pipe</code> parameter which is later resolved by the execution environment (e.g. via the <code>--pipe</code> command line parameter).</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>mode</code>, <code>endpoint</code>, <code>pipe</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$out := zmq_push($in) using (endpoint = &quot;tcp://receiver_host:5555&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "input",
@@ -992,6 +1026,7 @@
         "type": "example.shape.ZmqSubscriber",
         "nature" : "operator",
         "color": "#872BB5",
+        "helpText": "<h2 id='zmq_subscriber'>ZMQ_Subscriber<a href='#zmq_subscriber'></a></h2>&#x000A;<p><code>zmq_subscriber</code>is an operator receiving tuples using the 0MQ middleware. It uses the publish-subscribe pattern and plays the role of the subscriber. The <code>mode</code> parameter specified the format of the received data (ascii or binary). The network address is either specified explicitly in 0MQ notation via the <code>endpoint</code> parameter or by specifying a logical name via the <code>pipe</code> parameter which is later resolved by the execution environment (e.g. via the <code>--pipe</code> command line parameter).</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>with</code>, <code>using</code> (parameters: <code>mode</code>, <code>endpoint</code>, <code>pipe</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$in := zmq_subscriber() with (i1 timestamp, i2 int, i3 int) using (mode = &quot;binary&quot;, pipe = &quot;endpoint2&quot;);&#x000A;</code></pre>",
         "ports": [
             {
                 "type": "output",

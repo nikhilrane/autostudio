@@ -16,7 +16,10 @@
 
     <script src="./public/draw2d/lib/shifty.js"></script>
     <script src="./public/draw2d/lib/raphael.js"></script>
+    
     <script src="./public/js/jquery-1.11.1.js"></script>
+    <script src="./public/js/jquery.once.js"></script>
+
     <script src="./public/draw2d/lib/jquery.autoresize.js"></script>
     <script src="./public/draw2d/lib/jquery-touch_punch.js"></script>
     <script src="./public/draw2d/lib/jquery.contextmenu.js"></script>
@@ -178,6 +181,7 @@
     <script src="./public/draw2d/src/layout/anchor/ChopboxConnectionAnchor.js"> </script>
     <script src="./public/draw2d/src/layout/anchor/ShortesPathConnectionAnchor.js"> </script>
     <script src="./public/draw2d/src/layout/anchor/CenterEdgeConnectionAnchor.js"> </script>
+    <script src="./public/draw2d/src/layout/anchor/FanConnectionAnchor.js"> </script>
     <script src="./public/draw2d/src/shape/arrow/CalligrapherArrowLeft.js"> </script>
     <script src="./public/draw2d/src/shape/arrow/CalligrapherArrowDownLeft.js"> </script>
     <script src="./public/draw2d/src/shape/node/Start.js"> </script>
@@ -454,6 +458,10 @@
     <script src="./public/src/templates/PropertyPaneTemplate.js"></script>
 	<script src="./public/src/templates/OperatorImageList.js"></script>
 	<script src="./public/src/templates/ConnectionTypeList.js"></script>
+    <script src="./public/src/templates/ExecuteScript.js"></script>
+    <script src="./public/src/templates/propsNew.js"></script>
+    <script src="./public/src/templates/DownloadFiles.js"></script>
+    <script src="./public/src/templates/DocumentsList.js"></script>
 
     <script src="./public/js/regex-colorizer.js"></script>
     <script src="./public/js/jquery-caretposition.js"></script>
@@ -473,7 +481,7 @@
     <script src="./public/js/FileSaver.js"></script>
     <script src="./public/js/Blob.js"></script>
     <script src="./public/js/canvas-toBlob.js"></script>
-    <SCRIPT src="./public/src/io/Reader.js"> </SCRIPT>
+    <script src="./public/js/string.min.js"></script>
 
     <!--
 	<script src="./public/src/propertypane/PropertyPaneState.js"></script>
@@ -545,16 +553,26 @@
 	<script src="./public/src/shape/GenericShape.js"></script>
     <script src="./public/src/shape/GenericContainer.js"></script>
 	<script src="./public/src/connection/GenericConnection.js"></script>
+    <script src="./public/src/io/Reader.js"> </script>
+
+<!-- FIXME: DOWNLOAD FOLLOWING LIBRARIES IN /JS FOLDER ON SERVER SO WE DON'T USE CDN ALWAYS -->
+    <script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
 
     <style type="text/css">
 
         .ops_hover:hover {
             background: #5bc0de;
         }
+
+        .modal-lg {
+            margin: 30px;
+        }
     </style>
 
     <script type="text/javascript">
         var app = null;
+        var socket = null;
         var pstudioJSON = null;
 			$(window).load(function () {
                 $.getJSON('./public/app.json', function(data) {
@@ -572,11 +590,42 @@
                     var docData = JSON.parse(sessionStorage.getItem('docData'));
                     if(docData !== undefined && docData !== null) {
                         app.loadDefinition(docData.name, docData.documentData);
+
+                        //removing session object so it does not open again and again
+
+                        sessionStorage.removeItem('docData');
                     }
                     // console.log("list: \n" + JSON.stringify(pstudioJSON.imgList));
                     // console.log("images: \n" + compiledTemplate.render(pstudioJSON.imgList));
                     
                     // console.log("Loaded app: " + JSON.stringify(pstudioJSON._comment));
+                    socket = io();
+
+                    socket.on('generating_script', function(data) {
+                        console.log("gen: " + JSON.stringify(data.output));
+                        var message = data.output;
+                        if(data.type === "error") {
+                            message = '<font color="red"><b>' + message + '</b></font>';
+                        }
+
+                        if(message.length !== undefined) {
+                            $('#genOutput').html($('#genOutput').html() + message + '<br />');
+                        }
+                        
+                    });
+
+                    socket.on('executing_script', function(data) {
+                        console.log("exec: " + JSON.stringify(data.output));
+                        var message = data.output;
+                        // console.log("message: " + message + "json message: " + JSON.stringify(message) + ", length: " + message.length + ", " + JSON.stringify(message).length);
+                        if(data.type === "error") {
+                            message = '<font color="red">' + message + '</font>';
+                        }
+                        
+                        if(message.length !== undefined) {
+                            $('#execOutput').html($('#execOutput').html() + message + '<br />');
+                        }
+                    });
                 });
 
                 
@@ -596,30 +645,51 @@
   <div id="content" style="border-style: solid; border-width: 5px; border-color: orange;">
       <div id="editor" style="border-style: solid; border-width: 2px; border-color: blue;" > -->
 <div id="content">
-      <div id="editor">
-		   <div id="palette" class="">
-                <!-- <div class="ops_hover">
-                    <p class="ops_hover" align="center"> 
-                        <img src="img/Aggregate.png"   data-shape="example.shape.Aggregate"     class="palette_node_element draw2d_droppable"></img>
-                        Aggregate
-                    </p>
-                    <p class="ops_hover" align="center"> 
-                        <img src="img/Aggregate.png"   data-shape="example.shape.Aggregate"     class="palette_node_element draw2d_droppable"></img>
-                        Aggregate
-                    </p>
-                    <p class="ops_hover" align="center"> 
-                        <img src="img/Aggregate.png"   data-shape="example.shape.Aggregate"     class="palette_node_element draw2d_droppable"></img>
-                        Aggregate
-                    </p>
-                </div> -->
-		   </div>
-		   <div id="view">
-		   	    <div id="canvas"  style="width:2200px; height:2200px;-webkit-tap-highlight-color: rgba(0,0,0,0); background-color:#eee; border-style: solid; border-width: 5px; border-color: red;"></div>
-	            <div id="property">            
-	            </div>
-	       </div>
-       </div>
-  </div>
+    <div id="editor">
+        <div id="palette" class="">
+        </div>
+		   
+        <div id="view">
+	   	    <div id="canvas"  style="width:2200px; height:2200px;-webkit-tap-highlight-color: rgba(0,0,0,0); background-color:#fff; border-style: solid; border-width: 5px; border-color: red;">
+            </div>
+
+            <div id="property">
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="active"><a href="#script_link" role="tab" data-toggle="tab">Generated Script</a></li>
+                    <li><a href="#output_link" role="tab" data-toggle="tab">Execution Output</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="script_link">
+                        <div class='form-group'>
+                            <br>
+                                <div id="generateScriptWell" class="well well-lg" style="margin-left:10px; margin-right:10px; border-color:#B0B0B0">
+                                Output:
+                                <pre><code id="genOutput" style="color:blue;"></pre></code>
+                                    <!-- <p>Hit the <i>Document</i> -> <i>Generate Script</i> option to generate script for this document.</p> -->
+                                </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="output_link">
+                        <div class='form-group'>
+                            <br>
+                                <div id="executeScriptWell" class="well well-lg" style="margin-left:10px; margin-right:10px; border-color:#B0B0B0">
+                                Output:
+                                <pre><code id="execOutput" style="color:blue;"></pre></code>
+                                    <!-- <p>Hit the <i>Document</i> -> <i>Generate &amp; Execute Script</i> option to generate and execute script for this document.</p> -->
+                                </div>
+                            <br>
+                        </div><!-- form-group -->
+                    </div><!-- tab-pane -->
+                </div><!-- tab-content -->
+            </div><!-- property -->
+        </div><!-- view -->
+    </div><!-- editor -->
+</div><!-- content -->
   <div id="toolbar">
 
   </div>
@@ -632,19 +702,19 @@
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h3 id="myModalLabel" class="modal-title">Modal title</h3>
           </div>
-          <div class="modal-body">
+          <div id="myModalBody" class="modal-body">
 
           </div>
           <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <div id="newModal">
-        
+    <div id="modalDiv">
     </div>
 
-    <canvas style="display:none;" id="canvasImage" width="2000" height="2000"></canvas>
+    <canvas style="display:none;" id="canvasImage" width="2200" height="2200"></canvas>
 </body>
 </html>

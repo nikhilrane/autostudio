@@ -1,5 +1,6 @@
 {
     "_comment": "***I hold all config data for ---PipeStudio--- app.***",
+    "dbName": "pstudio",
     "example.shape.Aggregate": {
         "operator": "aggregate",
         "type": "example.shape.Aggregate",
@@ -512,5 +513,5 @@
 
     "_comment": "***Below are properties for execution of ---PipeStudio--- app.***",
 
-    "pflow_compiler": "./executions/scripts/compiler.ini"
+    "pflow_compiler": "/home/nikhilrane/git_rep/autostudio/executions/scripts/compiler.ini"
 }

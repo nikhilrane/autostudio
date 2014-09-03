@@ -10,7 +10,7 @@ example.PropertyPane = Class.extend({
         this.view.addSelectionListener(this);
         
         // register as listener to update the property pane if anything has been changed in the model
-        //
+        
         view.getCommandStack().addEventListener($.proxy(function(event){
             if(event.isPostChangeEvent()){
                 this.onSelectionChanged(this.selectedFigure);
@@ -28,18 +28,18 @@ example.PropertyPane = Class.extend({
     onSelectionChanged : function(figure){
         this.selectedFigure = figure;
         
-        if(this.pane!==null){
-            this.pane.onHide();
-        }
+        // if(this.pane!==null){
+        //     this.pane.onHide();
+        // }
         
-        this.html.html("");
+        // this.html.html("");
 
-        if(figure===null || (figure !== null && typeof figure.injectPropertyView != 'function') ){
-            return;
-        }
-        this.pane = null;
-        console.log("Setting base props to: " + figure.NAME);
-        figure.injectPropertyView(this.html);
+        // if(figure===null || (figure !== null && typeof figure.injectPropertyView != 'function') ){
+        //     return;
+        // }
+        // this.pane = null;
+        // console.log("Setting base props to: " + figure.NAME);
+        // figure.injectPropertyView(this.html);
         // switch(figure.NAME)
         // {
         //     case "example.shape.Aggregate":
@@ -132,6 +132,10 @@ example.PropertyPane = Class.extend({
         if(this.pane!==null){
             this.pane.onResize();
         }
+    },
+
+    updateParameter: function(paramName, paramValue) {
+        this.selectedFigure.setParameter(paramName, paramValue);
     }
     
 });

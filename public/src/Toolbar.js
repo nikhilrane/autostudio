@@ -19,15 +19,31 @@ example.Toolbar = Class.extend({
 		var north = $("<div></div>");
 		
 		// var headStrip = $('<div style="height:40px; border-style: solid; border-width: 2px; border-color: red;"><div class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="#">Project name</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="#">Home</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></div></div></div></div>');
-		var headStrip = $('<div style="height:40px;"> <div class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="#">Project name</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="active"><a href="#">Home</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></div></div></div> </div>');
+		var templ = "<div style='height:40px;'>"+
+      "    <div class='navbar navbar-inverse navbar-fixed-top' role='navigation'>"+
+      "        <div class='container'>"+
+      "            <div class='navbar-header'>"+
+      "                <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'><span class='sr-only'>Toggle navigation</span><span class='icon-bar'></span><span class='icon-bar'></span><span class='icon-bar'></span>"+
+      "                </button><a class='navbar-brand' href='/home'>AutoStudio</a>"+
+      "            </div>"+
+      "            <div class='collapse navbar-collapse'>"+
+      "                <ul class='nav navbar-nav'>"+
+      "                    <li><a href='#about'>About</a>"+
+      "                    </li>"+
+      "                    <li><a href='#contact'>Contact</a>"+
+      "                    </li>"+
+      "                </ul>"+
+      "            </div>"+
+      "        </div>"+
+      "    </div>"+
+      "</div>";
 
-		// var buttonBar = $('<div class="well-small" style="border-style: solid; border-width: 2px; border-color: blue;"></div>');
-		// var buttonBar = $('<div class="well-small"> <div class="row"> </div>');
-		var buttonBar = $('<div class="row"> </div>');
+    var compiled = Hogan.compile(templ);
+	  var buttonBar = $('<div class="row"> </div>');
 
 		// buttonBar.append($('<div class="ui-layout-content"> <div class="well well-small" style="border-style: solid; border-width: 2px; border-color: red;"></div></div>'));
 		this.html.append(north);
-		north.append(headStrip);
+		north.append(compiled.render({}));
 		north.append(buttonBar);
 
 		// this.html.append(buttonBar);
@@ -48,7 +64,9 @@ example.Toolbar = Class.extend({
     this.newButton  = $('<a href="#">New</a>');
     buttonGroup.append(li);
     this.newButton.click($.proxy(function(){
-        (new example.dialog.NewDialog()).show();
+      $('#genOutput').html("");
+      $('#execOutput').html("");
+      (new example.dialog.NewDialog()).show();
     },this));
     li.append(this.newButton);
     mainUL.append(li);
@@ -57,106 +75,28 @@ example.Toolbar = Class.extend({
     this.openButton  = $('<a href="#">Open</a>');
     buttonGroup.append(li);
     this.openButton.click($.proxy( function() {
-    	// var user = sessionStorage.getItem('username');
-    	// alert("here: " + user);
+    	$('#genOutput').html("");
+      $('#execOutput').html("");
 
     	$.ajax({
             url: '/pipestudio/getList',
             // dataType: "jsonp",
             data: { "username" : sessionStorage.getItem('username') },
             type: 'GET',
-            success: function (json) {
-                // alert("Success in storage! \nString: " + JSON.stringify(json));
+            success: function (fileList) {
+                // console.log("Success in storage! \nString: " + JSON.stringify(json));                  
+              var compiled = templates["DocumentsList"];
+              var hierarychy = JSON.parse(fileList);
+              var l = hierarychy.result.length;
 
+              $("#modalDiv").html("");
+              $("#modalDiv").append(compiled.render({list: hierarychy["result"], listLength: l}));
+              $("#documentsListDiv").modal();
 
-              //TODO: Add this to a Hogan template
-              var templ = "<style type='text/css'>"+
-"      body"+
-"      {"+
-"        background-color:#eee;"+
-"        counter-reset: Serial;"+
-"      }"+
-"      table"+
-"      {"+
-"          border-collapse: separate;"+
-"      }"+
-"      tr"+
-"      {"+
-"        text-align:left;"+
-"      }"+
-"      tr td:first-child:before"+
-"      {"+
-"        counter-increment: Serial;"+
-"        content: \"\" counter(Serial);"+
-"      }"+
-"  </style>"+
-"<script>"+
-                  "function getDocument(docName) {"+
-          "       		$.ajax({"+
-          "                url: '/pipestudio/getDoc',"+
-          "                data: { "+
-          "                	\"documentName\" : docName,"+
-          "                	\"username\" : sessionStorage.getItem(\"username\")"+
-          "                },"+
-          "                type: 'GET',"+
-          "                success: function (jsonData) {"+
-          "					 var docData = JSON.stringify(JSON.parse(jsonData).result.documentData);"+
-          "                    app.loadDefinition(docName, docData);"+
-          "                },"+
-          "                error: function (err) {"+
-          "                    alert(\"Failure in getting doc\" + JSON.stringify(err));"+
-          "                },"+
-          "            });"+
-          "	    }"+
-                  "</script>"+
-                  "<div class='modal fade bs-example-modal-lg'>"+
-            "<div class='modal-dialog'>"+
-             " <div class='modal-content'>"+
-              "  <div class='modal-header'>"+
-               "   <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span>"+
-                "  <span class='sr-only'></span></button>"+
-                 " <h4 class='modal-title'>Documents List</h4>"+
-                "</div>"+
-                "<div id='modal-body' class='modal-body'>"+
-                  "<table class=\"table table-hover\">"+
-                  "<thead>"+
-              "<tr>"+
-                "<th><b>#</b></th>"+
-                "<th><b>Document Name</b></th>"+
-                "<th><b>Open Document</b></th>"+
-              "</tr>"+
-            "</thead>"+
-                  "<tbody> {{#result}}"+
-                  "<tr>"+
-                    "<td></td>"+
-                    "<td> {{name}} </td>"+
-                    "<td> <button type='button' class='btn btn-info' data-dismiss='modal' onclick='getDocument(\"{{name}}\")' >Open</button> </td>"+
-                  "</tr> {{/result}}"+
-                  "</tbody>"+
-                  "</table>"+
-                  "</div>"+
-                "<div class='modal-footer'>"+
-                  "<button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button>"+
-                  
-                "</div>"+
-              "</div><!-- /.modal-content -->"+
-            "</div><!-- /.modal-dialog -->"+
-          "</div><!-- /.modal -->";
-                  
-           var data = JSON.parse(json);
-           var compiled = Hogan.compile(templ);
-           var renderedTemplate = $(compiled.render(data));
-
-           // alert($("#newModal").html());
-           $("#newModal").html(compiled.render(data));
-           $(".bs-example-modal-lg").modal();
-
-
-
-          },
-          error: function (err) {
-              alert("Failure in storage" + JSON.stringify(err));
-          },
+            },
+            error: function (err) {
+              console.log("Failure in storage" + JSON.stringify(err));
+            },
       });
 
  		}, this)).attr("disabled",false);
@@ -174,8 +114,14 @@ example.Toolbar = Class.extend({
     this.saveButton  = $('<a href="#">Save</a>');
     buttonGroup.append(li);
     this.saveButton.click($.proxy(function(){
+
+      if(!this.saveButton.parent().hasClass("disabled")) {
         app.saveDefinition();
-    },this)).attr("disabled",false);
+      }
+
+    },this));
+
+    li.addClass("disabled");
     li.append(this.saveButton);
     mainUL.append(li);
     mainUL.append('<li class="divider"></li>');
@@ -245,6 +191,9 @@ example.Toolbar = Class.extend({
     buttonGroup.append(li);
     this.generateScriptButton.click($.proxy(function()  {
 
+      $('#genOutput').html("");
+      $('#execOutput').html("");
+
 
       var writer = new draw2d.io.json.Writer();
       // alert("calling parse...");
@@ -278,42 +227,73 @@ example.Toolbar = Class.extend({
     mainUL.append(li);
 
     li = $('<li></li>');
-    this.executeScriptButton  = $('<a href="#">Generate & Execute Script</a>');
+    this.executeScriptButton  = $('<a href="#">Generate &amp; Execute Script</a>');
 
     buttonGroup.append(li);
     this.executeScriptButton.click($.proxy(function()  {
 
-
-      var writer = new draw2d.io.json.Writer();
-      // alert("calling parse...");
-      writer.marshal(this.view, $.proxy(function(jsonData) {
-        // alert("Inside marshal, cookie: " + document.cookie);
-
-        var documentObject = {
-          "documentData" : jsonData, 
-          "name": app.loadedDefinitionId,
-          "username" : sessionStorage.getItem('username')
-          };
-
-          // alert("sending: " + JSON.stringify(documentObject));
-
-        $.ajax({
-            url: '/pipestudio/executeScript',
-            // dataType: "jsonp",
-            data: { "toGenerate" : documentObject },
-            type: 'POST',
-            success: function(script) {
-                console.log("Success in execute script! \n" + JSON.stringify(script));
-            },
-            error: function(err) {
-                console.log("Failure in execute script" + JSON.stringify(err));
-            },
-        });
-      },this));
+      var compiled = templates["ExecuteScript"];
+      $('#modalDiv').html("");
+      $('#modalDiv').append(compiled.render({}));
+      $(".bs-example-modal-lg").modal();
 
     },this)).attr("disabled",false);
     li.append(this.executeScriptButton);
     mainUL.append(li);
+
+
+    li = $('<li></li>');
+    this.downloadButton  = $('<a href="#">Download Executions</a>');
+
+    buttonGroup.append(li);
+    this.downloadButton.click($.proxy(function()  {
+
+      $.ajax({
+            url: '/pipestudio/downloadExecs',
+            data: { "username" : sessionStorage.getItem('username') },
+            type: 'GET',
+            success: function(fileList) {
+                //console.log("Success in download! \n" + JSON.parse(fileList)["result"]); 
+                var hierarychy = JSON.parse(fileList);
+                var compiled = templates["DownloadFiles"];
+                $('#modalDiv').html("");
+                $('#modalDiv').append(compiled.render({list: JSON.stringify(hierarychy["result"])}));
+                $(".bs-example-modal-lg").modal();
+            },
+            error: function(err) {
+                console.log("Failure in download" + JSON.stringify(err));
+            },
+        });
+
+    },this)).attr("disabled",false);
+    li.append(this.downloadButton);
+    mainUL.append(li);
+
+    
+
+    // li = $('<li></li>');
+    // this.formTestButton  = $('<a href="#">Form test</a>');
+
+    // buttonGroup.append(li);
+    // this.formTestButton.click($.proxy(function()  {
+
+    // var compiled = templates["ExecuteScript"];
+    // // console.log("exec template: \n" + compiled.render({}));
+    // $('#modalDiv').html("");
+    // $('#modalDiv').append(compiled.render({}));
+    // $(".bs-example-modal-lg").modal();
+
+
+    // },this)).attr("disabled",false);
+    // li.append(this.formTestButton);
+    // mainUL.append(li);
+
+
+
+
+
+
+
 
 
     buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
@@ -399,15 +379,15 @@ example.Toolbar = Class.extend({
 
 		// Inject the DELETE Button
 		//
-		this.deleteButton  = $("<button class='btn btn-danger btn-sm'>Delete</button>");
-		buttonGroup.append(this.deleteButton);
-		this.deleteButton.click($.proxy(function(){
+		// this.deleteButton  = $("<button class='btn btn-danger btn-sm'>Delete</button>");
+		// buttonGroup.append(this.deleteButton);
+		// this.deleteButton.click($.proxy(function(){
 
-			//TODO: changed to getSelection() from getCurrentSelection() as the latter is DEPRECATED => NOT WORKING
-			var node = this.view.getCurrentSelection();
-			var command= new draw2d.command.CommandDelete(node);
-			this.view.getCommandStack().execute(command);
-		},this)).attr("disabled", true );
+		// 	//TODO: changed to getSelection() from getCurrentSelection() as the latter is DEPRECATED => NOT WORKING
+		// 	var node = this.view.getCurrentSelection();
+		// 	var command= new draw2d.command.CommandDelete(node);
+		// 	this.view.getCommandStack().execute(command);
+		// },this)).attr("disabled", true );
 
 
     //Connection type dropdown
@@ -431,7 +411,7 @@ example.Toolbar = Class.extend({
 	 * @param {draw2d.Figure} figure
 	 */
 	onSelectionChanged : function(figure){
-		this.deleteButton.attr( "disabled", figure===null );
+		// this.deleteButton.attr( "disabled", figure===null );
 	},
 	
 	/**
@@ -448,6 +428,11 @@ example.Toolbar = Class.extend({
 		this.undoButton.attr("disabled", !event.getStack().canUndo() );
 		this.redoButton.attr("disabled", !event.getStack().canRedo() );
 		
-	    this.saveButton.attr("disabled",   !event.getStack().canUndo() && !event.getStack().canRedo()  );
+    if( !(!event.getStack().canUndo() && !event.getStack().canRedo()) ) {
+      this.saveButton.parent().removeClass("disabled");
+    } else {
+      this.saveButton.parent().addClass("disabled");
+    }
+    
 	}
 });

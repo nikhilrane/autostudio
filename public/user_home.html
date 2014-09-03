@@ -21,12 +21,13 @@
       body
       {
         background-color:#eee;
-        counter-reset: Serial;           /* Set the Serial counter to 0 */
+        
       }
 
       table
       {
           border-collapse: separate;
+          counter-reset: Serial;           /* Set the Serial counter to 0 */
       }
 
       tr
@@ -39,7 +40,7 @@
         counter-increment: Serial;      /* Increment the Serial counter */
         content: "" counter(Serial); /* Display the counter */
       }
-  </style>
+  </style>  
 
   <script src="./public/js/hogan.min.js"></script>
   <script src="./public/js/jquery-1.11.1.js"></script>
@@ -47,6 +48,8 @@
 
   <script type="text/javascript">
       $( function() {
+
+        $('#greeting').html("Hello " + sessionStorage.getItem('username') + "!<br><small>What would you like to do?</small>");
         var templ= "<table class=\"table table-hover\">"+
         "<thead>"+
     "<tr>"+
@@ -74,45 +77,65 @@
 
        $("#apps_table").html(view);
 
-       templ = "<table class=\"table table-hover\">"+
-        "<thead>"+
-    "<tr>"+
-      "<th><b>#</b></th>"+
-      "<th><b>Job Name</b></th>"+
-      "<th><b>App Name</b></th>"+
-      "<th><b>Status</b></th>"+
-      "<th><b>Notify by Email</b></th>"+
-    "</tr>"+
-  "</thead>"+
-        "<tbody> {{#tuples}}"+
-        "<tr>"+
-        "<td></td>"+
-        "<td> {{job_name}} </td>"+
-        "<td> {{app_name}} </td>"+
-        "<td> {{status}} </td>"+
-        "<td> {{notify}} </td>"+
-          "</tr> {{/tuples}}"+
-        "</tbody>"+
-        "</table>";
 
-        data = [{job_name: "job name 1", app_name: "app name 1", status: "executing", notify: true}, 
-                {job_name: "job name 2", app_name: "app name 2", status: "parsing", notify: true},
-                {job_name: "job name 3", app_name: "app name 3", status: "executing", notify: false} ];
-       compiled = Hogan.compile(templ);
-       view   = compiled.render( {tuples: data});
-       $("#jobs_table").html(view);
+       $.ajax({
+            url: '/pipestudio/getHomePageList',
+            // dataType: "jsonp",
+            data: { "username" : sessionStorage.getItem('username') },
+            type: 'GET',
+            success: function (data) {
+
+              // console.log("Got list: " + JSON.stringify(data));
+
+                templ = "<table class=\"table table-hover\">"+
+                "<thead>"+
+                  "<tr>"+
+                    "<th><b>#</b></th>"+
+                    "<th><b>Name</b></th>"+
+                    "<th><b>App Name</b></th>"+
+                    "<th><b>Status</b></th>"+
+                    "<th><b>Open</b></th>"+
+                    "<th><b>Notify by Email</b></th>"+
+                  "</tr>"+
+                "</thead>"+
+                "<tbody> {{#tuples}}"+
+                  "<tr>"+
+                    "<td></td>"+
+                    "<td> {{name}} </td>"+
+                    "<td> PipeStudio </td>"+
+                    "<td> {{status}} </td>"+
+                    "<td> <button class='btn btn-warning' onclick='getDoc(\"{{name}}\")'>Open</button> </td>"+
+                    "<td> <label class='btn btn-info'><input type='checkbox' {{email_notification}}> </label> </td>"+
+                  "</tr> {{/tuples}}"+
+                "</tbody>"+
+                "</table>";
+
+                // data = [{name: "job name 1", app_name: "app name 1", status: "executing", notify: ""}, 
+                //         {name: "job name 2", app_name: "app name 2", status: "parsing", notify: checked},
+                //         {name: "job name 3", app_name: "app name 3", status: "executing", notify: ""} ];
+               compiled = Hogan.compile(templ);
+               view   = compiled.render(JSON.parse(data));
+               $("#documents_table").html(view);
+
+            },
+            error: function (err) {
+                alert("Failure in storage" + JSON.stringify(err));
+            },
+        });
+
+       
 
       });
 
-      function getDoc() {
+      function getDoc(documentName) {
         $.ajax({
-                url: '/pipestudio/get',
+                url: '/pipestudio/getDoc',
                 // dataType: "jsonp",
-                data: { "name" : "test1.json"},
-                type: 'POST',
+                data: { "documentName" : documentName, username : sessionStorage.getItem('username')},
+                type: 'GET',
                 success: function (jsonData) {
                     sessionStorage.setItem('docData', JSON.stringify(JSON.parse(jsonData).result));
-                    alert("Success in GET! " + JSON.stringify(JSON.parse(jsonData).result));
+                    // alert("Success in GET! " + JSON.stringify(JSON.parse(jsonData).result));
                     $('#pipestudio').trigger('click');
                 },
                 error: function (err) {
@@ -147,10 +170,9 @@
             <li class="active"><a href="#">Apps</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="#contact">Contact</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Logout</a></li>
+            <li><a href="/logout">Logout</a></li>
           </ul>
         </div><!--/.nav-collapse -->
 
@@ -160,18 +182,15 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1> this is starter </h1>
-        Hello {{user}}!
+        <h1 id="greeting"></h1>
 
-        <div>
-          <button type="submit" class="btn btn-primary" onclick="getDoc()"> Load </button>
-        </div>
-
-        <h3 style="text-align: left;"> Apps <br><small>Launch your apps, check status, etc.</small></h3>
+        <h3 style="text-align: left;"><u> Apps </u><br><small>Launch your apps or try new ones!</small></h3>
         <div id="apps_table"> </div>
 
-        <h3 style="text-align: left;"> Jobs <br></h3>
-        <div id="jobs_table"> </div>
+        <br>
+
+        <h3 style="text-align: left;"><u> Documents </u><br><small>Check status of your last documents.</small></h3>
+        <div id="documents_table"> </div>
 
         
 

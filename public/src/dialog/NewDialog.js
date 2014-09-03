@@ -34,7 +34,7 @@ example.dialog.NewDialog = Class.extend({
             
             // button bar
             //
-            output = '<button class="btn" data-dismiss="modal" aria-hidden="true">Abort</button><button class="btn btn-primary">Create</button>';
+            output = '<button class="btn btn-primary">Create</button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>';
             // compiled = Hogan.compile(template);
             // output = compiled.render({});
             container.find('.modal-footer').html(output);
@@ -48,6 +48,12 @@ example.dialog.NewDialog = Class.extend({
     
     _onOk: function(id){
         this.container.modal('hide');
+
+        // Check if the user already add the expected extension
+        // if not, let's add it from our global app settings.
+        if(!S(id).endsWith(pstudioJSON.fileExtension)) {
+            id = id + pstudioJSON.fileExtension;
+        }
         app.createDefinition(id);
     }
 });

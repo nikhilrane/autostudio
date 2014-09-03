@@ -76,7 +76,8 @@ example.shape.GenericContainer = draw2d.shape.composite.Raft.extend({
             this.setDimension(300, 200);
             this.setGlow(true);      //TODO: Do we need this glow?
             this.setBackgroundColor(props.color);
-            this.installEditPolicy(new draw2d.policy.figure.AntSelectionFeedbackPolicy());
+            this.setResizeable(true);
+            this.installEditPolicy(new draw2d.policy.figure.SlimSelectionFeedbackPolicy());
 
             this.setStroke(0);
 
@@ -264,76 +265,6 @@ example.shape.GenericContainer = draw2d.shape.composite.Raft.extend({
      getParameter: function(paramName) {
         return this.parameters[paramName];
      },
-
-
-     /**
-       * @method
-       * Set the <code> with </code> parameter of file_source() operator.
-       *
-       */
-     // setWithParameter: function(withText)
-     // {
-     //    this.withParameter = withText;
-
-     //    return this;
-     // },
-
-     /**
-       * @method
-       * Returns the <code> with </code> parameter of file_source() operator.
-       *
-       */
-     // getWithParameter: function()
-     // {
-     //    return this.withParameter;
-     // },
-
-
-     /**
-       * @method
-       * Set the <code> using </code> parameter of file_source() operator.
-       *
-       */
-     // setUsingParameter: function(usingText)
-     // {
-     //    this.usingParameter = usingText;
-
-     //    return this;
-     // },
-
-     /**
-       * @method
-       * Returns the <code> using </code> parameter of file_source() operator.
-       *
-       */
-     // getUsingParameter: function()
-     // {
-     //    return this.usingParameter;
-     // },
-
-
-     /**
-       * @method
-       * Set the <code> comment </code> parameter of file_source() operator.
-       *
-       * @param {String} usingText
-       */
-     // setCommentParameter: function(commentText)
-     // {
-     //    this.commentParameter = commentText;
-
-     //    return this;
-     // },
-
-     /**
-       * @method
-       * Returns the <code> comment </code> parameter of file_source() operator.
-       *
-       */
-     // getCommentParameter: function()
-     // {
-     //    return this.commentParameter;
-     // },
 
 
      /**

@@ -63,7 +63,7 @@ example.Reader = draw2d.io.Reader.extend({
         $.each(json, $.proxy(function(i, element){
             try{
                 var o = null;
-console.log("element.userData.nature: " + element.userData.nature);
+// console.log("element.userData.nature: " + element.userData.nature);
                 
                 switch(element.userData.nature) {
                     case "operator": o = eval(new example.shape.GenericShape(element.type, element.id));
@@ -74,14 +74,14 @@ console.log("element.userData.nature: " + element.userData.nature);
 
                     case "container": console.log("Going to make container");
                     o = eval(new example.shape.GenericContainer(element.type, element.id));
-                    console.log("container made");
+                    // console.log("container made");
                                       break;
 
                     default: o = eval(new example.shape.GenericShape(element.type, element.id));
                              break;
                 }
 
-console.log("instantiated: " + o.NAME);                
+// console.log("instantiated: " + o.NAME);                
                 var source= null;
                 var target=null;
                 for(i in element){
@@ -111,7 +111,7 @@ console.log("instantiated: " + o.NAME);
                     o.setSource(source);
                     o.setTarget(target);
                 }
-                console.log("calling setPersistentAttributes");
+                // console.log("calling setPersistentAttributes");
                 o.setPersistentAttributes(element);
                 canvas.addFigure(o);
             }

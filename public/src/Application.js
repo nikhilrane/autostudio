@@ -303,6 +303,10 @@ example.Application = Class.extend(
             type: 'POST',
             success: function () {
                 // alert("Success in storage!");
+                $('#alertDiv').show('fast');
+                setTimeout(function() {
+                  $('#alertDiv').hide('slow');
+                }, 5000);
             },
             error: function (err) {
                 alert("Failure in storage" + JSON.stringify(err));

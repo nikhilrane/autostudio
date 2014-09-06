@@ -84,7 +84,6 @@ example.Toolbar = Class.extend({
             data: { "username" : sessionStorage.getItem('username') },
             type: 'GET',
             success: function (fileList) {
-                // console.log("Success in storage! \nString: " + JSON.stringify(json));                  
               var compiled = templates["DocumentsList"];
               var hierarychy = JSON.parse(fileList);
               var l = hierarychy.result.length;
@@ -102,12 +101,6 @@ example.Toolbar = Class.extend({
  		}, this)).attr("disabled",false);
     li.append(this.openButton);
     mainUL.append(li);
-
-    // this.newButton  = $("<button id='newDocument' class='btn btn-info'>New</button>");
-    // buttonGroup.append(this.newButton);
-    // this.newButton.click($.proxy(function(){
-    //     (new example.dialog.NewDialog()).show();
-    // },this));
 
 
     li = $('<li></li>');
@@ -269,32 +262,6 @@ example.Toolbar = Class.extend({
     li.append(this.downloadButton);
     mainUL.append(li);
 
-    
-
-    // li = $('<li></li>');
-    // this.formTestButton  = $('<a href="#">Form test</a>');
-
-    // buttonGroup.append(li);
-    // this.formTestButton.click($.proxy(function()  {
-
-    // var compiled = templates["ExecuteScript"];
-    // // console.log("exec template: \n" + compiled.render({}));
-    // $('#modalDiv').html("");
-    // $('#modalDiv').append(compiled.render({}));
-    // $(".bs-example-modal-lg").modal();
-
-
-    // },this)).attr("disabled",false);
-    // li.append(this.formTestButton);
-    // mainUL.append(li);
-
-
-
-
-
-
-
-
 
     buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
     buttonGroup.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></button>');
@@ -355,7 +322,7 @@ example.Toolbar = Class.extend({
 
 
     
-    buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
+    buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
     buttonBar.append(buttonGroup);
 		 
 		// Inject the UNDO Button and the callbacks
@@ -374,31 +341,22 @@ example.Toolbar = Class.extend({
 		    this.view.getCommandStack().redo();
 		},this)).attr( "disabled", true );
 		
-		// buttonGroup = $('<div class="btn-group"></div>');
-		// buttonBar.append(buttonGroup);
-
-		// Inject the DELETE Button
-		//
-		// this.deleteButton  = $("<button class='btn btn-danger btn-sm'>Delete</button>");
-		// buttonGroup.append(this.deleteButton);
-		// this.deleteButton.click($.proxy(function(){
-
-		// 	//TODO: changed to getSelection() from getCurrentSelection() as the latter is DEPRECATED => NOT WORKING
-		// 	var node = this.view.getCurrentSelection();
-		// 	var command= new draw2d.command.CommandDelete(node);
-		// 	this.view.getCommandStack().execute(command);
-		// },this)).attr("disabled", true );
-
 
     //Connection type dropdown
-    buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
+    buttonGroup = $('<div class="col-xs-3 btn-group"><span class="label label-default">Connection Types:</span></div>');
     buttonBar.append(buttonGroup);
     connectionMenu = $('<select id="connections_menu" class="selectpicker"></select>');
 
     var compiledTemplate = templates["ConnectionTypeList"];
     var renderedTemplate = $(compiledTemplate.render(pstudioJSON));
     connectionMenu.append(renderedTemplate);
-    buttonGroup.append(connectionMenu);		
+    buttonGroup.append(connectionMenu);
+
+    var alertDiv = $('<div id="alertDiv" class="col-xs-2 btn-group alert alert-success successBorder" role="alert"></div>');
+    alertDiv.append('<span class="glyphicon glyphicon-ok-sign"></span>');
+    alertDiv.append('&nbsp;&nbsp;Document Saved.');
+    alertDiv.hide();
+    buttonBar.append(alertDiv);
 		
 		buttonBar.append("<div id='loadedFileName'></div>");
 	},

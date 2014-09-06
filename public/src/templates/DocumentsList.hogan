@@ -114,12 +114,10 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th><b>#</b>
-                            </th>
-                            <th><b>Document Name</b>
-                            </th>
-                            <th><b>Open Document</b>
-                            </th>
+                            <th><b>#</b></th>
+                            <th><b>Document Name</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Open Document</b></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -127,6 +125,7 @@
                         <tr class="warning docTR">
                             <td></td>
                             <td>{{name}}</td>
+                            <td>{{status}}</td>
                             <td>
                                 <button type='button' class='btn btn-warning' data-dismiss='modal' onclick='getDocument("{{name}}")'>Open</button>
                             </td>

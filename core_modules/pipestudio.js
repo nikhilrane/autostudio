@@ -605,7 +605,7 @@ app.get('/pipestudio/getList', function(req, res) {
   var coll = mongo.collection(pstudio_config.get(DB_NAME));
 
   //TODO: check if we support localStorage and change columns below
-  var stream = coll.find({ username : user }, {"name":1, _id:0}).sort({name: 1}).stream();
+  var stream = coll.find({ username : user }, {name: 1, status: 1, _id:0}).sort({name: 1}).stream();
   var jsonData = JSON.parse('{"result": []}');
   stream.on("data", function(item) {
     jsonData["result"].push(item);

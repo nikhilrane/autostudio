@@ -27,6 +27,10 @@ example.PropertyPane = Class.extend({
      */
     onSelectionChanged : function(figure){
         this.selectedFigure = figure;
+        // if(figure !== null) 
+        //     console.log("fig: " + figure.NAME + ", id: " + figure.getId());
+        // else
+        //     console.log("fig is NULL");
         
         // if(this.pane!==null){
         //     this.pane.onHide();

@@ -36,7 +36,7 @@
         });
 
         left_li.append(left_a);
-        $('.pagination').append(left_li);
+        $('#docListPagination').append(left_li);
 
         for (var i = 1; i <= noOfPages; i++) {
 
@@ -49,7 +49,7 @@
                 displayPage($(this).html());
             });
             li.append(a);
-            $('.pagination').append(li);
+            $('#docListPagination').append(li);
         }
 
         var right_li = $('<li> </li>');
@@ -68,11 +68,11 @@
         });
 
         right_li.append(right_a);
-        $('.pagination').append(right_li);
+        $('#docListPagination').append(right_li);
 
         $('.docTR').hide();
         displayPage(1);
-        $('.pagination').children('li:eq(1)').addClass("active");
+        $('#docListPagination').children('li:eq(1)').addClass("active");
 
     });
 
@@ -100,6 +100,30 @@
             },
         });
     }
+
+    function deleteDocument(trID, docName) {
+        $.ajax({
+            url: '/pipestudio/deleteDoc',
+            data: {
+                "documentName": docName,
+                "documentID": trID,
+                "username": sessionStorage.getItem("username")
+            },
+            type: 'POST',
+            success: function(jsonData) {
+                console.log("docName: " + docName);
+                $('#' + trID).hide('slow', function() { $(this).remove(); }).siblings('.docTR:hidden').first().show('slow');
+
+                // var pageToDisplay = $('#docListPagination').children('.active').children().first().html();
+                // pageToDisplay = parseInt(pageToDisplay);
+                // console.log("going to display: " + pageToDisplay);
+                // displayPage(pageToDisplay);
+            },
+            error: function(err) {
+                console.log("Failure in getting doc: " + JSON.stringify(err));
+            },
+        });
+    }
 </script>
 <div id="documentsListDiv" class='modal fade'>
     <div class='modal-dialog'>
@@ -117,17 +141,19 @@
                             <th><b>#</b></th>
                             <th><b>Document Name</b></th>
                             <th><b>Status</b></th>
-                            <th><b>Open Document</b></th>
+                            <th><b>Delete</b></th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#list}}
-                        <tr class="warning docTR">
+                        <tr id="{{_id}}" class="warning docTR">
                             <td></td>
-                            <td>{{name}}</td>
+                            <td><a href="#" data-dismiss='modal' onclick='getDocument("{{name}}")'>{{name}}</a></td>
                             <td>{{status}}</td>
                             <td>
-                                <button type='button' class='btn btn-warning' data-dismiss='modal' onclick='getDocument("{{name}}")'>Open</button>
+                                <button type='button' class='btn btn-danger' onclick='deleteDocument("{{_id}}", "{{name}}")'>
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
                             </td>
                         </tr>
                         {{/list}}
@@ -136,7 +162,7 @@
 
 
                 <div align="center">
-                    <ul class="pagination"></ul>
+                    <ul id="docListPagination" class="pagination"></ul>
                 </div>
 
 

@@ -73,7 +73,7 @@ example.shape.GenericContainer = draw2d.shape.composite.Raft.extend({
             }
             
 
-            this.setDimension(300, 200);
+            this.setDimension(400, 300);
             this.setGlow(true);      //TODO: Do we need this glow?
             this.setBackgroundColor(props.color);
             this.setResizeable(true);

@@ -1,0 +1,21 @@
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th><b>#</b></th>
+			<th><b>Name</b></th>
+			<th><b>Launch</b></th>
+		</tr>
+	</thead>
+	<tbody>
+	{{#tuples}}
+		<tr>
+			<td></td>
+			<td> {{name}} </td>
+			<td>
+				<button id="{{name}}" onclick="{{location}}" type="button" class="btn btn-default btn-info btn-sm">
+				<span class="glyphicon glyphicon-play"></span></button>
+			</td>
+		</tr>
+	{{/tuples}}
+	</tbody>
+</table>

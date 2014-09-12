@@ -13,6 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="./public/css/bootstrap.css" rel="stylesheet">
+    <link href="./public/css/application.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="./public/css/starter-template.css" rel="stylesheet">
@@ -40,45 +41,41 @@
         counter-increment: Serial;      /* Increment the Serial counter */
         content: "" counter(Serial); /* Display the counter */
       }
+
+      .modal-lg
+      {
+        margin: 30px auto;
+      }
   </style>  
 
-  <script src="./public/js/hogan.min.js"></script>
+  <script src="./public/js/template.js"></script>
   <script src="./public/js/jquery-1.11.1.js"></script>
-    <script src="./public/js/bootstrap.js"></script>
+  <script src="./public/js/bootstrap.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+  <script src="http://malsup.github.com/jquery.form.js"></script>
+
+  <script src="./public/src/templates/ExecuteScript.js"></script>
+  <script src="./public/src/templates/UserHome_Apps.js"></script>
+  <script src="./public/src/templates/UserHome_Docs.js"></script>  
+  <script src="./public/src/templates/InfoBox.js"></script>
 
   <script type="text/javascript">
+    var socket = null;
       $( function() {
+        socket = io();
 
-        $('#greeting').html("Hello " + sessionStorage.getItem('username') + "!<br><small>What would you like to do?</small>");
-        var templ= "<table class=\"table table-hover\">"+
-        "<thead>"+
-    "<tr>"+
-      "<th><b>#</b></th>"+
-      "<th><b>Name</b></th>"+
-      "<th><b>Launch</b></th>"+
-    "</tr>"+
-  "</thead>"+
-        "<tbody> {{#tuples}}"+
-          "<tr>"+
-        "<td></td>"+
-        "<td> {{name}} </td>"+
-        "<td>"+
-          "<button id=\"{{name}}\" onclick=\"{{location}}\" type=\"button\" class=\"btn btn-default btn-info btn-sm\">"+
-          "<span class=\"glyphicon glyphicon-play\"></span></button>"+
-        "</td>"+
-          "</tr> {{/tuples}}"+
-        "</tbody>"+
-        "</table>";
+        greetUser();
+
+        var appsCompiled = templates["UserHome_Apps"];
         
-       var data = [{name: "pipestudio", location: "document.location='/pipestudio'"}, {name: "name 2", location: "document.location='/login'"},
+        var data = [{name: "pipestudio", location: "document.location='/pipestudio'"}, {name: "name 2", location: "document.location='/login'"},
                     {name: "name 3", location: "document.location='/login'"} ];
-       var compiled = Hogan.compile(templ);
-       var view   = compiled.render( {tuples: data});
+        var view   = appsCompiled.render( {tuples: data});
 
-       $("#apps_table").html(view);
+        $("#apps_table").html(view);
 
 
-       $.ajax({
+        $.ajax({
             url: '/pipestudio/getHomePageList',
             // dataType: "jsonp",
             data: { "username" : sessionStorage.getItem('username') },
@@ -87,35 +84,9 @@
 
               // console.log("Got list: " + JSON.stringify(data));
 
-                templ = "<table class=\"table table-hover\">"+
-                "<thead>"+
-                  "<tr>"+
-                    "<th><b>#</b></th>"+
-                    "<th><b>Name</b></th>"+
-                    "<th><b>App Name</b></th>"+
-                    "<th><b>Status</b></th>"+
-                    "<th><b>Open</b></th>"+
-                    "<th><b>Notify by Email</b></th>"+
-                  "</tr>"+
-                "</thead>"+
-                "<tbody> {{#tuples}}"+
-                  "<tr>"+
-                    "<td></td>"+
-                    "<td> {{name}} </td>"+
-                    "<td> PipeStudio </td>"+
-                    "<td> {{status}} </td>"+
-                    "<td> <button class='btn btn-warning' onclick='getDoc(\"{{name}}\")'>Open</button> </td>"+
-                    "<td> <label class='btn btn-info'><input type='checkbox' {{email_notification}}> </label> </td>"+
-                  "</tr> {{/tuples}}"+
-                "</tbody>"+
-                "</table>";
-
-                // data = [{name: "job name 1", app_name: "app name 1", status: "executing", notify: ""}, 
-                //         {name: "job name 2", app_name: "app name 2", status: "parsing", notify: checked},
-                //         {name: "job name 3", app_name: "app name 3", status: "executing", notify: ""} ];
-               compiled = Hogan.compile(templ);
-               view   = compiled.render(JSON.parse(data));
-               $("#documents_table").html(view);
+              var docsCompiled = templates["UserHome_Docs"];
+              view   = docsCompiled.render(JSON.parse(data));
+              $("#documents_table").html(view);
 
             },
             error: function (err) {
@@ -123,14 +94,84 @@
             },
         });
 
-       
+        socket.on('generating_script', function(data) {
+            // console.log("gen: " + JSON.stringify(data.output));
+            var message = data.output;
+            if(data.type === "error") {
+                message = '<font color="red"><b>' + message + '</b></font>';
+            }
+
+            
+            var toDisplay = $("#propertiesModal").data("docname") == data.docName? true : false;
+            console.log("docName: " + $("#propertiesModal").data("docname") + ", toDisplay: " + toDisplay);
+
+            if(message !== undefined && toDisplay) {
+                $('#genOutput').html($('#genOutput').html() + message + '<br />');
+            }
+            
+        });
+
+        function greetUser() {
+          var fullName = sessionStorage.getItem('fullName');
+
+          if(fullName !== undefined && fullName !== null && fullName.length > 0) {
+            fullName = fullName.split(" ")[0];
+            $('#greeting').html("Hello " + fullName + "!<br><small>What would you like to do?</small>");
+          
+          } else {
+
+            $.ajax({
+              url: '/userData',
+              data: { username : sessionStorage.getItem('username')},
+              type: 'GET',
+              success: function (jsonData) {
+                  sessionStorage.setItem('fullName', JSON.parse(jsonData).fullName);
+                  // alert("Success in GET! Name: " + JSON.parse(jsonData).fullName);
+                  $('#greeting').html("Hello " + JSON.parse(jsonData).fullName.split(" ")[0] + "!<br><small>What would you like to do?</small>");
+              },
+              error: function (err) {
+                console.log("Error while getting user's data: " + err);
+                $('#greeting').html("Hello " + sessionStorage.getItem('username') + "!<br><small>What would you like to do?</small>");
+              },
+            });
+          }
+          
+        }
+
+        socket.on('executing_script', function(data) {
+            // console.log("exec: " + JSON.stringify(data.output));
+            var message = data.output;
+            // console.log("message: " + message + "json message: " + JSON.stringify(message) + ", length: " + message.length + ", " + JSON.stringify(message).length);
+            if(data.type === "error") {
+                message = '<font color="red">' + message + '</font>';
+            }
+
+            var toDisplay = $("#propertiesModal").data("docname") == data.docName? true : false;
+            console.log("docName: " + $("#propertiesModal").data("docname") + ", toDisplay: " + toDisplay);
+            
+            if(message !== undefined && toDisplay) {
+                $('#execOutput').html($('#execOutput').html() + message + '<br />');
+            }
+        });
 
       });
+
+      function executeDoc(appName, documentName) {
+        // console.log("To execute: " + appName + ", " + documentName);
+        var formData = {
+          "appName": appName,
+          "documentName": documentName,
+          "homePage": true
+        };
+        var compiled = templates["ExecuteScript"];
+        $('#modalDiv').html("");
+        $('#modalDiv').append(compiled.render(formData));
+        $(".bs-example-modal-lg").modal();
+      }
 
       function getDoc(documentName) {
         $.ajax({
                 url: '/pipestudio/getDoc',
-                // dataType: "jsonp",
                 data: { "documentName" : documentName, username : sessionStorage.getItem('username')},
                 type: 'GET',
                 success: function (jsonData) {
@@ -141,7 +182,67 @@
                 error: function (err) {
                     alert("Failure in GET" + JSON.stringify(err));
                 },
+              });
+      }
+
+      function displayInfo(documentName) {
+
+        $.ajax({
+                url: '/pipestudio/getExecMessages',
+                data: { "documentName" : documentName, username : sessionStorage.getItem('username')},
+                type: 'GET',
+                success: function (jsonData) {
+                  jsonData = JSON.parse(jsonData);
+                  // console.log("received: " + JSON.stringify(jsonData.result));
+                    var infoCompiled = templates["InfoBox"];
+
+                    $("#modalDiv").html("");
+                    $("#modalDiv").append(infoCompiled.render({ "docName": documentName}));
+                    $('#propertiesModal').modal();    //this div comes from pre-compiled template
+
+                    $('#runningScript').html(jsonData.result.script);
+
+                    if(jsonData.result.execMessages !== undefined) {
+                      for(var i=0; i < jsonData.result.execMessages.length; i++) {
+                        var message = jsonData.result.execMessages[i];
+                        console.log("log " + i + ": " + message);
+                        // console.log("message: " + message + "json message: " + JSON.stringify(message) + ", length: " + message.length + ", " + JSON.stringify(message).length);
+                        if(message.type === "error") {
+                            message.output = '<font color="red">' + message.output + '</font>';
+                        }
+                        
+                        if(message !== undefined) {
+                          console.log("appending: " + JSON.stringify(message.output));
+                          $('#execOutput').html($('#execOutput').html() + message.output + '<br />');
+                        }
+                      }
+                    }
+                },
+                error: function (err) {
+                    alert("Failure in GET" + JSON.stringify(err));
+                },
             });
+      }
+
+      function checkboxChanged(checked, docName) {
+        console.log("Checkbox: " + checked + ", docName: " + docName);
+        $.ajax({
+                url: '/pipestudio/notify',
+                data: {
+                  "documentName" : docName,
+                  username : sessionStorage.getItem('username'),
+                  notify: checked
+                },
+                type: 'POST',
+                success: function (jsonData) {
+                    // sessionStorage.setItem('docData', JSON.stringify(JSON.parse(jsonData).result));
+                    // alert("Success in GET! " + JSON.stringify(JSON.parse(jsonData).result));
+                    // $('#pipestudio').trigger('click');
+                },
+                error: function (err) {
+                    alert("Failure in GET" + JSON.stringify(err));
+                },
+              });
       }
   </script>
 
@@ -192,7 +293,8 @@
         <h3 style="text-align: left;"><u> Documents </u><br><small>Check status of your last documents.</small></h3>
         <div id="documents_table"> </div>
 
-        
+        <div id="modalDiv">
+        </div>
 
       </div>
     </div><!-- /.container -->

@@ -30,6 +30,8 @@ const ROUND_OPEN_KEY = "(";
 const ROUND_CLOSE_KEY = ")";
 const BRACE_OPEN_KEY = "{";
 const BRACE_CLOSE_KEY = "}";
+const SQUARE_OPEN_KEY = "[";
+const SQUARE_CLOSE_KEY = "]";
 const ID_KEY = "id";
 const INPUT_KEY = "_input";
 const OUTPUT_KEY = "_output";
@@ -67,7 +69,7 @@ const FINAL_PREFIX = "$finalResult";
 
 
 
-module.exports = function(app, mongo, io, cookie) {
+module.exports = function(app, mongo, io, cookie, transporter) {
 
 /*
  * Tasks:
@@ -77,13 +79,24 @@ module.exports = function(app, mongo, io, cookie) {
  * - Log errors using bunyan
  */
 
+  function sendSocketMessage(fileName, user, logToDB, sessionID, eventName, message) {
+    message.output = SQUARE_OPEN_KEY +  new Date().toISOString() + SQUARE_CLOSE_KEY  + BLANK_SPACE_KEY + message.output;
+    message.docName = fileName;
+    
+    if(logToDB) {
+      logExecMessageToDB(fileName, user, eventName, sessionID, message);
+    }
+
+    io.sockets.in(sessionID).emit(eventName, message);
+  }
+
   function writeScript(filePath, fileName, generatedScript, sessionID, user, eventName) {
 
     fs.writeFile(filePath, generatedScript, function (err) {
       if (err) {
-        io.sockets.in(sessionID).emit(eventName, {output: "Error creating files.................FAILED", type: "error"});
+        sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Error creating files.................FAILED", type: "error"});
         var error = "Error:\n" + err;
-        io.sockets.in(sessionID).emit(eventName, {output: error, type: "error"});
+        sendSocketMessage(fileName, user, false, sessionID, eventName, {output: error, type: "error"});
         console.log("Could not write script file for execution. Error: " + err);
         //FIXME Better error handling
         throw err;
@@ -104,8 +117,7 @@ module.exports = function(app, mongo, io, cookie) {
       
       var outputPath = path.join(path.dirname(filePath), outputFileName);
 
-      io.sockets.in(sessionID).emit(eventName, {output: "Starting execution...................", type: "message"});
-      logExecMessageToDB(fileName, user, {output: "Starting execution...................", type: "message"});
+      sendSocketMessage(fileName, user, true, sessionID, eventName, {output: "Starting execution...................", type: "message"});
 
       //TODO Move hard-coding to config file
       var scriptExecutor = spawn(SCRIPT_PATH, [pstudio_config.get(COMPILER_PATH), filePath, outputPath, path.dirname(filePath), outputExecObject]);
@@ -113,9 +125,11 @@ module.exports = function(app, mongo, io, cookie) {
 
       scriptExecutor.stdout.on('data', function(data) {
         // data = "stdout: " + data;
+        // console.log("stdout: " + data);
         if(data.length > 0) {
-          io.sockets.in(sessionID).emit(eventName, {output: data, type: "message"});
-          logExecMessageToDB(fileName, user, {output: data, type: "message"});
+          // console.log("data1: " + data + "l: " + data.length);
+          // console.log("data2: " + JSON.stringify(data));
+          sendSocketMessage(fileName, user, true, sessionID, eventName, {output: data, type: "message"});
         }
         
         console.log("" + data);
@@ -123,24 +137,100 @@ module.exports = function(app, mongo, io, cookie) {
 
       scriptExecutor.stderr.on('data', function(err) {
         // data = "stderr: " + data;
-        io.sockets.in(sessionID).emit(eventName, {output: err, type: "error"});
-        logExecMessageToDB(fileName, user, {output: err, type: "error"});
-        console.log("stderr: " + err);
+        // err = "stderr1: " + err;
+        // console.log("stderr1: " + err);
+        sendSocketMessage(fileName, user, true, sessionID, eventName, {output: err, type: "error"});
       });
 
       scriptExecutor.on('error', function(err) {
-        io.sockets.in(sessionID).emit(eventName, {output: err, type: "error"});
-        logExecMessageToDB(fileName, user, {output: err, type: "error"});
+        // console.log("stderr2: " + err);
+        // err = "stderr2: " + err;
+        sendSocketMessage(fileName, user, true, sessionID, eventName, {output: err, type: "error"});
         console.log("Error executing script: " + err);
       });
 
       scriptExecutor.once('exit', function(code, signal) {
         var message = "Execution completed with return code: " + code;
-        io.sockets.in(sessionID).emit(eventName, {output: message, type: "message"});
-        logExecMessageToDB(fileName, user, {output: message, type: "message"});
+        sendSocketMessage(fileName, user, true, sessionID, eventName, {output: message, type: "message"});
         updateStatus(fileName, user, EXEC_COMPLETE);
         console.log("continued execution, " + code + ", " + signal);
 
+        var userColl = mongo.collection('users');
+
+        userColl.findOne({username : user}, function(err, userData) {
+          if(err) {
+            var error = "Error:\n" + err;
+            throw new Error("Error while getting user information after execution: " + err);
+          }
+
+          // console.log("user info: " + JSON.stringify(userData));
+
+          var coll = mongo.collection(pstudio_config.get(DB_NAME));
+
+          coll.findOne({name: fileName, username : user}, {_id:0, script: 1, execMessages: 1, email_notification: 1}, function(err, documentData) {
+
+            if(err) {
+              var error = "Error:\n" + err;
+              throw new Error("Error while getting document information after execution: " + err);
+            }
+
+            if(documentData.email_notification == "true") {
+
+              var emailText = 'The execution of <b>' + fileName  + '</b> is complete. The executed script and execution log is attached to this email.<br /><br />';
+              emailText = emailText + "\n The output files are available under <i>";
+              emailText = emailText + S(path.dirname(filePath)).replaceAll(path.join(EXECUTIONS_DIR, user), "Output").s;
+              emailText = emailText + "</i> and can be downloaded from AutoStudio app."
+
+              var execLog = "";
+
+              if(documentData.execMessages !== undefined) {
+                for(var i=0; i < documentData.execMessages.length; i++) {
+                  var message = documentData.execMessages[i];
+                  // console.log("log " + i + ": " + message);
+                  // console.log("message: " + message + "json message: " + JSON.stringify(message) + ", length: " + message.length + ", " + JSON.stringify(message).length);
+                  
+                  
+                  if(message !== undefined) {
+                    if(message.type === "error") {
+                      message.output = 'Error: ' + message.output;
+                    }
+
+                    execLog = execLog + message.output + "\n";
+                  }
+                }
+              }
+
+              var mailOptions = {
+                from: 'do not reply <noreply@autostudio.mailer>',
+                to: userData.email,
+                subject: fileName + ' Execution Complete', // Subject line
+                html: emailText,
+                attachments: [
+                  {
+                    filename: fileName,
+                    content: documentData.script
+                  },
+                  {
+                    filename: fileName + ".log",
+                    content: execLog
+                  }
+                ]
+              };
+
+              // send mail with defined transport object
+              transporter.sendMail(mailOptions, function(error, info) {
+                if(error){
+                    console.log(error);
+                } else {
+                    console.log('Message sent: ' + info.response);
+                }
+              });
+            }
+
+            
+
+          });
+        });
       });
     });
 
@@ -149,7 +239,7 @@ module.exports = function(app, mongo, io, cookie) {
 
   function checkPathsAndExecute(dirPath, fileName, user, generatedScript, files, sessionID, eventName) {
 
-    io.sockets.in(sessionID).emit(eventName, {output: "Validating paths.......................", type: "message"});
+    sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Validating paths.......................", type: "message"});
 
     // Before starting execution, let's create the required paths
     fs.exists(dirPath, function(exists) {
@@ -158,7 +248,7 @@ module.exports = function(app, mongo, io, cookie) {
       // We would probably always land up here as there is a timestamp involved.
       if(!exists) {
         // console.log(dirPath + " does not exist. Creating.");
-        io.sockets.in(sessionID).emit(eventName, {output: "Creating required files..............", type: "message"});
+        sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Creating required files..............", type: "message"});
 
         var createDirectory = spawn("mkdir", ['-p', dirPath]);    //for creation of parents if they do no exist
 
@@ -181,9 +271,9 @@ module.exports = function(app, mongo, io, cookie) {
           // logger.error("Error occured in " + MODULE + SEP + METHOD + CALLBACK_APPEND, {error: err});
           // throw new Error('Could not connect to mongodb: ' + err);
           //FIXME Do some better erorr handlings, currently just outputting to console
-          io.sockets.in(sessionID).emit(eventName, {output: "Error creating files.................FAILED", type: "error"});
+          sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Error creating files.................FAILED", type: "error"});
           var error = "Error:\n" + err;
-          io.sockets.in(sessionID).emit(eventName, {output: error, type: "error"});
+          sendSocketMessage(fileName, user, false, sessionID, eventName, {output: error, type: "error"});
           console.log("Could not create directory for execution. Error: " + err);
         });
       } else {
@@ -202,9 +292,7 @@ module.exports = function(app, mongo, io, cookie) {
 
       coll.update({name: documentName, username : user}, {$set: {status: currentStatus}}, function(err) {
         if(err) {
-          io.sockets.in(sessionID).emit(eventName, {output: "Error during storage.................FAILED", type: "error"});
           var error = "Error:\n" + err;
-          io.sockets.in(sessionID).emit(eventName, {output: error, type: "error"});
           throw new Error("Error while updating document status: " + err);
         }
 
@@ -215,14 +303,17 @@ module.exports = function(app, mongo, io, cookie) {
   }
 
 
-  function logExecMessageToDB(documentName, user, message) {
+  function logExecMessageToDB(documentName, user, eventName, sessionID, message) {
+    // console.log("in log1: " + message);
+    // console.log("in log2: " + JSON.stringify(message));
+
       var coll = mongo.collection(pstudio_config.get(DB_NAME));
 
-      coll.update({name: documentName, username : user}, {$push: {execMessages: message, status: 'Executing'}}, function(err) {
+      coll.update({name: documentName, username : user}, { $push: {execMessages: message}, $set: {status: 'Executing'}}, function(err) {
         if(err) {
-          io.sockets.in(sessionID).emit(eventName, {output: "Error during storage.................FAILED", type: "error"});
+          sendSocketMessage(documentName, user, false, sessionID, eventName, {output: "Error during storage.................FAILED", type: "error"});
           var error = "Error:\n" + err;
-          io.sockets.in(sessionID).emit(eventName, {output: error, type: "error"});
+          sendSocketMessage(documentName, user, false, sessionID, eventName, {output: error, type: "error"});
           throw new Error("Error while saving execution status: " + err);
         }
 
@@ -237,15 +328,15 @@ module.exports = function(app, mongo, io, cookie) {
   function saveScriptToDB(generatedScript, documentName, user, sessionID, eventName) {
       var coll = mongo.collection(pstudio_config.get(DB_NAME));
 
-      coll.update({name: documentName, username : user}, {$set: {script: generatedScript, status: 'Scripted'}}, function(err) {
+      coll.update({name: documentName, username : user}, {$set: {script: generatedScript, status: 'Scripted', execMessages: []}}, function(err) {
         if(err) {
-          io.sockets.in(sessionID).emit(eventName, {output: "Error during storage.................FAILED", type: "error"});
+          sendSocketMessage(documentName, user, false, sessionID, eventName, {output: "Error during storage.................FAILED", type: "error"});
           var error = "Error:\n" + err;
-          io.sockets.in(sessionID).emit(eventName, {output: error, type: "error"});
+          sendSocketMessage(documentName, user, false, sessionID, eventName, {output: error, type: "error"});
           throw new Error("Error while saving generated script: " + err);
         }
 
-        io.sockets.in(sessionID).emit(eventName, {output: "Storing script into Database.........DONE", type: "message"});
+        sendSocketMessage(documentName, user, false, sessionID, eventName, {output: "Storing script into Database.........DONE", type: "message"});
 
         // console.log("Script saved!");
       });
@@ -304,7 +395,7 @@ module.exports = function(app, mongo, io, cookie) {
 
     if(params !== undefined && params.length > 0) {
 
-      currentStatement = currentStatement + NEW_LINE_KEY;
+      currentStatement = currentStatement + BLANK_SPACE_KEY;
 
       //Here, each paramater is going to be an Object. Let's parse into JSONObject and get corresponding value.
       for(var j = 0; j < params.length; j++) {
@@ -374,7 +465,7 @@ module.exports = function(app, mongo, io, cookie) {
     }
     */
 
-    firstStatement = firstStatement + DEFINE_KEY + container.label;
+    firstStatement = firstStatement + DEFINE_KEY + container.label + BLANK_SPACE_KEY;
     firstStatement = firstStatement + ROUND_OPEN_KEY + MACRO_INPUT_PREFIX + statusVariables.input_sequence + ROUND_CLOSE_KEY;
     statusVariables.input_sequence++;    //TODO We do not know if there could be more than one inputs to a MACRO
 
@@ -592,6 +683,24 @@ module.exports = function(app, mongo, io, cookie) {
     return statusVariables.finalString;
   }
 
+  function prepareExecution(parsedData, sessionID, eventName, fileName, user, files) {
+
+    //generate the script by default and save it to database so there are no inconsistencies
+    var generatedScript = generateScript(parsedData);
+
+    sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Script generation....................COMPLETE", type: "message"});
+
+    saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
+
+    var today = new Date();
+    var dateString = today.getDate() + UNDERSCORE_KEY + today.getMonth() + UNDERSCORE_KEY + today.getFullYear();
+
+    // This will create a path: ./executions/output/<username>/<date_month_year>/<filename_dateTime>
+    var dirPath = path.join(EXECUTIONS_DIR, user, dateString, fileName + UNDERSCORE_KEY + today.toJSON());
+
+    checkPathsAndExecute(dirPath, fileName, user, generatedScript, files, sessionID, eventName);
+  }
+
 
 app.get('/pipestudio/getList', function(req, res) {
 
@@ -605,7 +714,7 @@ app.get('/pipestudio/getList', function(req, res) {
   var coll = mongo.collection(pstudio_config.get(DB_NAME));
 
   //TODO: check if we support localStorage and change columns below
-  var stream = coll.find({ username : user }, {name: 1, status: 1, _id:0}).sort({name: 1}).stream();
+  var stream = coll.find({ username : user }, {name: 1, status: 1, _id:1}).sort({name: 1}).stream();
   var jsonData = JSON.parse('{"result": []}');
   stream.on("data", function(item) {
     jsonData["result"].push(item);
@@ -634,8 +743,15 @@ app.get('/pipestudio/getHomePageList', function(req, res) {
 
   //TODO: check if we support localStorage and change columns below
   var stream = coll.find({ username : user }, {_id:0, name: 1, status: 1, email_notification: 1}).sort({accessedTimestamp: -1}).limit(5).stream();
-  var jsonData = JSON.parse('{"tuples": []}');
+  var jsonData = JSON.parse('{"tuples": [], "appName":"pipestudio" }');
   stream.on("data", function(item) {
+
+    if(item.email_notification == "true") {
+      item.email_notification = "checked";
+    } else {
+      item.email_notification = "";
+    }
+
     jsonData["tuples"].push(item);
     // console.log("data: " + JSON.stringify(jsonData));
   });
@@ -725,19 +841,17 @@ app.post('/pipestudio/generateScript', function(req, res) {
 
   var eventName = 'generating_script';
   var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
-  // console.log("Request received, sessionID: " + req.sessionID + "\n from cookie: " + sessionID);
-
-  io.sockets.in(sessionID).emit(eventName, {output: "Generating script....................STARTED", type: "message"});
-
   var parsedData = JSON.parse(JSON.stringify(req.body.toGenerate.documentData));
   var fileName = req.body.toGenerate.name;
   var user = req.body.toGenerate.username;
+
+  sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Generating script....................STARTED", type: "message"});
     
   var generatedScript = generateScript(parsedData);
 
   // console.log("generated: " + generatedScript);
   //FIXME Remove these hardcoded tags, let's handle on client side
-  io.sockets.in(sessionID).emit(eventName, {output: "Script generation....................COMPLETE\n\nScript:\n<font color='#008C8C'>" + generatedScript + "</font>", type: "message"});
+  sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Script generation....................COMPLETE\n\nScript:\n<font color='#008C8C'>" + generatedScript + "</font>", type: "message"});
 
   saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
   
@@ -770,52 +884,36 @@ app.post('/pipestudio/uploadFile', function(req, res) {
 
 app.post('/pipestudio/executeScript', function(req, res) {
 
+  
+
   var eventName = 'executing_script';
   var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
-  console.log("Request received, sessionID: " + req.sessionID + "\n from cookie: " + sessionID);
-
-  io.sockets.in(sessionID).emit(eventName, {output: "Generating script....................STARTED", type: "message"});
-
-  var parsedData = JSON.parse(JSON.stringify(req.body.toGenerate.documentData));
+  var parsedData = JSON.stringify(req.body.toGenerate.documentData);
   var fileName = req.body.toGenerate.name;
   var user = req.body.toGenerate.username;
   var files = req.body.toGenerate.files;
 
+  console.log("Request received, sessionID: " + req.sessionID + "\n from cookie: " + sessionID);
+
   if(files === undefined) {
     files = [];
   }
-  // var form = new formidable.IncomingForm();
-  // var uploadedFile = "";
-  // form.uploadDir = "/home/nikhilrane/node_play/";
 
-  // form.on('file', function(field, file) {
-  //   //rename the incoming file to the file's name
-  //   uploadedFile = path.join(form.uploadDir, file.name);
-  //   fs.rename(file.path, uploadedFile);
-  // });
+  sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Generating script....................STARTED", type: "message"});
+  // console.log("parsedData: " + parsedData + ", l: " + parsedData.length);
 
-  //generate the script by default and save it to database so there are no inconsistencies
-  var generatedScript = generateScript(parsedData);
+  // If there is data inside request, process it and execute
+  if(parsedData !== undefined && parsedData.length > 2) {
+    prepareExecution(JSON.parse(parsedData), sessionID, eventName, fileName, user, files);
+  } else {
+    // If there is no data passed inside request, then get it from DB
+    var coll = mongo.collection(pstudio_config.get(DB_NAME));
+    coll.findOne({name: fileName, username : user}, {"documentData":1, "name":1, _id:0}, function(err, jsonData) {
+      if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
 
-  io.sockets.in(sessionID).emit(eventName, {output: "Script generation....................COMPLETE", type: "message"});
-
-  saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
-
-  var today = new Date();
-  var dateString = today.getDate() + UNDERSCORE_KEY + today.getMonth() + UNDERSCORE_KEY + today.getFullYear();
-
-  // This will create a path: ./executions/output/<username>/<date_month_year>/<filename_dateTime>
-  var dirPath = path.join(EXECUTIONS_DIR, user, dateString, fileName + UNDERSCORE_KEY + today.toJSON());
-
-  // console.log("final path: " + dirPath);
-
-  // form.parse(req, function(err, fields, files) {
-    // console.log(util.inspect({fields: fields, files: files}));
-  checkPathsAndExecute(dirPath, fileName, user, generatedScript, files, sessionID, eventName);
-
-  //   res.end(JSON.stringify( { result: true }));
-  // });
-
+      prepareExecution(jsonData.documentData, sessionID, eventName, fileName, user, files);
+    });
+  }
   
 
   res.end(JSON.stringify( { result: true }));
@@ -829,31 +927,13 @@ app.get('/pipestudio/downloadExecs', function(req, res) {
   var pathToWalk = path.join(EXECUTIONS_DIR, user);
   var walker;
 
-  // fs.readdir(EXECUTIONS_DIR + , {}, function(err, files) {
-  //   if(err) { console.log("Error: " + err); }
-
-  //   for(var i=0; i < files.length; i++) {
-  //     console.log("file: " + files[i]);
-  //   }
-
-  //   res.end(JSON.stringify( { result: files }));
-  // });
-
   walker = walk.walk(pathToWalk, { followLinks: false, filters: []});
 
   var dirTree = {};
   walker.on("names", function (root, nodeNamesArray) {
     var p = S(root).replaceAll(pathToWalk, "output").s;
     dirTree[p] = nodeNamesArray;
-    
-    // console.log("root: " + JSON.stringify(root));
-    // console.log("nodeNamesArray: " + JSON.stringify(nodeNamesArray));
-
-    // nodeNamesArray.sort(function (a, b) {
-    //   if (a > b) return 1;
-    //   if (a < b) return -1;
-    //   return 0;
-    // });
+   
   });
 
   walker.on('end', function() {
@@ -862,41 +942,6 @@ app.get('/pipestudio/downloadExecs', function(req, res) {
 
 });
 
-// app.get('/pipestudio/downloadFile', function(req, res) {
-//   var user = req.query.username;
-//   var filePath = req.query.fileToDownload;
-//   var finalPath = filePath.replace("output", path.join(EXECUTIONS_DIR, user));
-//   console.log("finalPath: " + finalPath);
-
-//   //res.attachment();
-//   res.setHeader("Content-Type", "text/html");
-
-//   res.download(finalPath, path.basename(finalPath), function(err) {
-//     if(err) {
-//       console.log("Error during download: " + err);
-//     } else {
-//       console.log("File download completed!");
-//     }
-//   });
-// });
-
-// app.get('/pipestudio/downloadFile', function(req, res) {
-//   var user = req.body.username;
-//   var filePath = req.body.fileToDownload;
-//   var finalPath = "/home/nikhilrane/git_rep/autostudio/executions/output/nik/19_7_2014/households_2014-08-19T16:28:09.551Z/households.cpp";
-//   // console.log("finalPath: " + finalPath);
-
-//   //res.attachment();
-//   //res.setHeader("Content-Disposition", "attachment; filename=" + path.basename(finalPath));
-
-//   res.download(finalPath, path.basename(finalPath), function(err) {
-//     if(err) {
-//       console.log("Error during download: " + err);
-//     } else {
-//       console.log("File download completed!");
-//     }
-//   });
-// });
 
 app.post('/pipestudio/downloadFile', function(req, res) {
   var user = req.body.username;
@@ -916,6 +961,58 @@ app.post('/pipestudio/downloadFile', function(req, res) {
     }
   });
 });
+
+app.get('/pipestudio/getExecMessages', function(req, res) {
+
+  var user = req.query.username;
+  var fileName = req.query.documentName;
+
+  var coll = mongo.collection(pstudio_config.get(DB_NAME));
+  coll.findOne({name: fileName, username : user}, {"execMessages":1, "script": 1}, function(err, jsonData) {
+    if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
+
+    res.end(JSON.stringify( { result: jsonData }));
+  });
+
+  
+});
+
+
+app.post('/pipestudio/deleteDoc', function(req, res) {
+  var user = req.body.username;
+  var documentName = req.body.documentName;
+  // var documentID = "ObjectId(\"" + req.body.documentID + "\")";
+  // console.log("have to delete: " + documentName);
+
+  var coll = mongo.collection(pstudio_config.get(DB_NAME));
+  coll.remove({name: documentName, username : user}, function(err, jsonData) {
+    if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
+    console.log("Deleted: " + documentName + ", user: " + user);
+
+    res.end(JSON.stringify( { result: true }));
+  });
+  
+});
+
+
+app.post('/pipestudio/notify', function(req, res) {
+  var user = req.body.username;
+  var documentName = req.body.documentName;
+  var notify = req.body.notify;
+
+  var coll = mongo.collection(pstudio_config.get(DB_NAME));
+  coll.update({name: documentName, username : user}, {$set: {email_notification: notify}}, function(err) {
+    if(err) {
+      var error = "Error:\n" + err;
+      throw new Error("Error while updating email notification: " + err);
+    }
+
+    res.end(JSON.stringify( { result: true }));
+  });
+
+  
+});
+
 
 
 

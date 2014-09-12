@@ -1,0 +1,26 @@
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th><b>#</b></th>
+			<th><b>Name</b></th>
+			<th><b>App Name</b></th>
+			<th><b>Status</b></th>
+			<th><b>Action</b></th>
+			<th><b>Email Notification</b></th>
+		</tr>
+	</thead>
+	<tbody>
+	{{#tuples}}
+		<tr>
+			<td></td>
+			<td> <a href="#" onclick='getDoc("{{name}}")'>{{name}}</a> </td>
+			<td> {{appName}} </td>
+			<td> {{status}} </td>
+			<td> <button class='btn btn-danger btn-sm' onclick='executeDoc("{{appName}}", "{{name}}")'><span class="glyphicon glyphicon-play"></span></button>
+				&nbsp;<button class='btn btn-info btn-sm' onclick='displayInfo("{{name}}")'><span class="glyphicon glyphicon-stats"></span></button>
+			</td>
+			<td style="padding-left:3em;"><label class='btn btn-info'><input type='checkbox' {{email_notification}} onchange="checkboxChanged(this.checked, '{{name}}')"> </label> </td>
+		</tr>
+	{{/tuples}}
+	</tbody>
+</table>

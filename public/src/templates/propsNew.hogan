@@ -1,0 +1,296 @@
+
+        <div id="propertiesModal" class="modal fade bs-example-modal-lg">
+          <div class="modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><b>{{label}}</b> Properties</h4>
+              </div>
+              <div class="modal-body">
+
+
+
+<form id="{{shapeID}}_form" class='form-horizontal'>
+    <br>
+    <div class='col-sm-6' id='{{shapeID}}_div_text'>
+
+        <!-- 'with' parameter section -->
+        <div id='{{shapeID}}_with_div' class='control-group'>
+            <div class="radio col-sm-2">
+                <label>
+                    <input type="radio" name="{{shapeID}}_paramsRadios" id="{{shapeID}}_with_radio" value="{{shapeID}}_with">with
+                </label>
+            </div>
+            <input id='{{shapeID}}_with_text' name='with' class='col-sm-9 {{shapeID}}_paramsText' type='text' value='' onchange="withChanged()" placeholder="You can directly enter all values here..." />
+        </div>
+
+        <br>
+        <!-- 'using' parameter section -->
+        <div id='{{shapeID}}_using_div' class='control-group'>
+            <div class="radio col-sm-2">
+                <label>
+                    <input type="radio" name="{{shapeID}}_paramsRadios" id="{{shapeID}}_using_radio" value="{{shapeID}}_using">using
+                </label>
+            </div>
+            <input id='{{shapeID}}_using_text' name='using' class='col-sm-9  {{shapeID}}_paramsText' type='text' value='' onchange="usingChanged()" placeholder="You can directly enter all values here..." />
+        </div>
+        <br>
+        <!-- 'comment' parameter section -->
+        <div id='{{shapeID}}_comment_div' class='control-group'>
+            <div class="radio col-sm-2">
+                <label>
+                    <input type="radio" name="{{shapeID}}_paramsRadios" id="{{shapeID}}_comment_radio" value="{{shapeID}}_comment">comment
+                </label>
+            </div>
+
+            <textarea id='{{shapeID}}_comment_text' name='comment' value='' onchange="commentChanged()" placeholder="Comment goes here..." class="col-sm-9  {{shapeID}}_paramsText" rows="3"></textarea>
+        </div>
+
+
+    </div>
+    <!-- col-sm-6 (left side) section end -->
+
+    <!-- Parameter Tables section -->
+    <div class='col-sm-6' id='{{shapeID}}_div_table'>
+        <div class='control-group {{shapeID}}_paramsTable' id='{{shapeID}}_with_paramsTable' style='min-height:150px'>
+        </div>
+        <div class='control-group {{shapeID}}_paramsTable' id='{{shapeID}}_using_paramsTable' style='min-height:150px'>
+        </div>
+    </div>
+    <!-- col-sm-6 (right side) section end -->
+
+    <script>
+        $("#{{shapeID}}_with_paramsTable").html("");
+        $("#{{shapeID}}_using_paramsTable").html("");
+
+        {{#paramList}}
+        $("#{{paramID}}_text").once(function() {
+					$(this).val('{{{paramValue}}}');
+	    });
+        {{/paramList}}
+
+        function activityReadOnlyRenderer(instance, td, row, col, prop, value, cellProperties) {
+
+            if (typeof value !== "undefined" && value !== null && value !== "") {
+                td.innerHTML = value;
+                td.className = "htDimmed";
+            } else {
+                td.innerHTML = "";
+            }
+            return td;
+        }
+
+        function createWithTable() {
+
+            $(".{{shapeID}}_paramsTable").css("display", "none");
+            $("#{{shapeID}}_with_paramsTable").css("display", "block");
+
+            $("#{{shapeID}}_with_paramsTable").handsontable({
+                data: getParsedWithData(),
+                minRows: 1,
+                manualColumnResize: true,
+                colWidths: [120, 180],
+                rowHeaders: false,
+                minSpareRows: 1,
+                stretchH: 'last',
+                colHeaders: ["Field Name", "Field Value"],
+                afterChange: function(array, source) {
+                    if (array !== null) {
+                        var data = this.getData();
+                        var final = "";
+
+                        if (data !== null) {
+
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].fieldName !== null && data[i].fieldValue !== null) {
+                                    if (final.length > 0) { final = final + ", "; }
+
+                                    final = final + data[i].fieldName + " " + data[i].fieldValue;
+                                }
+                            }
+                        }
+                        $('#{{shapeID}}_with_text').val(final);
+                        app.updateFigureParameter("with", final);
+                    }
+                },
+                columns: [{data: "fieldName"}, {data: "fieldValue", type: {renderer: activityReadOnlyRenderer}}]
+            });
+            
+        }
+
+        createWithTable();
+
+        function createUsingTable() {
+
+            $(".{{shapeID}}_paramsTable").css("display", "none");
+            $("#{{shapeID}}_using_paramsTable").css("display", "block");
+            
+            $("#{{shapeID}}_using_paramsTable").handsontable({
+                data: getParsedUsingData(),
+                minRows: 1,
+                manualColumnResize: true,
+                colWidths: [120, 180],
+                rowHeaders: false,
+                minSpareRows: 1,
+                stretchH: 'last',
+                colHeaders: ["Parameter Name", " Parameter Value"],
+                afterChange: function(array, source) {
+                    if (array !== null) {
+                        var data = this.getData();
+                        var final = "";
+
+                        if (data !== null) {
+
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].param !== null && data[i].value !== null) {
+                                    if (final.length > 0) { final = final + ", "; }
+
+                                    final = final + data[i].param + " = " + data[i].value;
+                                }
+                            }
+                        }
+                        $('#{{shapeID}}_using_text').val(final);
+                        app.updateFigureParameter("using", final);
+                    }
+                },
+                columns: [{data: "param", type: {renderer: activityReadOnlyRenderer}}, {data: "value"}]
+	    });
+            
+        }
+        createUsingTable();
+
+
+        $('.{{shapeID}}_paramsText').prop('disabled', true); $("input[name={{shapeID}}_paramsRadios]:radio").prop('checked', false); $(".{{shapeID}}_paramsTable").css("display", "none");
+
+        $("input[name={{shapeID}}_paramsRadios]:radio").change(function() {
+            var option = $("input[name={{shapeID}}_paramsRadios]:checked", "#{{shapeID}}_form").val();
+            if (option === "{{shapeID}}_using") {
+                $('.{{shapeID}}_paramsText').prop('disabled', true);
+                $('#{{shapeID}}_using_text').prop('disabled', false);
+                $('.{{shapeID}}_paramsTable').hide();
+                $('#{{shapeID}}_using_paramsTable').show();
+
+                if ($("#{{shapeID}}_using_paramsTable").html() == "") {
+                    createUsingTable();
+                }
+            }
+
+
+            if (option === "{{shapeID}}_with") {
+                $('.{{shapeID}}_paramsText').prop('disabled', true);
+                $('#{{shapeID}}_with_text').prop('disabled', false);
+                $('.{{shapeID}}_paramsTable').hide();
+                $('#{{shapeID}}_with_paramsTable').show();
+                if ($("#{{shapeID}}_with_paramsTable").html() == "") {
+                    createWithTable();
+                }
+            }
+
+            if (option === "{{shapeID}}_comment") {
+                $('.{{shapeID}}_paramsText').prop('disabled', true);
+                $('#{{shapeID}}_comment_text').prop('disabled', false);
+                $('.{{shapeID}}_paramsTable').hide();
+            }
+        });
+
+
+        function getParsedWithData() {
+            var val = $('#{{shapeID}}_with_text').val();
+            var data = [];
+
+            if (val !== undefined) {
+                var dataArr = val.trim().split(',');
+                for (var i = 0; i < dataArr.length; i++) {
+                    var temp = {};
+                    var current = dataArr[i].trim().split(' ');
+                    temp["fieldName"] = current[0];
+                    temp["fieldValue"] = current[1];
+                    data.push(temp);
+                }
+            }
+            return data;
+
+        }
+
+        function withChanged() {
+            var val = $('#{{shapeID}}_with_text').val();
+            if (val !== undefined) {
+                app.updateFigureParameter("with", val);
+                $('#{{shapeID}}_with_paramsTable').handsontable('loadData', getParsedWithData());
+            }
+        }
+
+
+        function getParsedUsingData() {
+            var val = $('#{{shapeID}}_using_text').val();
+            var data = [];
+
+            if (val !== undefined) {
+                var dataArr = val.trim().replace(/,[^(?:\",\")]/g, '\u000B').split('\u000B');
+
+                for (var i = 0; i < dataArr.length; i++) {
+                    var temp = {};
+                    var current = dataArr[i].trim().split('=');
+                    temp["param"] = current[0];
+                    temp["value"] = current[1];
+                    data.push(temp);
+                }
+            }
+            return data;
+        }
+
+
+        function usingChanged() {
+
+            var val = $('#{{shapeID}}_using_text').val();
+            if (val !== undefined) {
+                app.updateFigureParameter("using", val);
+                $('#{{shapeID}}_using_paramsTable').handsontable('loadData', getParsedUsingData());
+            }
+
+        }
+
+
+        function commentChanged() {
+
+            var val = $('#{{shapeID}}_comment_text').val();
+            if (val !== undefined) {
+                val = val.replace(/\n/g, '\\n');
+                app.updateFigureParameter("comment", val);
+            }
+        }
+    </script>
+
+</form>
+
+
+
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -307,6 +307,7 @@ example.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
 
      onDoubleClick: function() {
         $("#modalDiv").html("");
+        this.generatePropertyPane(this.NAME);
         $("#modalDiv").append(this.renderedPane);
         $('#propertiesModal').modal();    //this div comes from pre-compiled template
       },

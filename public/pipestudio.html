@@ -18,7 +18,6 @@
     <script src="./public/draw2d/lib/raphael.js"></script>
     
     <script src="./public/js/jquery-1.11.1.js"></script>
-    <script src="./public/js/jquery.once.js"></script>
 
     <script src="./public/draw2d/lib/jquery.autoresize.js"></script>
     <script src="./public/draw2d/lib/jquery-touch_punch.js"></script>
@@ -459,9 +458,40 @@
 	<script src="./public/src/templates/OperatorImageList.js"></script>
 	<script src="./public/src/templates/ConnectionTypeList.js"></script>
     <script src="./public/src/templates/ExecuteScript.js"></script>
-    <script src="./public/src/templates/propsNew.js"></script>
+    <script src="./public/src/templates/OperatorProperties.js"></script>
     <script src="./public/src/templates/DownloadFiles.js"></script>
     <script src="./public/src/templates/DocumentsList.js"></script>
+    
+    <!-- Operator specific templates -->
+    <script src="./public/src/templates/AggProps.js"></script>
+    <script src="./public/src/templates/DBjoinProps.js"></script>
+    <script src="./public/src/templates/DBsourceProps.js"></script>
+    <script src="./public/src/templates/DBwriterProps.js"></script>
+    <script src="./public/src/templates/FilterProps.js"></script>
+    <script src="./public/src/templates/FSProps.js"></script>
+    <script src="./public/src/templates/MapProps.js"></script>
+    <script src="./public/src/templates/MatcherProps.js"></script>
+    <script src="./public/src/templates/MemSourceProps.js"></script>
+    <script src="./public/src/templates/ProjectProps.js"></script>
+    <script src="./public/src/templates/RHashProps.js"></script>
+    <script src="./public/src/templates/RScriptProps.js"></script>
+    <script src="./public/src/templates/SHashProps.js"></script>
+    <script src="./public/src/templates/SPARQLJoinProps.js"></script>
+    <script src="./public/src/templates/SSinkProps.js"></script>
+    <script src="./public/src/templates/SSourceProps.js"></script>
+    <script src="./public/src/templates/SWriterProps.js"></script>
+    <script src="./public/src/templates/TriplifierProps.js"></script>
+    <script src="./public/src/templates/TuplifierProps.js"></script>
+    <script src="./public/src/templates/TwitterReaderProps.js"></script>
+    <script src="./public/src/templates/UnionProps.js"></script>
+    <script src="./public/src/templates/UserDefinedProps.js"></script>
+    <script src="./public/src/templates/WinProps.js"></script>
+    <script src="./public/src/templates/ZMQPublisherProps.js"></script>
+    <script src="./public/src/templates/ZMQPullProps.js"></script>
+    <script src="./public/src/templates/ZMQPushProps.js"></script>
+    <script src="./public/src/templates/ZMQSubscriberProps.js"></script>
+
+
 
     <script src="./public/js/regex-colorizer.js"></script>
     <script src="./public/js/jquery-caretposition.js"></script>
@@ -566,7 +596,11 @@
         }
 
         .modal-lg {
-            margin: 30px;
+            margin: 30px auto;
+        }
+
+        .successBorder {
+            border-color: rgb(0, 225, 0);
         }
     </style>
 
@@ -608,7 +642,7 @@
                             message = '<font color="red"><b>' + message + '</b></font>';
                         }
 
-                        if(message.length !== undefined) {
+                        if(message !== undefined) {
                             $('#genOutput').html($('#genOutput').html() + message + '<br />');
                         }
                         
@@ -622,7 +656,7 @@
                             message = '<font color="red">' + message + '</font>';
                         }
                         
-                        if(message.length !== undefined) {
+                        if(message !== undefined) {
                             $('#execOutput').html($('#execOutput').html() + message + '<br />');
                         }
                     });
@@ -706,7 +740,7 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

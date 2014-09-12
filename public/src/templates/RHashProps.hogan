@@ -1,0 +1,167 @@
+<div id="propertiesModal" class="modal fade">
+    <div class="modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title"><b>{{label}}</b> Properties</h4>
+            </div>
+            <div class="modal-body">
+
+
+                <script>
+                    $(document).ready(function() {
+
+                        $("#{{shapeID}}_using_paramsTable").html("").show();
+
+                        {{#paramList}}
+                            $("#{{paramID}}_text").val('{{{paramValue}}}'); 
+                        {{/paramList}}
+
+                        var w =  $('#propertiesModal').innerWidth();
+
+                        // This is a really wierd hack but we don't get
+                        // the exact width of modal or form here.
+                        w = (w/4)-30;
+
+
+                        $("#{{shapeID}}_using_paramsTable").show().handsontable({
+                            data: getParsedUsingData(),
+                            minRows: 1,
+                            colWidths: [w, w],
+                            manualColumnResize: true,
+                            rowHeaders: false,
+                            minSpareRows: 1,
+                            colHeaders: ["Parameter Name", " Parameter Value"],
+                            afterChange: function(array, source) {
+                                if (array !== null) {
+                                    var data = this.getData();
+                                    var final = "";
+
+                                    if (data !== null) {
+
+                                        for (var i = 0; i < data.length; i++) {
+                                            if (data[i].param !== null && data[i].value !== null) {
+                                                if (final.length > 0) { final = final + ", "; }
+
+                                                final = final + data[i].param + " = " + data[i].value;
+                                            }
+                                        }
+                                    }
+                                    $('#{{shapeID}}_using_text ').val(final);
+                                    app.updateFigureParameter("using", final);
+                                }
+                            },
+                            columns: [{data: "param", renderer: italicRenderer}, {data: "value"}]
+                        });
+
+                    });
+
+
+                    function italicRenderer(instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.renderers.TextRenderer.apply(this, arguments);
+                        $(td).css({
+                            "font-style": "italic",
+                            "color": "#777"
+                        });
+                    }
+
+                    function onChanged() {
+
+                        var val = $('#{{shapeID}}_on_text').val();
+                        if (val !== undefined && val !== null && val.trim().length > 0) {
+                            app.updateFigureParameter("on", val);
+                        }
+                    }
+
+        
+                    function byChanged() {
+
+                        var val = $('#{{shapeID}}_by_text').val();
+                        if (val !== undefined && val !== null && val.trim().length > 0) {
+                            app.updateFigureParameter("by", val);
+                        }
+                    }
+
+
+                    function getParsedUsingData() {
+                        var val = $('#{{shapeID}}_using_text').val();
+                        var data = [];
+
+                        if (val !== undefined && val !== null && val.trim().length > 0) {
+                            var dataArr = val.trim().replace(/,[^(?:\",\")]/g, '\u000B').split('\u000B');
+
+                            for (var i = 0; i < dataArr.length; i++) {
+                                var temp = {};
+                                var current = dataArr[i].trim().split('=');
+                                temp["param"] = current[0];
+                                temp["value"] = current[1];
+                                data.push(temp);
+                            }
+                        }
+                        return data;
+                    }
+
+
+                    function usingChanged() {
+
+                        var val = $('#{{shapeID}}_using_text').val();
+                        if (val !== undefined && val !== null && val.trim().length > 0) {
+                            app.updateFigureParameter("using", val);
+                            $('#{{shapeID}}_using_paramsTable').handsontable('loadData', getParsedUsingData());
+                        }
+
+                    }
+
+
+                    function commentChanged() {
+
+                        var val = $('#{{shapeID}}_comment_text').val();
+                        if (val !== undefined && val !== null && val.trim().length > 0) {
+                            val = val.replace(/\n/g, '\\n');
+                            app.updateFigureParameter("comment", val);
+                        }
+                    }
+                </script>
+                <form id="{{shapeID}}_form" role='form'>
+                    <br>
+                    
+                    <!-- 'on' parameter section -->
+                    <div id='{{shapeID}}_on_div' class='form-group'>
+                        <label for='{{shapeID}}_on_label'>on</label>
+                        <input id='{{shapeID}}_on_text' class='form-control' name='on' type='text' value='' onchange="onChanged()" placeholder="On parameter values..." />
+                    </div>
+                    <br>
+
+                    <!-- 'by' parameter section -->
+                    <div id='{{shapeID}}_by_div' class='form-group'>
+                        <label for='{{shapeID}}_by_label'>by</label>
+                        <input id='{{shapeID}}_by_text' class='form-control' name='by' type='text' value='' onchange="byChanged()" placeholder="By parameter values..." />
+                    </div>
+                    <br>
+
+                    <!-- 'using' parameter section -->
+                    <div id='{{shapeID}}_using_div' class='form-group'>
+                        <label for='{{shapeID}}_using_label'>using</label>
+                        <input id='{{shapeID}}_using_text' class='form-control' name='using' type='text' value='' onchange="usingChanged()" placeholder="You can directly enter all values here..." />
+                        <br>
+                        <div id='{{shapeID}}_using_paramsTable' class="handsontable" style="width:100%"></div>
+                    </div>
+                    <br>
+
+
+                    <!-- 'comment' parameter section -->
+                    <div id='{{shapeID}}_comment_div' class='form-group'>
+                        <label for='{{shapeID}}_comment_label'>comment</label>
+                        <textarea id='{{shapeID}}_comment_text' class='form-control' name='comment' value='' onchange="commentChanged()" placeholder="Comment goes here..." rows="3"></textarea>
+                    </div>
+                    <br />
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

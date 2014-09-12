@@ -1,0 +1,48 @@
+<div id="propertiesModal" class="modal fade">
+    <div class="modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title"><b>{{label}}</b> Properties</h4>
+            </div>
+            <div class="modal-body">
+
+
+                <script>
+                    $(document).ready(function() {
+
+                        {{#paramList}}
+                            $("#{{paramID}}_text").val('{{{paramValue}}}'); 
+                        {{/paramList}}
+
+                    });
+
+
+                    function commentChanged() {
+
+                        var val = $('#{{shapeID}}_comment_text').val();
+                        if (val !== undefined && val !== null && val.trim().length > 0) {
+                            val = val.replace(/\n/g, '\\n');
+                            app.updateFigureParameter("comment", val);
+                        }
+                    }
+                </script>
+                <form id="{{shapeID}}_form" role='form'>
+                    <br>
+
+                    <!-- 'comment' parameter section -->
+                    <div id='{{shapeID}}_comment_div' class='form-group'>
+                        <label for='{{shapeID}}_comment_label'>comment</label>
+                        <textarea id='{{shapeID}}_comment_text' class='form-control' name='comment' value='' onchange="commentChanged()" placeholder="Comment goes here..." rows="3"></textarea>
+                    </div>
+                    <br />
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

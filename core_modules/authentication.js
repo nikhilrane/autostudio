@@ -47,13 +47,30 @@ app.get('/login', function(req, res){
   res.status(200).sendfile('./public/login.html');
 });
 
+app.get('/userData', function(req, res){
+  var user = req.query.username;
+
+  console.log("searching for: " + user);
+
+  var coll = mongo.collection('users');
+
+  // make sure this username does not exist already
+    coll.findOne({username: user}, {fullName: 1, _id:0}, function(err, fullName){
+      if (err) {
+        throw new Error("Error while getting user's full name: " + err);
+      }
+
+      res.end(JSON.stringify(fullName));
+    });
+});
+
 app.get('/logout', function(req, res){
   delete req.session.username;
   res.redirect('/');
 });
 
 app.get('/not_allowed', function(req, res){
-  res.render('not_allowed');
+  res.sendfile('./public/404.html');
 });
 
 // The /secret url includes the requireUser middleware.
@@ -81,7 +98,7 @@ function createHash(string){
 //
 // Possible errors: the passwords are not the same, and a user
 // with that username already exists.
-function createUser(username, password, password_confirmation, callback){
+function createUser(fullName, username, password, password_confirmation, callback){
   var coll = mongo.collection('users');
   
   if (password !== password_confirmation) {
@@ -92,6 +109,7 @@ function createUser(username, password, password_confirmation, callback){
     var salt       = createSalt();
     var hashedPassword = createHash(password + salt);
     var userObject = {
+      fullName: fullName,
       username: username,
       salt: salt,
       hashedPassword: hashedPassword
@@ -115,11 +133,12 @@ function createUser(username, password, password_confirmation, callback){
 app.post('/signup', function(req, res){
   // The 3 variables below all come from the form
   // in views/signup.hbs
+  var fullName = req.body.fullName;
   var username = req.body.username;
   var password = req.body.password;
   var confirm_password = req.body.confirm_password;
 
-  createUser(username, password, confirm_password, function(err, user){
+  createUser(fullName, username, password, confirm_password, function(err, user){
     if (err) {
       res.render('signup', {error: err});
     } else {

@@ -1,0 +1,52 @@
+<div id="propertiesModal" data-docName="{{docName}}" class="modal fade">
+    <div class="modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
+                <h4 align="left" class="modal-title"><b>{{docName}}</b> Information</h4>
+            </div>
+            <div class="modal-body">
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="active"><a href="#script_link" role="tab" data-toggle="tab">Running Script</a></li>
+                    <li><a href="#output_link" role="tab" data-toggle="tab">Execution Output</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="script_link">
+                        <div class='form-group'>
+                            <br>
+                                <div id="generatedScriptWell" class="well well-lg" align="left" style="margin-left:10px; margin-right:10px; border-color:#B0B0B0">
+                                Output:
+                                <pre><code id="runningScript" align="left" style="color:blue;"></pre></code>
+                                    <!-- <p>Hit the <i>Document</i> -> <i>Generate Script</i> option to generate script for this document.</p> -->
+                                </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="output_link">
+                        <div class='form-group'>
+                            <br>
+                                <div id="executeScriptWell" class="well well-lg" align="left" style="margin-left:10px; margin-right:10px; border-color:#B0B0B0">
+                                Output:
+                                <pre><code id="execOutput" align="left" style="color:blue;"></pre></code>
+                                    <!-- <p>Hit the <i>Document</i> -> <i>Generate &amp; Execute Script</i> option to generate and execute script for this document.</p> -->
+                                </div>
+                        </div><!-- form-group -->
+                    </div><!-- tab-pane -->
+                </div><!-- tab-content -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+
+

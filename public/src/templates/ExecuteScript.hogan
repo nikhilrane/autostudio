@@ -42,49 +42,65 @@
                                 bar.removeClass('active');
                             },
                             complete: function(xhr) {
+                                // console.log("var: " + JSON.parse("{{atHome}}"));
+                                // var homePage = JSON.parse("{{atHome}}");
                                 status.html(xhr.responseText);
                                 console.log("complete from upload called");
 								$('#execClose').click();
 
                                 // $('#genOutput').html("");
                                 $('#execOutput').html("");
+                                console.log("Going to print: {{homePage}}");
+                                // console.log("app: " + app);
 
-                                var writer = new draw2d.io.json.Writer();
-                                // alert("calling parse...");
-                                writer.marshal(app.view, $.proxy(function(jsonData) {
-                                    // alert("Inside marshal");
-
+                                if({{homePage}}) {
+                                    
                                     var documentObject = {
-                                        "documentData": jsonData,
-                                        "name": app.loadedDefinitionId,
-                                        "username": sessionStorage.getItem('username'),
-                                        "files": files
-                                    };
+                                            "documentData": "",
+                                            "name": "{{documentName}}",
+                                            "username": sessionStorage.getItem('username'),
+                                            "files": files
+                                        };
+                                    sendExecuteRequest(documentObject);
+                                } else {
 
-                                    // alert("sending: " + JSON.stringify(documentObject));
+                                    var writer = new draw2d.io.json.Writer();
+                                    // alert("calling parse...");
+                                    writer.marshal(app.view, $.proxy(function(jsonData) {
+                                        // alert("Inside marshal");
 
-                                    $.ajax({
-                                        url: '/pipestudio/executeScript',
-                                        // dataType: "jsonp",
-                                        data: {
-                                            "toGenerate": documentObject
-                                        },
-                                        type: 'POST',
-                                        success: function(script) {
-                                            console.log("Success in execute script! \n" + JSON.stringify(script));
-                                        },
-                                        error: function(err) {
-                                            console.log("Failure in execute script" + JSON.stringify(err));
-                                        },
-                                    });
-                                }, this));
+                                        var documentObject = {
+                                            "documentData": jsonData,
+                                            "name": app.loadedDefinitionId,
+                                            "username": sessionStorage.getItem('username'),
+                                            "files": files
+                                        };
 
-
+                                        sendExecuteRequest(documentObject);
+                                    }, this));
+                                }
                             }
                         });
                     })();
+
+					function sendExecuteRequest(documentObject) {
+                        $.ajax({
+                            url: '/{{appName}}/executeScript',
+                            // dataType: "jsonp",
+                            data: {
+                                "toGenerate": documentObject
+                            },
+                            type: 'POST',
+                            success: function(script) {
+                                console.log("Success in execute script! \n" + JSON.stringify(script));
+                            },
+                            error: function(err) {
+                                console.log("Failure in execute script" + JSON.stringify(err));
+                            },
+                        });
+					}
                 </script>
-                <form id='executeForm' action='/pipestudio/uploadFile' enctype='multipart/form-data' method='post'>
+                <form id='executeForm' action='/{{appName}}/uploadFile' enctype='multipart/form-data' method='post'>
                     <br>
                     <input id='execFiles' type='file' name='upload' multiple='multiple' class="btn btn-primary">
                     <br>

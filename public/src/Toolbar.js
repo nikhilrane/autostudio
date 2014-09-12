@@ -225,9 +225,14 @@ example.Toolbar = Class.extend({
     buttonGroup.append(li);
     this.executeScriptButton.click($.proxy(function()  {
 
+      var formData = {
+        "appName": pstudioJSON.urlPrefix,
+        "homePage": false
+      };
+
       var compiled = templates["ExecuteScript"];
       $('#modalDiv').html("");
-      $('#modalDiv').append(compiled.render({}));
+      $('#modalDiv').append(compiled.render(formData));
       $(".bs-example-modal-lg").modal();
 
     },this)).attr("disabled",false);
@@ -322,7 +327,7 @@ example.Toolbar = Class.extend({
 
 
     
-    buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
+    buttonGroup = $('<div class="col-xs-2 btn-group"></div>');
     buttonBar.append(buttonGroup);
 		 
 		// Inject the UNDO Button and the callbacks
@@ -340,6 +345,16 @@ example.Toolbar = Class.extend({
 		this.redoButton.click($.proxy(function(){
 		    this.view.getCommandStack().redo();
 		},this)).attr( "disabled", true );
+
+    this.deleteButton  = $("<button class='btn btn-danger btn-sm'>Delete</button>");
+    buttonGroup.append(this.deleteButton);
+    this.deleteButton.click($.proxy(function(){
+
+      //TODO: changed to getSelection() from getCurrentSelection() as the latter is DEPRECATED => NOT WORKING
+      var node = this.view.getCurrentSelection();
+      var command= new draw2d.command.CommandDelete(node);
+      this.view.getCommandStack().execute(command);
+    },this)).attr("disabled", true );
 		
 
     //Connection type dropdown
@@ -369,7 +384,7 @@ example.Toolbar = Class.extend({
 	 * @param {draw2d.Figure} figure
 	 */
 	onSelectionChanged : function(figure){
-		// this.deleteButton.attr( "disabled", figure===null );
+		this.deleteButton.attr( "disabled", figure===null );
 	},
 	
 	/**

@@ -7,6 +7,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var cookieParser = require('cookie-parser');
 var cookie = require('cookie');
+var nodemailer = require('nodemailer');
 
 // var mongoUrl = 'mongodb://localhost:27017/autostudio_db';
 var MongoStore = require('connect-mongo')(expressSession);
@@ -17,6 +18,16 @@ var config = require('nconf');
 config.file({ file : './config/config.json' });
 
 var port = 80; // for heroku you would use process.env.PORT instead
+
+// create reusable transporter object using SMTP transport
+var transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'autostudio.mailer@gmail.com',
+        pass: 'ASMailer'
+    }
+});
+
 
 var mongoUrl = config.get('database:url') + config.get('database:host') + ":" + config.get('database:port') + "/" + config.get('database:name');
 
@@ -59,7 +70,7 @@ app.use( expressSession({
 var mongo = require('./core_modules/db_crud_ops') (app, config, logger);
 var routes_auth = require('./core_modules/authentication') (app, mongo);
 var routes_user_home = require('./core_modules/user_home') (app);
-var pipestudio = require('./core_modules/pipestudio') (app, mongo, io, cookie);
+var pipestudio = require('./core_modules/pipestudio') (app, mongo, io, cookie, transporter);
 
 
 // io.set('authorization', function(data, accept) {

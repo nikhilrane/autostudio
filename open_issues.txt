@@ -4,7 +4,8 @@ App
 ****Add tumbling_window and kinect_reader operators****
 
 *UI:
- - Add button dropdowns for File, Edit, etc. instead of Button groups
+ - "," related values are not correctly parsed for operator properties
+ - Add tumbling_window() operator
 
 *Database:
  - Make changes to load everything from DB.

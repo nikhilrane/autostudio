@@ -14,6 +14,7 @@
     "formidable": "^1.0.15",
     "mongodb": "~1.4.2",
     "nconf": "~0.6.9",
+    "nodemailer": "^1.2.2",
     "socket.io": "^1.0.6",
     "string": "~1.9.0",
     "walk": "^2.3.3"

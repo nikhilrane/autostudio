@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#FIXME: fix the descriptions below
+#$1: (-t) compiler file
+#$2: (-i) pipeflow script
+#$3: (-o) output file name
+#$4: (-c) do not compile to an executable
+#$5: (-d) produce a dot file for visualization
+
+# This ensures we execute scripts from correct folder
+#cd $SCRIPT_HOME
+#pwd
+
+#echo going to execute: pfcc -vv -t $1 -i $2 -o $3
+
+# Export all the required PATH variables.
+# Apparently node.js does not pass these in process.env
+export JAVA_HOME=/usr/local/java/jdk1.7.0_25
+export SCRIPT_HOME=/home/nikhilrane/git_rep/autostudio/executions/scripts
+export PFLOW_HOME=/home/nikhilrane/git_rep/pflow/pipeflow/script
+export LD_LIBRARY_PATH=/home/nikhilrane/Downloads/boost_1_55_0/stage/lib
+export PATH="$JAVA_HOME/bin:$LD_LIBRARY_PATH:$SCRIPT_HOME:$PFLOW_HOME:$PATH"
+
+
+#echo PATH: $PATH
+
+#pfcc --version
+pfcc -t $1 -i $2 -o $3
+
+cd $4
+./$5
+
+# Get length of path of the output file
+#length=`echo $3|wc -c`
+#length=$(($length-5))
+#execFile=`echo $3|cut -c 1-$length`
+
+#echo outputfile: $execFile
+#ls $execFile
+
+#result =eval `./$execFile`
+#./$execFile
+
+#echo Result: $result
+
+#TODO Error handling here! Check for EXIT STATUS for the CPP execution
+# We reached here it means execution was completed.
+exit 0
+
+

@@ -132,14 +132,14 @@
                 <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span>
                     <span class='sr-only'></span>
                 </button>
-                <h4 class='modal-title'>Documents List</h4>
+                <h4 class='modal-title'>Flow-Designs List</h4>
             </div>
             <div id='modal-body' class='modal-body'>
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <th><b>#</b></th>
-                            <th><b>Document Name</b></th>
+                            <th><b>Flow-Design Name</b></th>
                             <th><b>Status</b></th>
                             <th><b>Delete</b></th>
                         </tr>

@@ -1,5 +1,5 @@
 
-example.Toolbar = Class.extend({
+autostudio.Toolbar = Class.extend({
 	
 	init:function(elementId, view){
 		this.html = $("#"+elementId);
@@ -53,7 +53,7 @@ example.Toolbar = Class.extend({
 		buttonBar.append($('<div class="col-xs-1"> <H4>' + pstudioJSON.appName + ' </H4> </div>'));
 
     var buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
-    buttonGroup.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Document <span class="caret"></span></button>');
+    buttonGroup.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Flow-Design  <span class="caret"></span></button>');
     buttonBar.append(buttonGroup);
 
     var mainUL = $('<ul class="dropdown-menu" role="menu"></ul>');
@@ -66,7 +66,7 @@ example.Toolbar = Class.extend({
     this.newButton.click($.proxy(function(){
       $('#genOutput').html("");
       $('#execOutput').html("");
-      (new example.dialog.NewDialog()).show();
+      (new autostudio.dialog.NewDialog()).show();
     },this));
     li.append(this.newButton);
     mainUL.append(li);
@@ -369,7 +369,7 @@ example.Toolbar = Class.extend({
 
     var alertDiv = $('<div id="alertDiv" class="col-xs-2 btn-group alert alert-success successBorder" role="alert"></div>');
     alertDiv.append('<span class="glyphicon glyphicon-ok-sign"></span>');
-    alertDiv.append('&nbsp;&nbsp;Document Saved.');
+    alertDiv.append('&nbsp;&nbsp;Flow-Design Saved.');
     alertDiv.hide();
     buttonBar.append(alertDiv);
 		

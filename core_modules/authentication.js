@@ -1,9 +1,11 @@
-// var mongo = require('../util_modules/mongo');
+/*
+ * Define the URLs and methods for authentication purposes
+ */
 
 module.exports = function(app, mongo) {
 
 // This is a middleware that we will use on routes where
-// we _require_ that a user is logged in, such as the /secret url
+// we _require_ that a user is logged in
 function requireUser(req, res, next){
   if (!req.user) {
     res.redirect('/not_allowed');
@@ -11,7 +13,6 @@ function requireUser(req, res, next){
     next();
   }
 }
-
 
 
 // This middleware checks if the user is logged in and sets
@@ -43,49 +44,56 @@ function checkIfLoggedIn(req, res, next){
 // which will not be available until after the session middleware runs.
 app.use(checkIfLoggedIn);
 
+
 app.get('/login', function(req, res){
   res.status(200).sendfile('./public/login.html');
 });
 
+
+// Returns the user's data so we can greet the client nicely!
 app.get('/userData', function(req, res){
   var user = req.query.username;
-
-  console.log("searching for: " + user);
 
   var coll = mongo.collection('users');
 
   // make sure this username does not exist already
-    coll.findOne({username: user}, {fullName: 1, _id:0}, function(err, fullName){
-      if (err) {
-        throw new Error("Error while getting user's full name: " + err);
-      }
+  coll.findOne({username: user}, {fullName: 1, _id:0}, function(err, fullName){
+    if (err) {
+      throw new Error("Error while getting user's full name: " + err);
+    }
 
-      res.end(JSON.stringify(fullName));
-    });
+    res.end(JSON.stringify(fullName));
+  });
 });
+
 
 app.get('/logout', function(req, res){
   delete req.session.username;
   res.redirect('/');
 });
 
+
 app.get('/not_allowed', function(req, res){
   res.sendfile('./public/404.html');
 });
+
 
 // The /secret url includes the requireUser middleware.
 app.get('/secret', requireUser, function(req, res){
   res.render('secret');
 });
 
+
 app.get('/signup', function(req,res){
   res.status(200).sendfile('./public/signup.html');
 });
+
 
 function createSalt(){
   var crypto = require('crypto');
   return crypto.randomBytes(32).toString('hex');
 }
+
 
 function createHash(string){
   var crypto = require('crypto');
@@ -118,7 +126,7 @@ function createUser(fullName, username, password, password_confirmation, callbac
     // make sure this username does not exist already
     coll.findOne(query, function(err, user){
       if (user) {
-        err = 'The username you entered already exists';
+        err = 'The username you entered already exists!';
         callback(err);
       } else {
         // create the new user
@@ -130,9 +138,9 @@ function createUser(fullName, username, password, password_confirmation, callbac
   }
 }
 
+
 app.post('/signup', function(req, res){
-  // The 3 variables below all come from the form
-  // in views/signup.hbs
+  
   var fullName = req.body.fullName;
   var username = req.body.username;
   var password = req.body.password;
@@ -151,8 +159,8 @@ app.post('/signup', function(req, res){
   });
 });
 
-// This finds a user matching the username and password that
-// were given.
+
+// This finds a user matching the username and password that were given
 function authenticateUser(username, password, callback){
   //TODO: Put database names in config file
   var coll = mongo.collection('users');
@@ -174,11 +182,11 @@ function authenticateUser(username, password, callback){
   });
 }
 
+
 app.post('/login', function(req, res){
 
   //check if this is actually a signup call.
   if(req.body.submit === "Sign Up!") {
-    console.log("signup called");
     res.redirect('/signup');
   }
 

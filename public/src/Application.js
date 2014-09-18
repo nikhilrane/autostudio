@@ -1,5 +1,5 @@
-// declare the namespace for this example
-var example = {
+// declare the namespace for AutoStudio
+var autostudio = {
         command: {},
         shape:   {},
         connection: {},
@@ -8,30 +8,12 @@ var example = {
 };
 
 
+// Attach an override so we can support various connection types in AutoStudio
 draw2d.Connection.createConnection=function(sourcePort, targetPort, callback, dropTarget){
 
-    // get the coordinate of the drop target element to place the context menu in a propper
-    // way
-    //
-    // var pos = dropTarget.getAbsolutePosition();
-    // pos = dropTarget.canvas.fromCanvasToDocumentCoordinate(pos.x,pos.y);
-    
-    // var context = $('<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">'+
-    //                 '<li><a data-connector="example.shape.RegExConnection" tabindex="-1" href="#">User Response Transistion</a></li>'+
-    //                 '<li><a data-connector="example.shape.AutoConnection" tabindex="-1" href="#">Automatic Transition</a></li>'+
-    //                 '</ul>');
-    // $("body").append(context);
-    
-    // context.show()
-    //        .css({left:pos.x, top:pos.y})
-    //        .find("a").on("click", function(){
-    //             context.remove();
-    //             var con = eval("new "+$(this).data("connector"));
-    //             callback(con);
-    //        });
   var type = $("#connections_menu").val();
   // var conn = eval("new " + $("#connections_menu").val());
-  var conn = eval(new example.connection.GenericConnection(type, null));
+  var conn = eval(new autostudio.connection.GenericConnection(type, null));
   callback(conn);
 };
 
@@ -42,9 +24,9 @@ draw2d.Connection.createConnection=function(sourcePort, targetPort, callback, dr
  * @author Andreas Herz
  * @extends draw2d.ui.parts.GraphicalEditor
  */
-example.Application = Class.extend(
+autostudio.Application = Class.extend(
 {
-    NAME : "example.Application", 
+    NAME : "autostudio.Application", 
 
     /**
      * @constructor
@@ -59,9 +41,9 @@ example.Application = Class.extend(
         var renderedTemplate = $(compiledTemplate.render(pstudioJSON));
         $("#palette").append(renderedTemplate);
 
-        this.view = new example.View("canvas");
-        this.toolbar = new example.Toolbar("toolbar",  this.view );
-        this.propertyPane = new example.PropertyPane("property", this.view);
+        this.view = new autostudio.View("canvas");
+        this.toolbar = new autostudio.Toolbar("toolbar",  this.view );
+        this.propertyPane = new autostudio.PropertyPane("property", this.view);
 	    
 	    
 	       // layout FIRST the body
@@ -322,9 +304,9 @@ example.Application = Class.extend(
         $("#loadedFileName").text("Loading...");
         this.view.clear();
       	this.loadedDefinitionId = definitionId;
-        var reader = new example.Reader();
+        var reader = new autostudio.Reader();
         reader.unmarshal(this.view, jsonDocument);
-        $("#loadedFileName").html("<span class='muted'>Document:</span> "+definitionId);
+        $("#loadedFileName").html("<span class='muted'><u>Flow-Design:</u></span> "+definitionId);
     },
 
     updateFigureParameter: function(paramName, paramValue) {

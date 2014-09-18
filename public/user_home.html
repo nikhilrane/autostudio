@@ -38,8 +38,8 @@
 
       tr td:first-child:before
       {
-        counter-increment: Serial;      /* Increment the Serial counter */
-        content: "" counter(Serial); /* Display the counter */
+        counter-increment: Serial;        /* Increment the Serial counter */
+        content: "" counter(Serial);      /* Display the counter */
       }
 
       .modal-lg
@@ -66,13 +66,21 @@
 
         greetUser();
 
-        var appsCompiled = templates["UserHome_Apps"];
-        
-        var data = [{name: "pipestudio", location: "document.location='/pipestudio'"}, {name: "name 2", location: "document.location='/login'"},
-                    {name: "name 3", location: "document.location='/login'"} ];
-        var view   = appsCompiled.render( {tuples: data});
+        $.ajax({
+            url: '/getApps',
+            data: {},
+            type: 'GET',
+            success: function (data) {
 
-        $("#apps_table").html(view);
+              var appsCompiled = templates["UserHome_Apps"];
+              var view   = appsCompiled.render(JSON.parse(data));
+              $("#apps_table").html(view);
+            },
+            error: function (err) {
+                console.log("Failure in getting apps" + JSON.stringify(err));
+            },
+        });
+
 
 
         $.ajax({
@@ -90,7 +98,7 @@
 
             },
             error: function (err) {
-                alert("Failure in storage" + JSON.stringify(err));
+                console.log("Failure in storage" + JSON.stringify(err));
             },
         });
 
@@ -103,8 +111,6 @@
 
             
             var toDisplay = $("#propertiesModal").data("docname") == data.docName? true : false;
-            console.log("docName: " + $("#propertiesModal").data("docname") + ", toDisplay: " + toDisplay);
-
             if(message !== undefined && toDisplay) {
                 $('#genOutput').html($('#genOutput').html() + message + '<br />');
             }
@@ -126,7 +132,6 @@
               type: 'GET',
               success: function (jsonData) {
                   sessionStorage.setItem('fullName', JSON.parse(jsonData).fullName);
-                  // alert("Success in GET! Name: " + JSON.parse(jsonData).fullName);
                   $('#greeting').html("Hello " + JSON.parse(jsonData).fullName.split(" ")[0] + "!<br><small>What would you like to do?</small>");
               },
               error: function (err) {
@@ -147,8 +152,6 @@
             }
 
             var toDisplay = $("#propertiesModal").data("docname") == data.docName? true : false;
-            console.log("docName: " + $("#propertiesModal").data("docname") + ", toDisplay: " + toDisplay);
-            
             if(message !== undefined && toDisplay) {
                 $('#execOutput').html($('#execOutput').html() + message + '<br />');
             }
@@ -176,11 +179,10 @@
                 type: 'GET',
                 success: function (jsonData) {
                     sessionStorage.setItem('docData', JSON.stringify(JSON.parse(jsonData).result));
-                    // alert("Success in GET! " + JSON.stringify(JSON.parse(jsonData).result));
                     $('#pipestudio').trigger('click');
                 },
                 error: function (err) {
-                    alert("Failure in GET" + JSON.stringify(err));
+                    console.log("Failure in GET" + JSON.stringify(err));
                 },
               });
       }
@@ -205,27 +207,23 @@
                     if(jsonData.result.execMessages !== undefined) {
                       for(var i=0; i < jsonData.result.execMessages.length; i++) {
                         var message = jsonData.result.execMessages[i];
-                        console.log("log " + i + ": " + message);
-                        // console.log("message: " + message + "json message: " + JSON.stringify(message) + ", length: " + message.length + ", " + JSON.stringify(message).length);
                         if(message.type === "error") {
                             message.output = '<font color="red">' + message.output + '</font>';
                         }
                         
                         if(message !== undefined) {
-                          console.log("appending: " + JSON.stringify(message.output));
                           $('#execOutput').html($('#execOutput').html() + message.output + '<br />');
                         }
                       }
                     }
                 },
                 error: function (err) {
-                    alert("Failure in GET" + JSON.stringify(err));
+                    console.log("Failure in GET" + JSON.stringify(err));
                 },
             });
       }
 
       function checkboxChanged(checked, docName) {
-        console.log("Checkbox: " + checked + ", docName: " + docName);
         $.ajax({
                 url: '/pipestudio/notify',
                 data: {
@@ -234,23 +232,19 @@
                   notify: checked
                 },
                 type: 'POST',
-                success: function (jsonData) {
-                    // sessionStorage.setItem('docData', JSON.stringify(JSON.parse(jsonData).result));
-                    // alert("Success in GET! " + JSON.stringify(JSON.parse(jsonData).result));
-                    // $('#pipestudio').trigger('click');
-                },
+                success: function (jsonData) {},
                 error: function (err) {
-                    alert("Failure in GET" + JSON.stringify(err));
+                    console.log("Failure in GET" + JSON.stringify(err));
                 },
               });
       }
-  </script>
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+      function openApp(configJSON, location) {
+        sessionStorage.setItem('appJSON', configJSON);
+        window.location = location;
+      }
+    </script>
+
   </head>
 
   <body>
@@ -290,7 +284,7 @@
 
         <br>
 
-        <h3 style="text-align: left;"><u> Documents </u><br><small>Check status of your last documents.</small></h3>
+        <h3 style="text-align: left;"><u> Flow-Designs </u><br><small>Check status of your last flow-designs.</small></h3>
         <div id="documents_table"> </div>
 
         <div id="modalDiv">
@@ -299,10 +293,5 @@
       </div>
     </div><!-- /.container -->
 
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    
   </body>
 </html>

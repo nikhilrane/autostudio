@@ -1,6 +1,6 @@
 
 
-example.View = draw2d.Canvas.extend({
+autostudio.View = draw2d.Canvas.extend({
 	
 	init:function(id){
 		this._super(id);
@@ -51,9 +51,9 @@ example.View = draw2d.Canvas.extend({
         var nature = pstudioJSON[type].nature;
         var figure = null;
         if(nature === "container") {
-            figure = eval(new example.shape.GenericContainer(type, null));
+            figure = eval(new autostudio.shape.GenericContainer(type, null));
         } else {
-            figure = eval(new example.shape.GenericShape(type, null));
+            figure = eval(new autostudio.shape.GenericShape(type, null));
         }
         
         // create a command for the undo/redo support

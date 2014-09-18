@@ -1,6 +1,6 @@
 
 
-example.dialog.NewDialog = Class.extend({
+autostudio.dialog.NewDialog = Class.extend({
     
     init:function(){
       

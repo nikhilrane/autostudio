@@ -12,7 +12,7 @@
 			<td></td>
 			<td> {{name}} </td>
 			<td>
-				<button id="{{name}}" onclick="{{location}}" type="button" class="btn btn-default btn-info btn-sm">
+				<button id='{{key}}' onclick='openApp("{{configJSON}}", "{{location}}")' type='button' class='btn btn-default btn-info btn-sm'>
 				<span class="glyphicon glyphicon-play"></span></button>
 			</td>
 		</tr>

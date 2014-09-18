@@ -73,12 +73,14 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
 /*
  * Tasks:
- * - Remove hardcoded DB names to pick from config
  * - Move parser to a better place for genericness
  * - Check if parsing into a script is to be made async
  * - Log errors using bunyan
  */
 
+  /*
+   * Sends a real-time message using socket.io framework
+   */
   function sendSocketMessage(fileName, user, logToDB, sessionID, eventName, message) {
     message.output = SQUARE_OPEN_KEY +  new Date().toISOString() + SQUARE_CLOSE_KEY  + BLANK_SPACE_KEY + message.output;
     message.docName = fileName;
@@ -90,6 +92,11 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     io.sockets.in(sessionID).emit(eventName, message);
   }
 
+
+  /*
+   * Writes the script and sets it into action.
+   * This method also send intermediate real-time messages and a notification (if asked for) after completing the execution.
+   */
   function writeScript(filePath, fileName, generatedScript, sessionID, user, eventName) {
 
     fs.writeFile(filePath, generatedScript, function (err) {
@@ -103,7 +110,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
       }
 
       // We are here it means file is saved. Let's start execution
-      // TODO nodejs is not getting PATH variable correctly, see if there is a fix!
       var outputFileName = fileName;
       var outputExecObject = "";
 
@@ -119,61 +125,46 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
       sendSocketMessage(fileName, user, true, sessionID, eventName, {output: "Starting execution...................", type: "message"});
 
-      //TODO Move hard-coding to config file
       var scriptExecutor = spawn(SCRIPT_PATH, [pstudio_config.get(COMPILER_PATH), filePath, outputPath, path.dirname(filePath), outputExecObject]);
 
-
+      // A data listener to send messages to client
       scriptExecutor.stdout.on('data', function(data) {
-        // data = "stdout: " + data;
-        // console.log("stdout: " + data);
         if(data.length > 0) {
           // console.log("data1: " + data + "l: " + data.length);
           // console.log("data2: " + JSON.stringify(data));
           sendSocketMessage(fileName, user, true, sessionID, eventName, {output: data, type: "message"});
         }
-        
-        console.log("" + data);
       });
 
+      // Error listeners to send error messages to client
       scriptExecutor.stderr.on('data', function(err) {
-        // data = "stderr: " + data;
-        // err = "stderr1: " + err;
-        // console.log("stderr1: " + err);
         sendSocketMessage(fileName, user, true, sessionID, eventName, {output: err, type: "error"});
       });
-
       scriptExecutor.on('error', function(err) {
-        // console.log("stderr2: " + err);
-        // err = "stderr2: " + err;
         sendSocketMessage(fileName, user, true, sessionID, eventName, {output: err, type: "error"});
-        console.log("Error executing script: " + err);
       });
 
+      // An exit listener so we send the exit code to client
       scriptExecutor.once('exit', function(code, signal) {
         var message = "Execution completed with return code: " + code;
         sendSocketMessage(fileName, user, true, sessionID, eventName, {output: message, type: "message"});
         updateStatus(fileName, user, EXEC_COMPLETE);
-        console.log("continued execution, " + code + ", " + signal);
 
         var userColl = mongo.collection('users');
-
         userColl.findOne({username : user}, function(err, userData) {
           if(err) {
             var error = "Error:\n" + err;
             throw new Error("Error while getting user information after execution: " + err);
           }
 
-          // console.log("user info: " + JSON.stringify(userData));
-
           var coll = mongo.collection(pstudio_config.get(DB_NAME));
-
           coll.findOne({name: fileName, username : user}, {_id:0, script: 1, execMessages: 1, email_notification: 1}, function(err, documentData) {
-
             if(err) {
               var error = "Error:\n" + err;
               throw new Error("Error while getting document information after execution: " + err);
             }
 
+            // Send an email notification to registered email ID if email_notification flag is set
             if(documentData.email_notification == "true") {
 
               var emailText = 'The execution of <b>' + fileName  + '</b> is complete. The executed script and execution log is attached to this email.<br /><br />';
@@ -185,10 +176,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
               if(documentData.execMessages !== undefined) {
                 for(var i=0; i < documentData.execMessages.length; i++) {
-                  var message = documentData.execMessages[i];
-                  // console.log("log " + i + ": " + message);
-                  // console.log("message: " + message + "json message: " + JSON.stringify(message) + ", length: " + message.length + ", " + JSON.stringify(message).length);
-                  
+                  var message = documentData.execMessages[i];                 
                   
                   if(message !== undefined) {
                     if(message.type === "error") {
@@ -221,13 +209,9 @@ module.exports = function(app, mongo, io, cookie, transporter) {
               transporter.sendMail(mailOptions, function(error, info) {
                 if(error){
                     console.log(error);
-                } else {
-                    console.log('Message sent: ' + info.response);
                 }
               });
             }
-
-            
 
           });
         });
@@ -237,6 +221,9 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   }
 
 
+  /*
+   * Verifies if the execution folder already exists. If no, spawns a process to create one.
+   */
   function checkPathsAndExecute(dirPath, fileName, user, generatedScript, files, sessionID, eventName) {
 
     sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Validating paths.......................", type: "message"});
@@ -284,9 +271,10 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
   }
 
-  
 
-
+  /*
+   * Updates status of the document.
+   */
   function updateStatus(documentName, user, currentStatus) {
       var coll = mongo.collection(pstudio_config.get(DB_NAME));
 
@@ -295,14 +283,14 @@ module.exports = function(app, mongo, io, cookie, transporter) {
           var error = "Error:\n" + err;
           throw new Error("Error while updating document status: " + err);
         }
-
-        //io.sockets.in(sessionID).emit(eventName, {output: "Storing script into Database.........DONE", type: "message"});
-
-        //console.log("Script saved!");
       });
   }
 
 
+  /*
+   * Records messages transmitted to user in realtime.
+   * This ensures if at some point of time the users requests for information, we can send whole log. 
+   */
   function logExecMessageToDB(documentName, user, eventName, sessionID, message) {
     // console.log("in log1: " + message);
     // console.log("in log2: " + JSON.stringify(message));
@@ -316,15 +304,13 @@ module.exports = function(app, mongo, io, cookie, transporter) {
           sendSocketMessage(documentName, user, false, sessionID, eventName, {output: error, type: "error"});
           throw new Error("Error while saving execution status: " + err);
         }
-
-        //io.sockets.in(sessionID).emit(eventName, {output: "Storing script into Database.........DONE", type: "message"});
-
-        //console.log("Script saved!");
       });
   }
 
 
-
+  /*
+   * Saves the generated script into database.
+   */
   function saveScriptToDB(generatedScript, documentName, user, sessionID, eventName) {
       var coll = mongo.collection(pstudio_config.get(DB_NAME));
 
@@ -337,13 +323,13 @@ module.exports = function(app, mongo, io, cookie, transporter) {
         }
 
         sendSocketMessage(documentName, user, false, sessionID, eventName, {output: "Storing script into Database.........DONE", type: "message"});
-
-        // console.log("Script saved!");
       });
   }
 
 
-
+  /*
+   * Processes a single operator at a time. 
+   */
   function processOperator(operator, statusVariables, finalResult) {
     var currentStatement = "";
     var operatorProps = pstudio_config.get(operator[TYPE_KEY]);   //get all properties of *this* operator type
@@ -387,12 +373,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
     //append parameters
     var params = operator.userData[PARAMETERS_KEY];
-
-    // if(params !== undefined && params.length > 0)
-    //   console.log("params length: " + params.length);
-    // else
-    //   console.log("params undefined");
-
     if(params !== undefined && params.length > 0) {
 
       currentStatement = currentStatement + BLANK_SPACE_KEY;
@@ -420,7 +400,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
           currentStatement = currentStatement + key + BLANK_SPACE_KEY + value;
 
-
           //if this is the last parameter, append a ';' otherwise append a new line character 
           if(j == params.length - 2) {    //here it is '-2' because there is one "comment" parameter too
             currentStatement = currentStatement + SEMI_COLON_KEY;
@@ -434,7 +413,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
       currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;    //if there are no parameters, just put semicolon and we are done.
     }
 
-
     var operatorID = operator[ID_KEY];
     statusVariables.processedOperators[operatorID] = currentStatement;
 
@@ -444,12 +422,13 @@ module.exports = function(app, mongo, io, cookie, transporter) {
       statusVariables.finalString = currentStatement + statusVariables.finalString;
     }
 
-    // console.log("S: " + currentStatement);
-
     return currentStatement;
   }
 
 
+  /*
+   * Processes a single container. It receives the container definition, operators and connections it contains.
+   */
   function processContainer(container, operators, connections, statusVariables, finalResult) {
     var firstStatement = "";
     var operatorProps = pstudio_config.get(container[TYPE_KEY]);   //get all properties of *this* operator type
@@ -458,12 +437,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var lastStatement = "";
     var searchTarget = "";
     statusVariables.processedOperators = {};    //reset processed operators so we do not confuse with future containers/operators
-    // var processedMacroOps = {};
-    /*
-    define my_macro ($in) returns $out { 
-     $out := filter($in) by x > y + 2;
-    }
-    */
 
     firstStatement = firstStatement + DEFINE_KEY + container.label + BLANK_SPACE_KEY;
     firstStatement = firstStatement + ROUND_OPEN_KEY + MACRO_INPUT_PREFIX + statusVariables.input_sequence + ROUND_CLOSE_KEY;
@@ -477,7 +450,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     // Process all operators inside the macro definition
     for(var opsKey in operators) {
       var operator = operators[opsKey];
-      // statusVariables.processedOperators[opsKey] = processOperator(operator);
       processOperator(operator, statusVariables, finalResult);
       lastOperatorID = opsKey;
       if(Object.keys(connections).length === 0) {     // This means there are no connections, there is a single operator
@@ -505,15 +477,8 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     if( lastStatement !== undefined && S(lastStatement).contains(searchTarget) ) {
       lastStatement = S(lastStatement).replaceAll(searchTarget + OUTPUT_KEY, MACRO_OUTPUT_PREFIX).s;
       statusVariables.processedOperators[searchTarget] = lastStatement;
-
-      // statusVariables.finalString = statusVariables.finalString + NEW_LINE_KEY + lastStatement + NEW_LINE_KEY;
     }
 
-    // lastStatement = statusVariables.processedOperators[lastOperatorID];
-    // if( lastStatement !== undefined && S(lastStatement).contains(lastOperatorID) ) {
-    //   lastStatement = S(lastStatement).replaceAll(lastOperatorID + OUTPUT_KEY, MACRO_OUTPUT_PREFIX).s;
-    //   statusVariables.processedOperators[lastOperatorID] = lastStatement;
-    // }
 
     for(var statementKey in statusVariables.processedOperators) {
       //Check if some operator has unprocessed variables
@@ -534,20 +499,17 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   }
 
 
+  /*
+   * Processes a connection and replaces input/output values.
+   */
   function processConnection(connection, statusVariables, finalResult) {
     var sourceID = connection[SOURCE_KEY][NODE_KEY];
     var sourcePort = connection[SOURCE_KEY][PORT_KEY];
     var targetID = connection[TARGET_KEY][NODE_KEY];
     var targetPort = connection[TARGET_KEY][PORT_KEY];
-    // console.log("INfo: " + sourceID + ", " + sourcePort + ", " + targetID + ", " + targetPort);
 
     var sourceStatement = statusVariables.processedOperators[sourceID];
     var targetStatement = statusVariables.processedOperators[targetID];
-
-    // console.log("source: " + sourceStatement + "\ntarget: " + targetStatement);
-
-    // String sourceStatement = idNodeMapping.get(sourceID);
-    // String targetStatement = idNodeMapping.get(targetID);
 
     sourceStatement = S(sourceStatement).replaceAll(sourceID + OUTPUT_KEY, OUTPUT_PREFIX + statusVariables.output_sequence).s;
     targetStatement = S(targetStatement).replaceAll(targetID + UNDERSCORE_KEY + targetPort, OUTPUT_PREFIX + statusVariables.output_sequence).s;
@@ -561,17 +523,16 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     /*
     //  * Known problem here: When using an operator which needs an input, e.g. Project, and there is none in pstudio data, then that statement will not be considered here due to 'if'
     //  */
-    if( !S(sourceStatement).contains(sourceID))   //this means every variable is processed
-    {
+    if( !S(sourceStatement).contains(sourceID)) {     //this means every variable is processed
       statusVariables.finalString = statusVariables.finalString + NEW_LINE_KEY + sourceStatement + NEW_LINE_KEY;
-      // console.log("Adding: " + sourceStatement);
     }
-
-    // console.log("\n\nsource: " + sourceStatement + "\ntarget: " + targetStatement);
 
   }
 
 
+  /*
+   * Receives the JSON data from Draw2D Touch framework and parses it into script.
+   */
   function generateScript(parsedData) {
     var operatorsArray = {};
     var connectionsArray = {};
@@ -580,7 +541,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var statusVariables = JSON.parse('{ "input_sequence": 0, "output_sequence": 0, "processedOperators": {}, "finalString": "", "finalResultIndex": 0}');
     var finalResult = [];
 
-    //TODO: put this call to be performed asynchronously
     parsedData.forEach(function(element, index) {
       // We construct an array of all values with "id <=> element" mapping so its easy to retrieve elements
       // and reduce passes over input data
@@ -683,6 +643,10 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     return statusVariables.finalString;
   }
 
+
+  /*
+   * Creates the script, saves into database and prepares for the execution.
+   */
   function prepareExecution(parsedData, sessionID, eventName, fileName, user, files) {
 
     //generate the script by default and save it to database so there are no inconsistencies
@@ -702,317 +666,295 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   }
 
 
-app.get('/pipestudio/getList', function(req, res) {
+  /*
+   * Streams the document list from database.
+   */
+  app.get('/pipestudio/getList', function(req, res) {
 
-  //we can get username from both ways (in request set by express-session or request data)
-  var user = req.query.username;
-  // console.log("user: " + user);
+    //we can get username from both ways (in request set by express-session or request data)
+    var user = req.query.username;
 
-  res.writeHeader('Content-Type', 'application/json');
+    res.writeHeader('Content-Type', 'application/json');
 
-  //get all document names for this user
-  var coll = mongo.collection(pstudio_config.get(DB_NAME));
-
-  //TODO: check if we support localStorage and change columns below
-  var stream = coll.find({ username : user }, {name: 1, status: 1, _id:1}).sort({name: 1}).stream();
-  var jsonData = JSON.parse('{"result": []}');
-  stream.on("data", function(item) {
-    jsonData["result"].push(item);
-    // console.log("data: " + JSON.stringify(jsonData));
-  });
-  
-  stream.on("end", function() {
-    // var result = {result: JSON.parse(jsonData)};
-    // console.log("final: " + JSON.stringify(jsonData));
-    res.end(JSON.stringify(jsonData));
-  });
-
-});
-
-
-app.get('/pipestudio/getHomePageList', function(req, res) {
-
-  //we can get username from both ways (in request set by express-session or request data)
-  var user = req.query.username;
-  // console.log("user: " + user);
-
-  res.writeHeader('Content-Type', 'application/json');
-
-  //FIXME: get document names for ALL Apps for this user
-  var coll = mongo.collection(pstudio_config.get(DB_NAME));
-
-  //TODO: check if we support localStorage and change columns below
-  var stream = coll.find({ username : user }, {_id:0, name: 1, status: 1, email_notification: 1}).sort({accessedTimestamp: -1}).limit(5).stream();
-  var jsonData = JSON.parse('{"tuples": [], "appName":"pipestudio" }');
-  stream.on("data", function(item) {
-
-    if(item.email_notification == "true") {
-      item.email_notification = "checked";
-    } else {
-      item.email_notification = "";
-    }
-
-    jsonData["tuples"].push(item);
-    // console.log("data: " + JSON.stringify(jsonData));
-  });
-  
-  stream.on("end", function() {
-    // var result = {result: JSON.parse(jsonData)};
-    // console.log("final: " + JSON.stringify(jsonData));
-    res.end(JSON.stringify(jsonData));
-  });
-
-});
-
-
-app.get('/pipestudio/getDoc', function(req, res) {
-
-  //we can get username from both ways (in request set by express-session or request data)
-  var docName = req.query.documentName;
-  var user = req.query.username;
-  
-  // console.log("doc: " + docName);
-
-  res.writeHeader('Content-Type', 'application/json');
-
-  //get all document names for this user
-  var coll = mongo.collection(pstudio_config.get(DB_NAME));
-
-  //TODO: check if we support localStorage and change columns below
-  coll.findOne({name: docName, username : user}, {"documentData":1, "name":1, _id:0}, function(err, jsonData) {
-    if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
-
-    // console.log("Sending this: " + JSON.stringify({result: jsonData}));
-
-    res.end(JSON.stringify( { result: jsonData }));
-
-    coll.update({name: docName, username : user}, {$set: {accessedTimestamp: (new Date()).toJSON()}}, function(err) {
-        if(err) {
-          // io.sockets.in(sessionID).emit(eventName, {output: "Error during storage.................FAILED", type: "error"});
-          // var error = "Error:\n" + err;
-          // io.sockets.in(sessionID).emit(eventName, {output: error, type: "error"});
-          throw new Error("Error while saving: " + err);
-        }
-
-        // io.sockets.in(sessionID).emit(eventName, {output: "Storing script into Database.........DONE", type: "message"});
-
-        // console.log("accessedTimestamp updated!");
-      });
-  });
-});
-
-
-app.post('/pipestudio/save', function(req, res) {
-
-  var jsonData = req.body.toStore;
-
-  res.writeHeader('Content-Type', 'application/json');
-  
-  // mongo.save(jsonData, pstudio_config.get(DB_NAME), function(err) {
-  //   if(err) { throw new Error("Error while saving: " + err); }
-
-  //   res.end(JSON.stringify({result: true}));
-  // });
-
-
-  var coll = mongo.collection(pstudio_config.get(DB_NAME));
-  coll.update({name: jsonData.name, username : jsonData.username}, jsonData, {upsert: true}, function(err) {
-    if(err) {
-      // io.sockets.in(sessionID).emit(eventName, {output: "Error during storage.................FAILED", type: "error"});
-      // var error = "Error:\n" + err;
-      // io.sockets.in(sessionID).emit(eventName, {output: error, type: "error"});
-      throw new Error("Error while saving in save call: " + err);
-    }
-
-    // io.sockets.in(sessionID).emit(eventName, {output: "Storing script into Database.........DONE", type: "message"});
-
-    // console.log("Document saved!");
-  });
-
-  res.end(JSON.stringify({result: true}));
-
-});
-
-
-
-app.post('/pipestudio/generateScript', function(req, res) {
-
-  // res.writeHeader('Content-Type', 'application/json');
-
-  var eventName = 'generating_script';
-  var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
-  var parsedData = JSON.parse(JSON.stringify(req.body.toGenerate.documentData));
-  var fileName = req.body.toGenerate.name;
-  var user = req.body.toGenerate.username;
-
-  sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Generating script....................STARTED", type: "message"});
-    
-  var generatedScript = generateScript(parsedData);
-
-  // console.log("generated: " + generatedScript);
-  //FIXME Remove these hardcoded tags, let's handle on client side
-  sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Script generation....................COMPLETE\n\nScript:\n<font color='#008C8C'>" + generatedScript + "</font>", type: "message"});
-
-  saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
-  
-  res.end(JSON.stringify({ result: true }));
-});
-
-
-app.post('/pipestudio/uploadFile', function(req, res) {
-
-  var form = new formidable.IncomingForm();
-  form.uploadDir = UPLOAD_DIR;
-
-  form.on('file', function(field, file) {
-    //rename the incoming file to the file's name
-    fs.rename(file.path, form.uploadDir + "/" + file.name);
-  });
-
-  form.parse(req, function(err, fields, files) {
-    // res.writeHead(200, {'content-type': 'text/plain'});
-    // res.write('received upload:\n\n');
-    // console.log(util.inspect({fields: fields, files: files}));
-    console.log("file received!");
-    
-  });
-
-  res.end(JSON.stringify( { result: true }));
-
-});
-
-
-app.post('/pipestudio/executeScript', function(req, res) {
-
-  
-
-  var eventName = 'executing_script';
-  var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
-  var parsedData = JSON.stringify(req.body.toGenerate.documentData);
-  var fileName = req.body.toGenerate.name;
-  var user = req.body.toGenerate.username;
-  var files = req.body.toGenerate.files;
-
-  console.log("Request received, sessionID: " + req.sessionID + "\n from cookie: " + sessionID);
-
-  if(files === undefined) {
-    files = [];
-  }
-
-  sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Generating script....................STARTED", type: "message"});
-  // console.log("parsedData: " + parsedData + ", l: " + parsedData.length);
-
-  // If there is data inside request, process it and execute
-  if(parsedData !== undefined && parsedData.length > 2) {
-    prepareExecution(JSON.parse(parsedData), sessionID, eventName, fileName, user, files);
-  } else {
-    // If there is no data passed inside request, then get it from DB
+    //get all document names for this user
     var coll = mongo.collection(pstudio_config.get(DB_NAME));
-    coll.findOne({name: fileName, username : user}, {"documentData":1, "name":1, _id:0}, function(err, jsonData) {
+
+    //TODO: check if we support localStorage and change columns below
+    var stream = coll.find({ username : user }, {name: 1, status: 1, _id:1}).sort({name: 1}).stream();
+    var jsonData = JSON.parse('{"result": []}');
+    stream.on("data", function(item) {
+      jsonData["result"].push(item);
+    });
+    
+    stream.on("end", function() {
+      res.end(JSON.stringify(jsonData));
+    });
+
+  });
+
+
+  /*
+   * Streams the document list from database sorted as per the last time they were accessed.
+   */
+  app.get('/pipestudio/getHomePageList', function(req, res) {
+
+    //we can get username from both ways (in request set by express-session or request data)
+    var user = req.query.username;
+
+    res.writeHeader('Content-Type', 'application/json');
+
+    //FIXME: get document names for ALL Apps for this user
+    var coll = mongo.collection(pstudio_config.get(DB_NAME));
+
+    //TODO: check if we support localStorage and change columns below
+    var stream = coll.find({ username : user }, {_id:0, name: 1, status: 1, email_notification: 1}).sort({accessedTimestamp: -1}).limit(5).stream();
+    var jsonData = JSON.parse('{"tuples": [], "appName":"pipestudio" }');
+    stream.on("data", function(item) {
+
+      if(item.email_notification == "true") {
+        item.email_notification = "checked";
+      } else {
+        item.email_notification = "";
+      }
+
+      jsonData["tuples"].push(item);
+    });
+    
+    stream.on("end", function() {
+      res.end(JSON.stringify(jsonData));
+    });
+
+  });
+
+
+  /*
+   * Get the selected document and return its source to be rendered by Draw2D Touch.
+   */
+  app.get('/pipestudio/getDoc', function(req, res) {
+
+    //we can get username from both ways (in request set by express-session or request data)
+    var docName = req.query.documentName;
+    var user = req.query.username;
+
+    res.writeHeader('Content-Type', 'application/json');
+
+    //get all document names for this user
+    var coll = mongo.collection(pstudio_config.get(DB_NAME));
+
+    //TODO: check if we support localStorage and change columns below
+    coll.findOne({name: docName, username : user}, {"documentData":1, "name":1, _id:0}, function(err, jsonData) {
       if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
 
-      prepareExecution(jsonData.documentData, sessionID, eventName, fileName, user, files);
+      res.end(JSON.stringify( { result: jsonData }));
+
+      coll.update({name: docName, username : user}, {$set: {accessedTimestamp: (new Date()).toJSON()}}, function(err) {
+          if(err) {
+            throw new Error("Error while saving: " + err);
+          }
+        });
     });
-  }
-  
-
-  res.end(JSON.stringify( { result: true }));
-});
-
-
-
-app.get('/pipestudio/downloadExecs', function(req, res) {
-
-  var user = req.query.username;
-  var pathToWalk = path.join(EXECUTIONS_DIR, user);
-  var walker;
-
-  walker = walk.walk(pathToWalk, { followLinks: false, filters: []});
-
-  var dirTree = {};
-  walker.on("names", function (root, nodeNamesArray) {
-    var p = S(root).replaceAll(pathToWalk, "output").s;
-    dirTree[p] = nodeNamesArray;
-   
   });
 
-  walker.on('end', function() {
-    res.end(JSON.stringify( { result: dirTree }));
+
+  /*
+   * Saves the data sent from client into database.
+   */
+  app.post('/pipestudio/save', function(req, res) {
+
+    var jsonData = req.body.toStore;
+
+    res.writeHeader('Content-Type', 'application/json');
+
+    var coll = mongo.collection(pstudio_config.get(DB_NAME));
+    coll.update({name: jsonData.name, username : jsonData.username}, jsonData, {upsert: true}, function(err) {
+      if(err) {
+        throw new Error("Error while saving in save call: " + err);
+      }
+    });
+
+    res.end(JSON.stringify({result: true}));
   });
 
-});
+
+  /*
+   * Receives Draw2D Touch output from client, generates script and saves it into database.
+   */
+  app.post('/pipestudio/generateScript', function(req, res) {
+
+    var eventName = 'generating_script';
+    var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
+    var parsedData = JSON.parse(JSON.stringify(req.body.toGenerate.documentData));
+    var fileName = req.body.toGenerate.name;
+    var user = req.body.toGenerate.username;
+
+    sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Generating script....................STARTED", type: "message"});
+      
+    var generatedScript = generateScript(parsedData);
+
+    //FIXME Remove these hardcoded tags, let's handle on client side
+    sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Script generation....................COMPLETE\n\nScript:\n<font color='#008C8C'>" + generatedScript + "</font>", type: "message"});
+
+    saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
+    
+    res.end(JSON.stringify({ result: true }));
+  });
 
 
-app.post('/pipestudio/downloadFile', function(req, res) {
-  var user = req.body.username;
-  var filePath = req.body.fileToDownload;
-  console.log("user: " + user + ", filePath: " + filePath);
-  var finalPath = filePath.replace("output", path.join(EXECUTIONS_DIR, user));
-  console.log("finalPath: " + finalPath);
+  /*
+   * Handles files uploads sent with execution request.
+   */
+  app.post('/pipestudio/uploadFile', function(req, res) {
 
-  //res.attachment();
-  res.setHeader("Content-Disposition", "attachment; filename=" + path.basename(finalPath));
+    var form = new formidable.IncomingForm();
+    form.uploadDir = UPLOAD_DIR;
 
-  res.download(finalPath, path.basename(finalPath), function(err) {
-    if(err) {
-      console.log("Error during download: " + err);
+    form.on('file', function(field, file) {
+      //rename the incoming file to the file's name
+      fs.rename(file.path, form.uploadDir + "/" + file.name);
+    });
+
+    form.parse(req, function(err, fields, files) {});
+
+    res.end(JSON.stringify( { result: true }));
+  });
+
+
+  /*
+   * Starts script execution.
+   */
+  app.post('/pipestudio/executeScript', function(req, res) {
+
+    var eventName = 'executing_script';
+    var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
+    var parsedData = JSON.stringify(req.body.toGenerate.documentData);
+    var fileName = req.body.toGenerate.name;
+    var user = req.body.toGenerate.username;
+    var files = req.body.toGenerate.files;
+
+    if(files === undefined) {
+      files = [];
+    }
+
+    sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Generating script....................STARTED", type: "message"});
+
+    // If there is data inside request, process it and execute
+    if(parsedData !== undefined && parsedData.length > 2) {
+      prepareExecution(JSON.parse(parsedData), sessionID, eventName, fileName, user, files);
     } else {
-      console.log("File download completed!");
+      // If there is no data passed inside request, then get it from DB
+      var coll = mongo.collection(pstudio_config.get(DB_NAME));
+      coll.findOne({name: fileName, username : user}, {"documentData":1, "name":1, _id:0}, function(err, jsonData) {
+        if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
+
+        prepareExecution(jsonData.documentData, sessionID, eventName, fileName, user, files);
+      });
     }
-  });
-});
-
-app.get('/pipestudio/getExecMessages', function(req, res) {
-
-  var user = req.query.username;
-  var fileName = req.query.documentName;
-
-  var coll = mongo.collection(pstudio_config.get(DB_NAME));
-  coll.findOne({name: fileName, username : user}, {"execMessages":1, "script": 1}, function(err, jsonData) {
-    if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
-
-    res.end(JSON.stringify( { result: jsonData }));
-  });
-
-  
-});
-
-
-app.post('/pipestudio/deleteDoc', function(req, res) {
-  var user = req.body.username;
-  var documentName = req.body.documentName;
-  // var documentID = "ObjectId(\"" + req.body.documentID + "\")";
-  // console.log("have to delete: " + documentName);
-
-  var coll = mongo.collection(pstudio_config.get(DB_NAME));
-  coll.remove({name: documentName, username : user}, function(err, jsonData) {
-    if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
-    console.log("Deleted: " + documentName + ", user: " + user);
-
-    res.end(JSON.stringify( { result: true }));
-  });
-  
-});
-
-
-app.post('/pipestudio/notify', function(req, res) {
-  var user = req.body.username;
-  var documentName = req.body.documentName;
-  var notify = req.body.notify;
-
-  var coll = mongo.collection(pstudio_config.get(DB_NAME));
-  coll.update({name: documentName, username : user}, {$set: {email_notification: notify}}, function(err) {
-    if(err) {
-      var error = "Error:\n" + err;
-      throw new Error("Error while updating email notification: " + err);
-    }
-
+    
     res.end(JSON.stringify( { result: true }));
   });
 
-  
-});
 
+  /*
+   * Walks the execution output directory and sends a complete JSON which can be rendered by client in a tree UI.
+   */
+  app.get('/pipestudio/downloadExecs', function(req, res) {
+
+    var user = req.query.username;
+    var pathToWalk = path.join(EXECUTIONS_DIR, user);
+    var walker;
+
+    walker = walk.walk(pathToWalk, { followLinks: false, filters: []});
+
+    var dirTree = {};
+    walker.on("names", function (root, nodeNamesArray) {
+      var p = S(root).replaceAll(pathToWalk, "output").s;
+      dirTree[p] = nodeNamesArray;
+     
+    });
+
+    walker.on('end', function() {
+      res.end(JSON.stringify( { result: dirTree }));
+    });
+
+  });
+
+
+  /*
+   * Sends the requested file to client for download.
+   */
+  app.post('/pipestudio/downloadFile', function(req, res) {
+    var user = req.body.username;
+    var filePath = req.body.fileToDownload;
+    var finalPath = filePath.replace("output", path.join(EXECUTIONS_DIR, user));
+
+    //res.attachment();
+    res.setHeader("Content-Disposition", "attachment; filename=" + path.basename(finalPath));
+
+    res.download(finalPath, path.basename(finalPath), function(err) {
+      if(err) {
+        console.log("Error during download: " + err);
+      }
+    });
+  });
+
+
+  /*
+   * Called when the user requests for messages from Home page.
+   */
+  app.get('/pipestudio/getExecMessages', function(req, res) {
+
+    var user = req.query.username;
+    var fileName = req.query.documentName;
+
+    var coll = mongo.collection(pstudio_config.get(DB_NAME));
+    coll.findOne({name: fileName, username : user}, {"execMessages":1, "script": 1}, function(err, jsonData) {
+      if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
+
+      res.end(JSON.stringify( { result: jsonData }));
+    });
+
+  });
+
+
+  /*
+   * Deletes the document from database.
+   */
+  app.post('/pipestudio/deleteDoc', function(req, res) {
+    var user = req.body.username;
+    var documentName = req.body.documentName;
+    // var documentID = "ObjectId(\"" + req.body.documentID + "\")";
+    // console.log("have to delete: " + documentName);
+
+    var coll = mongo.collection(pstudio_config.get(DB_NAME));
+    coll.remove({name: documentName, username : user}, function(err, jsonData) {
+      if(err) { throw new Error("Error while getting: " + err + ", data: " + jsonData); }
+      console.log("Deleted: " + documentName + ", user: " + user);
+
+      res.end(JSON.stringify( { result: true }));
+    });
+    
+  });
+
+
+  /*
+   * Toggles the email_notification flag from Home page.
+   */
+  app.post('/pipestudio/notify', function(req, res) {
+    var user = req.body.username;
+    var documentName = req.body.documentName;
+    var notify = req.body.notify;
+
+    var coll = mongo.collection(pstudio_config.get(DB_NAME));
+    coll.update({name: documentName, username : user}, {$set: {email_notification: notify}}, function(err) {
+      if(err) {
+        var error = "Error:\n" + err;
+        throw new Error("Error while updating email notification: " + err);
+      }
+
+      res.end(JSON.stringify( { result: true }));
+    });
+    
+  });
 
 
 

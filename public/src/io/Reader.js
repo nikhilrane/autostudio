@@ -1,45 +1,10 @@
-/*****************************************
- *   Library is under GPL License (GPL)
- *   Copyright (c) 2012 Andreas Herz
- ****************************************/
 /**
- * @class draw2d.io.json.Reader
- * Read a JSON data and import them into the canvas. The JSON must be generated with the
- * {@link draw2d.io.json.Writer}.
- * 
- *      // Load a standard draw2d JSON object into the canvas
- *      //
- *      var jsonDocument = 
- *          [
-  *           {
- *              "type": "draw2d.shape.basic.Oval",
- *              "id": "5b4c74b0-96d1-1aa3-7eca-bbeaed5fffd7",
- *              "x": 237,
- *              "y": 236,
- *              "width": 93,
- *              "height": 38
- *            },
- *            {
- *              "type": "draw2d.shape.basic.Rectangle",
- *              "id": "354fa3b9-a834-0221-2009-abc2d6bd852a",
- *              "x": 225,
- *              "y": 97,
- *              "width": 201,
- *              "height": 82,
- *              "radius": 2
- *            }
- *          ];
- *      // unmarshal the JSON document into the canvas
- *      // (load)
- *      var reader = new draw2d.io.json.Reader();
- *      reader.unmarshal(canvas, jsonDocument);
- *      
- * 
+ * The Reader implemented by Draw2D Touch is not extensible to handle generic classes. Hence, this class customizes it to work with AutoStudio.
  * @extends draw2d.io.Reader
  */
-example.Reader = draw2d.io.Reader.extend({
+autostudio.Reader = draw2d.io.Reader.extend({
     
-    NAME : "example.Reader",
+    NAME : "autostudio.Reader",
     
     init: function(){
         this._super();
@@ -63,25 +28,21 @@ example.Reader = draw2d.io.Reader.extend({
         $.each(json, $.proxy(function(i, element){
             try{
                 var o = null;
-// console.log("element.userData.nature: " + element.userData.nature);
                 
                 switch(element.userData.nature) {
-                    case "operator": o = eval(new example.shape.GenericShape(element.type, element.id));
+                    case "operator": o = eval(new autostudio.shape.GenericShape(element.type, element.id));
                                      break;
 
-                    case "connection": o = eval(new example.connection.GenericConnection(element.type, element.id));
+                    case "connection": o = eval(new autostudio.connection.GenericConnection(element.type, element.id));
                                        break;
 
-                    case "container": console.log("Going to make container");
-                    o = eval(new example.shape.GenericContainer(element.type, element.id));
-                    // console.log("container made");
+                    case "container": o = eval(new autostudio.shape.GenericContainer(element.type, element.id));
                                       break;
 
-                    default: o = eval(new example.shape.GenericShape(element.type, element.id));
+                    default: o = eval(new autostudio.shape.GenericShape(element.type, element.id));
                              break;
                 }
 
-// console.log("instantiated: " + o.NAME);                
                 var source= null;
                 var target=null;
                 for(i in element){
@@ -111,7 +72,7 @@ example.Reader = draw2d.io.Reader.extend({
                     o.setSource(source);
                     o.setTarget(target);
                 }
-                // console.log("calling setPersistentAttributes");
+                
                 o.setPersistentAttributes(element);
                 canvas.addFigure(o);
             }

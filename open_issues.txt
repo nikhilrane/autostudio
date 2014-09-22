@@ -5,8 +5,7 @@ App
 
 *UI:
  - "," related values are not correctly parsed for operator properties
- - Add tumbling_window() operator
- - Fix "Create" button shown when clicked on New -> Operator help icon
+ - Ask for flow-design name if not already entered
 
 *Database:
  - Make changes to load everything from DB.

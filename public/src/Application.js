@@ -54,7 +54,7 @@ autostudio.Application = Class.extend(
 	            closable:false,
                 spacing_open:0,
                 spacing_closed:0,
-                size:125,
+                size:115,
 	            paneSelector: "#toolbar"
 	         },
 	         center: {
@@ -82,7 +82,7 @@ autostudio.Application = Class.extend(
                  closable:false,
                  spacing_open:0,
                  spacing_closed:0,
-                 size:120,
+                 size:"7%",
                  paneSelector: "#palette"
 	         },
 	         center: {
@@ -90,6 +90,7 @@ autostudio.Application = Class.extend(
                  closable:false,
                  spacing_open:0,
                  spacing_closed:0,
+                 size:"93%",
                  paneSelector: "#view"
 	          }
 	       });
@@ -100,7 +101,7 @@ autostudio.Application = Class.extend(
                    closable:false,
                    spacing_open:5,
                    spacing_closed:5,
-                   size:220,
+                   size:"28%",
                    paneSelector: "#property",
                    onresize:$.proxy(function(){
                        this.propertyPane.onResize();

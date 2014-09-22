@@ -50,7 +50,7 @@ autostudio.Toolbar = Class.extend({
 		
 		// the branding
 		// buttonBar.append($("<b><span id='title' style='font-size:24px;color:#278A03;font-family:sans-serif' class='muted'>PipeStudio</span></b>"));
-		buttonBar.append($('<div class="col-xs-1"> <H4>' + pstudioJSON.appName + ' </H4> </div>'));
+		buttonBar.append($('<div class="col-xs-1"> <h3 style="margin-top:5px;">' + pstudioJSON.appName + ' </h3> </div>'));
 
     var buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
     buttonGroup.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Flow-Design  <span class="caret"></span></button>');

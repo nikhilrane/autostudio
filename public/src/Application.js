@@ -155,7 +155,7 @@ autostudio.Application = Class.extend(
       $("#loadedFileName").text("loading...");
       this.view.clear();
       this.loadedDefinitionId = definitionId;
-      $("#loadedFileName").html("<span class='muted'>Document:</span> "+definitionId);
+      $("#loadedFileName").html("<span class='muted'><u>Flow-Design:</u></span> "+definitionId);
     },
 
 

@@ -124,9 +124,11 @@ autostudio.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
     this.helpIcon.helpText = props.helpText;
     this.helpIcon.className = props.label;
     this.helpIcon.onClick = function() {
-      $('#myModalLabel').html(this.className);
-      $('#myModalBody').html(this.helpText);
-      $('#myModal').modal();
+      
+      var compiled = templates["HelpModal"];
+      $("#modalDiv").html("");
+      $("#modalDiv").append(compiled.render({"name": this.className, "helpHTML": this.helpText}));
+      $("#helpTextDiv").modal();
     }
 
     this.header = new draw2d.shape.layout.HorizontalLayout();

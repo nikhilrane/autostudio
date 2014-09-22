@@ -1,9 +1,9 @@
 {
     "_comment": "***I hold all config data for ---PipeStudio--- app.***",
     "dbName": "pstudio",
-    "example.shape.Aggregate": {
+    "pipestudio.shape.Aggregate": {
         "operator": "aggregate",
-        "type": "example.shape.Aggregate",
+        "type": "pipestudio.shape.Aggregate",
         "noOfInputs": 1,
         "parameters": {
             "on": {
@@ -25,9 +25,9 @@
         }
     },
 
-    "example.shape.DBJoin": {
+    "pipestudio.shape.DBJoin": {
         "operator": "db_join",
-        "type": "example.shape.DBJoin",
+        "type": "pipestudio.shape.DBJoin",
         "noOfInputs": 0,
         "parameters": {
             "using": {
@@ -45,9 +45,9 @@
         }
     },
 
-    "example.shape.DBSource": {
+    "pipestudio.shape.DBSource": {
         "operator": "db_source",
-        "type": "example.shape.DBSource",
+        "type": "pipestudio.shape.DBSource",
         "noOfInputs": 0,
         "parameters": {
             "with": {
@@ -64,9 +64,9 @@
             }
         }
     },
-    "example.shape.DBWriter": {
+    "pipestudio.shape.DBWriter": {
         "operator": "db_writer",
-        "type": "example.shape.DBWriter",
+        "type": "pipestudio.shape.DBWriter",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -79,9 +79,9 @@
             }
         }
     },
-    "example.shape.FileSource": {
+    "pipestudio.shape.FileSource": {
         "operator": "file_source",
-        "type": "example.shape.FileSource",
+        "type": "pipestudio.shape.FileSource",
         "noOfInputs": 0,
         "parameters": {
             "using": {
@@ -98,9 +98,9 @@
             }
         }
     },
-    "example.shape.Filter": {
+    "pipestudio.shape.Filter": {
         "operator": "filter",
-        "type": "example.shape.Filter",
+        "type": "pipestudio.shape.Filter",
         "noOfInputs": 1,
         "parameters": {
             "by": {
@@ -113,9 +113,9 @@
             }
         }
     },
-    "example.shape.Macro_Def": {
+    "pipestudio.shape.Macro_Def": {
         "operator": "define",
-        "type": "example.shape.Macro_Def",
+        "type": "pipestudio.shape.Macro_Def",
         "noOfInputs": 1,
         "parameters": {
             "comment": {
@@ -124,9 +124,9 @@
             }
         }
     },
-    "example.shape.Map": {
+    "pipestudio.shape.Map": {
         "operator": "map",
-        "type": "example.shape.Map",
+        "type": "pipestudio.shape.Map",
         "noOfInputs": 1,
         "parameters": {
             "on": {
@@ -147,9 +147,9 @@
             }
         }
     },
-    "example.shape.Matcher": {
+    "pipestudio.shape.Matcher": {
         "operator": "matcher",
-        "type": "example.shape.Matcher",
+        "type": "pipestudio.shape.Matcher",
         "noOfInputs": 1,
         "parameters": {
             "event": {
@@ -170,9 +170,9 @@
             }
         }
     },
-    "example.shape.MemorySource": {
+    "pipestudio.shape.MemorySource": {
         "operator": "memory_source",
-        "type": "example.shape.MemorySource",
+        "type": "pipestudio.shape.MemorySource",
         "noOfInputs": 0,
         "parameters": {
             "using": {
@@ -189,9 +189,9 @@
             }
         }
     },
-    "example.shape.Project": {
+    "pipestudio.shape.Project": {
         "operator": "project",
-        "type": "example.shape.Project",
+        "type": "pipestudio.shape.Project",
         "noOfInputs": 1,
         "parameters": {
             "generate": {
@@ -204,9 +204,9 @@
             }
         }
     },
-    "example.shape.RelationHashJoin": {
+    "pipestudio.shape.RelationHashJoin": {
         "operator": "relation_hash_join",
-        "type": "example.shape.RelationHashJoin",
+        "type": "pipestudio.shape.RelationHashJoin",
         "noOfInputs": 2,
         "parameters": {
             "on": {
@@ -227,9 +227,9 @@
             }
         }
     },
-    "example.shape.RScript": {
+    "pipestudio.shape.RScript": {
         "operator": "rscript",
-        "type": "example.shape.RScript",
+        "type": "pipestudio.shape.RScript",
         "noOfInputs": 1,
         "parameters": {
             "on": {
@@ -250,9 +250,9 @@
             }
         }
     },
-    "example.shape.SlidingWindow": {
+    "pipestudio.shape.SlidingWindow": {
         "operator": "sliding_window",
-        "type": "example.shape.SlidingWindow",
+        "type": "pipestudio.shape.SlidingWindow",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -265,9 +265,9 @@
             }
         }
     },
-    "example.shape.SocketSink": {
+    "pipestudio.shape.SocketSink": {
         "operator": "socket_sink",
-        "type": "example.shape.SocketSink",
+        "type": "pipestudio.shape.SocketSink",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -280,9 +280,9 @@
             }
         }
     },
-    "example.shape.SocketSource": {
+    "pipestudio.shape.SocketSource": {
         "operator": "socket_source",
-        "type": "example.shape.SocketSource",
+        "type": "pipestudio.shape.SocketSource",
         "noOfInputs": 0,
         "parameters": {
             "with": {
@@ -299,9 +299,9 @@
             }
         }
     },
-    "example.shape.SPARQLJoin": {
+    "pipestudio.shape.SPARQLJoin": {
         "operator": "sparql_join",
-        "type": "example.shape.SPARQLJoin",
+        "type": "pipestudio.shape.SPARQLJoin",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -318,9 +318,9 @@
             }
         }
     },
-    "example.shape.StreamWriter": {
+    "pipestudio.shape.StreamWriter": {
         "operator": "stream_writer",
-        "type": "example.shape.StreamWriter",
+        "type": "pipestudio.shape.StreamWriter",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -333,9 +333,9 @@
             }
         }
     },
-    "example.shape.SymmetricHashJoin": {
+    "pipestudio.shape.SymmetricHashJoin": {
         "operator": "symmetric_hash_join",
-        "type": "example.shape.SymmetricHashJoin",
+        "type": "pipestudio.shape.SymmetricHashJoin",
         "noOfInputs": 2,
         "parameters": {
             "on": {
@@ -352,9 +352,9 @@
             }
         }
     },
-    "example.shape.Triplifier": {
+    "pipestudio.shape.Triplifier": {
         "operator": "triplifier",
-        "type": "example.shape.Triplifier",
+        "type": "pipestudio.shape.Triplifier",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -367,9 +367,24 @@
             }
         }
     },
-    "example.shape.Tuplifier": {
+    "pipestudio.shape.TumblingWindow": {
+        "operator": "tumbling_window",
+        "type": "pipestudio.shape.TumblingWindow",
+        "noOfInputs": 1,
+        "parameters": {
+            "using": {
+                "required": true,
+                "bracketsRequired": true
+            },
+            "comment": {
+                "required": false,
+                "bracketsRequired": false
+            }
+        }
+    },
+    "pipestudio.shape.Tuplifier": {
         "operator": "tuplifier",
-        "type": "example.shape.Tuplifier",
+        "type": "pipestudio.shape.Tuplifier",
         "noOfInputs": 1,
         "parameters": {
             "with": {
@@ -386,9 +401,9 @@
             }
         }
     },
-    "example.shape.TwitterReader": {
+    "pipestudio.shape.TwitterReader": {
         "operator": "twitter_reader",
-        "type": "example.shape.TwitterReader",
+        "type": "pipestudio.shape.TwitterReader",
         "noOfInputs": 0,
         "parameters": {
             "using": {
@@ -401,9 +416,9 @@
             }
         }
     },
-    "example.shape.Union": {
+    "pipestudio.shape.Union": {
         "operator": "union",
-        "type": "example.shape.Union",
+        "type": "pipestudio.shape.Union",
         "noOfInputs": 2,
         "parameters": {
             "comment": {
@@ -412,9 +427,9 @@
             }
         }
     },
-    "example.shape.User_Defined": {
+    "pipestudio.shape.User_Defined": {
         "operator": "user_defined",
-        "type": "example.shape.User_Defined",
+        "type": "pipestudio.shape.User_Defined",
         "noOfInputs": 0,
         "parameters": {
             "using": {
@@ -431,9 +446,9 @@
             }
         }
     },
-    "example.shape.Use_Predefined": {
+    "pipestudio.shape.Use_Predefined": {
         "operator": "use_predefined",
-        "type": "example.shape.Use_Predefined",
+        "type": "pipestudio.shape.Use_Predefined",
         "noOfInputs": 1,
         "parameters": {
             "comment": {
@@ -442,9 +457,9 @@
             }
         }
     },
-    "example.shape.ZmqPublisher": {
+    "pipestudio.shape.ZmqPublisher": {
         "operator": "zmq_publisher",
-        "type": "example.shape.ZmqPublisher",
+        "type": "pipestudio.shape.ZmqPublisher",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -457,9 +472,9 @@
             }
         }
     },
-    "example.shape.ZmqPull": {
+    "pipestudio.shape.ZmqPull": {
         "operator": "zmq_pull",
-        "type": "example.shape.ZmqPull",
+        "type": "pipestudio.shape.ZmqPull",
         "noOfInputs": 0,
         "parameters": {
             "with": {
@@ -476,9 +491,9 @@
             }
         }
     },
-    "example.shape.ZmqPush": {
+    "pipestudio.shape.ZmqPush": {
         "operator": "zmq_push",
-        "type": "example.shape.ZmqPush",
+        "type": "pipestudio.shape.ZmqPush",
         "noOfInputs": 1,
         "parameters": {
             "using": {
@@ -491,9 +506,9 @@
             }
         }
     },
-    "example.shape.ZmqSubscriber": {
+    "pipestudio.shape.ZmqSubscriber": {
         "operator": "zmq_subscriber",
-        "type": "example.shape.ZmqSubscriber",
+        "type": "pipestudio.shape.ZmqSubscriber",
         "noOfInputs": 0,
         "parameters": {
             "with": {

@@ -12,37 +12,37 @@
                 {
                     "src": "DBSource.png",
                     "name": "DB Source",
-                    "type": "example.shape.DBSource"
+                    "type": "pipestudio.shape.DBSource"
                 },
                 {
                     "src": "FileSource.png",
                     "name": "File Source",
-                    "type": "example.shape.FileSource"
+                    "type": "pipestudio.shape.FileSource"
                 },
                 {
                     "src": "MemorySource.png",
                     "name": "Memory Source",
-                    "type": "example.shape.MemorySource"
+                    "type": "pipestudio.shape.MemorySource"
                 },
                 {
                     "src": "SocketSource.png",
                     "name": "Socket Source",
-                    "type": "example.shape.SocketSource"
+                    "type": "pipestudio.shape.SocketSource"
                 },
                 {
                     "src": "TwitterReader.png",
                     "name": "Twitter Reader",
-                    "type": "example.shape.TwitterReader"
+                    "type": "pipestudio.shape.TwitterReader"
                 },
                 {
                     "src": "ZmqPull.png",
                     "name": "Zmq Pull",
-                    "type": "example.shape.ZmqPull"
+                    "type": "pipestudio.shape.ZmqPull"
                 },
                 {
                     "src": "ZmqSubscriber.png",
                     "name": "Zmq Subscriber",
-                    "type": "example.shape.ZmqSubscriber"
+                    "type": "pipestudio.shape.ZmqSubscriber"
                 }
             ]
         },
@@ -53,97 +53,102 @@
                 {
                     "src": "Aggregate.png",
                     "name": "Aggregate",
-                    "type": "example.shape.Aggregate"
+                    "type": "pipestudio.shape.Aggregate"
                 },
                 {
                     "src": "DBJoin.png",
                     "name": "DB Join",
-                    "type": "example.shape.DBJoin"
+                    "type": "pipestudio.shape.DBJoin"
                 },
                 {
                     "src": "DBWriter.png",
                     "name": "DB Writer",
-                    "type": "example.shape.DBWriter"
+                    "type": "pipestudio.shape.DBWriter"
                 },
                 {
                     "src": "Filter.png",
                     "name": "Filter",
-                    "type": "example.shape.Filter"
+                    "type": "pipestudio.shape.Filter"
                 },
                 {
                     "src": "Map.png",
                     "name": "Map",
-                    "type": "example.shape.Map"
+                    "type": "pipestudio.shape.Map"
                 },
                 {
                     "src": "Matcher.png",
                     "name": "Matcher",
-                    "type": "example.shape.Matcher"
+                    "type": "pipestudio.shape.Matcher"
                 },
                 {
                     "src": "Project.png",
                     "name": "Project",
-                    "type": "example.shape.Project"
+                    "type": "pipestudio.shape.Project"
                 },
                 {
                     "src": "RelationHashJoin.png",
                     "name": "Relation Hash Join",
-                    "type": "example.shape.RelationHashJoin"
+                    "type": "pipestudio.shape.RelationHashJoin"
                 },
                 {
                     "src": "RScript.png",
                     "name": "RScript",
-                    "type": "example.shape.RScript"
+                    "type": "pipestudio.shape.RScript"
                 },
                 {
                     "src": "SlidingWindow.png",
                     "name": "Sliding Window",
-                    "type": "example.shape.SlidingWindow"
+                    "type": "pipestudio.shape.SlidingWindow"
                 },
                 {
                     "src": "SocketSink.png",
                     "name": "Socket Sink",
-                    "type": "example.shape.SocketSink"
+                    "type": "pipestudio.shape.SocketSink"
                 },
                 {
                     "src": "SPARQLJoin.png",
                     "name": "SPARQL Join",
-                    "type": "example.shape.SPARQLJoin"
+                    "type": "pipestudio.shape.SPARQLJoin"
                 },
                 {
                     "src": "StreamWriter.png",
                     "name": "Stream Writer",
-                    "type": "example.shape.StreamWriter"
+                    "type": "pipestudio.shape.StreamWriter"
                 },
                 {
                     "src": "SymmetricHashJoin.png",
                     "name": "Symmetric Hash Join",
-                    "type": "example.shape.SymmetricHashJoin"
+                    "type": "pipestudio.shape.SymmetricHashJoin"
                 },
                 {
                     "src": "Triplifier.png",
                     "name": "Triplifier",
-                    "type": "example.shape.Triplifier"
+                    "type": "pipestudio.shape.Triplifier"
+                },
+                {
+                    "src": "TumblingWindow.png",
+                    "name": "Tumbling Window",
+                    "type": "pipestudio.shape.TumblingWindow"
                 },
                 {
                     "src": "Tuplifier.png",
                     "name": "Tuplifier",
-                    "type": "example.shape.Tuplifier"
+                    "type": "pipestudio.shape.Tuplifier"
                 },
                 {
                     "src": "Union.png",
                     "name": "Union",
-                    "type": "example.shape.Union"
+                    "type": "pipestudio.shape.Union"
                 },
                 {
                     "src": "ZmqPublisher.png",
                     "name": "Zmq Publisher",
-                    "type": "example.shape.ZmqPublisher"
+                    "type": "pipestudio.shape.ZmqPublisher"
                 },
                 {
                     "src": "ZmqPush.png",
                     "name": "Zmq Push",
-                    "type": "example.shape.ZmqPush"
+                    "type": "pipestudio.shape.ZmqPush"
                 }
             ]
         },
@@ -154,17 +159,17 @@
                 {
                     "src": "Macro_Def.png",
                     "name": "M_Def",
-                    "type": "example.shape.Macro_Def"
+                    "type": "pipestudio.shape.Macro_Def"
                 },
                 {
                     "src": "User_Defined.png",
                     "name": "Use Defined",
-                    "type": "example.shape.User_Defined"
+                    "type": "pipestudio.shape.User_Defined"
                 },
                 {
                     "src": "Use_Predefined.png",
                     "name": "Use Predefined",
-                    "type": "example.shape.Use_Predefined"
+                    "type": "pipestudio.shape.Use_Predefined"
                 }
             ]
         }
@@ -173,55 +178,55 @@
     "_comment_line142": "---------------Connection types and their images----",
     "connectionTypes": [
         {
-            "type": "example.connection.SimpleConnection",
+            "type": "pipestudio.connection.SimpleConnection",
             "imagePath": "",
             "name": "Simple"
         },
         {
-            "type": "example.connection.UniDirectional",
+            "type": "pipestudio.connection.UniDirectional",
             "imagePath": "",
             "name": "Uni-Directional"
         },
         {
-            "type": "example.connection.BiDirectional",
+            "type": "pipestudio.connection.BiDirectional",
             "imagePath": "",
             "name": "Bi-Directional"
         },
         {
-            "type": "example.connection.TargetSideBar",
+            "type": "pipestudio.connection.TargetSideBar",
             "imagePath": "",
             "name": "Target Side Bar"
         },
         {
-            "type": "example.connection.BothSideBar",
+            "type": "pipestudio.connection.BothSideBar",
             "imagePath": "",
             "name": "Both Side Bar"
         },
         {
-            "type": "example.connection.TargetSideCircle",
+            "type": "pipestudio.connection.TargetSideCircle",
             "imagePath": "",
             "name": "Target Side Circle"
         },
         {
-            "type": "example.connection.BothSideCircle",
+            "type": "pipestudio.connection.BothSideCircle",
             "imagePath": "",
             "name": "Both Side Circle"
         },
         {
-            "type": "example.connection.TargetSideDiamond",
+            "type": "pipestudio.connection.TargetSideDiamond",
             "imagePath": "",
             "name": "Target Side Diamond"
         },
         {
-            "type": "example.connection.BothSideDiamond",
+            "type": "pipestudio.connection.BothSideDiamond",
             "imagePath": "",
             "name": "Both Side Diamond"
         }
     ],
 
     "_comment_line191": "----------Connection types and their decorations----",
-    "example.connection.SimpleConnection": {
-        "type": "example.connection.SimpleConnection",
+    "pipestudio.connection.SimpleConnection": {
+        "type": "pipestudio.connection.SimpleConnection",
         "nature" : "connection",
         "color":"#A8120F",
         "params": [
@@ -239,46 +244,46 @@
             }
         ]
     },
-    "example.connection.UniDirectional": {
-        "type": "example.connection.UniDirectional",
+    "pipestudio.connection.UniDirectional": {
+        "type": "pipestudio.connection.UniDirectional",
         "nature" : "connection",
         "target": "draw2d.decoration.connection.ArrowDecorator"
     },
-    "example.connection.BiDirectional": {
-        "type": "example.connection.BiDirectional",
+    "pipestudio.connection.BiDirectional": {
+        "type": "pipestudio.connection.BiDirectional",
         "nature" : "connection",
         "source": "draw2d.decoration.connection.ArrowDecorator",
         "target": "draw2d.decoration.connection.ArrowDecorator"
     },
-    "example.connection.TargetSideBar": {
-        "type": "example.connection.TargetSideBar",
+    "pipestudio.connection.TargetSideBar": {
+        "type": "pipestudio.connection.TargetSideBar",
         "nature" : "connection",
         "target": "draw2d.decoration.connection.BarDecorator"
     },
-    "example.connection.BothSideBar": {
-        "type": "example.connection.BothSideBar",
+    "pipestudio.connection.BothSideBar": {
+        "type": "pipestudio.connection.BothSideBar",
         "nature" : "connection",
         "source": "draw2d.decoration.connection.BarDecorator",
         "target": "draw2d.decoration.connection.BarDecorator"
     },
-    "example.connection.TargetSideCircle": {
-        "type": "example.connection.TargetSideCircle",
+    "pipestudio.connection.TargetSideCircle": {
+        "type": "pipestudio.connection.TargetSideCircle",
         "nature" : "connection",
         "target": "draw2d.decoration.connection.CircleDecorator"
     },
-    "example.connection.BothSideCircle": {
-        "type": "example.connection.BothSideCircle",
+    "pipestudio.connection.BothSideCircle": {
+        "type": "pipestudio.connection.BothSideCircle",
         "nature" : "connection",
         "source": "draw2d.decoration.connection.CircleDecorator",
         "target": "draw2d.decoration.connection.CircleDecorator"
     },
-    "example.connection.TargetSideDiamond": {
-        "type": "example.connection.TargetSideDiamond",
+    "pipestudio.connection.TargetSideDiamond": {
+        "type": "pipestudio.connection.TargetSideDiamond",
         "nature" : "connection",
         "target": "draw2d.decoration.connection.DiamondDecorator"
     },
-    "example.connection.BothSideDiamond": {
-        "type": "example.connection.BothSideDiamond",
+    "pipestudio.connection.BothSideDiamond": {
+        "type": "pipestudio.connection.BothSideDiamond",
         "nature" : "connection",
         "source": "draw2d.decoration.connection.DiamondDecorator",
         "target": "draw2d.decoration.connection.DiamondDecorator"
@@ -286,8 +291,8 @@
 
     "_comment_line232": "-------------Operator types and their properties----",
 
-    "example.shape.Aggregate": {
-        "type": "example.shape.Aggregate",
+    "pipestudio.shape.Aggregate": {
+        "type": "pipestudio.shape.Aggregate",
         "nature" : "operator",
         "templateName": "AggProps",
         "color": "#3F00ED",
@@ -319,8 +324,8 @@
         ]
     },
 
-    "example.shape.DBJoin": {
-        "type": "example.shape.DBJoin",
+    "pipestudio.shape.DBJoin": {
+        "type": "pipestudio.shape.DBJoin",
         "nature" : "operator",
         "templateName": "DBjoinProps",
         "color": "#A8120F",
@@ -349,8 +354,8 @@
         ]
     },
 
-    "example.shape.DBSource": {
-        "type": "example.shape.DBSource",
+    "pipestudio.shape.DBSource": {
+        "type": "pipestudio.shape.DBSource",
         "nature" : "operator",
         "templateName": "DBsourceProps",
         "color": "#A8120F",
@@ -375,8 +380,8 @@
         ]
     },
 
-    "example.shape.DBWriter": {
-        "type": "example.shape.DBWriter",
+    "pipestudio.shape.DBWriter": {
+        "type": "pipestudio.shape.DBWriter",
         "nature" : "operator",
         "templateName": "DBwriterProps",
         "color": "#962809",
@@ -402,8 +407,8 @@
         ]
     },
 
-    "example.shape.FileSource": {
-        "type": "example.shape.FileSource",
+    "pipestudio.shape.FileSource": {
+        "type": "pipestudio.shape.FileSource",
         "nature" : "operator",
         "templateName": "FSProps",
         "color": "#00B2BF",
@@ -428,8 +433,8 @@
         ]
     },
 
-    "example.shape.Filter": {
-        "type": "example.shape.Filter",
+    "pipestudio.shape.Filter": {
+        "type": "pipestudio.shape.Filter",
         "nature" : "operator",
         "templateName": "FilterProps",
         "color": "#24A807",
@@ -455,8 +460,8 @@
         ]
     },
 
-    "example.shape.Macro_Def": {
-        "type": "example.shape.Macro_Def",
+    "pipestudio.shape.Macro_Def": {
+        "type": "pipestudio.shape.Macro_Def",
         "nature" : "container",
         "color": "#92998E",
         "helpText": "<h2 id='macro-operators'>Macro Operators<a href='#macro-operators'></a></h2>&#x000A;<p>Macros define connected subgraphs of operators which can be (re-)used in the same way as standard operators. </p>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>define my_macro ($in) returns $out { &#x000A;     $out := filter($in) by x &gt; y + 2;&#x000A;}&#x000A;&#x000A;$var := file_source() using (filename = &quot;input1.csv&quot;) with (x int, y int);&#x000A;$res := my_macro($var);&#x000A;</code></pre>",
@@ -465,8 +470,8 @@
         "params": []
     },
 
-    "example.shape.Map": {
-        "type": "example.shape.Map",
+    "pipestudio.shape.Map": {
+        "type": "pipestudio.shape.Map",
         "nature" : "operator",
         "templateName": "MapProps",
         "color": "#FA6B6B",
@@ -498,8 +503,8 @@
         ]
     },
 
-    "example.shape.Matcher": {
-        "type": "example.shape.Matcher",
+    "pipestudio.shape.Matcher": {
+        "type": "pipestudio.shape.Matcher",
         "nature" : "operator",
         "templateName": "MatcherProps",
         "color": "#B6BF0D",
@@ -531,8 +536,8 @@
         ]
     },
 
-    "example.shape.MemorySource": {
-        "type": "example.shape.MemorySource",
+    "pipestudio.shape.MemorySource": {
+        "type": "pipestudio.shape.MemorySource",
         "nature" : "operator",
         "templateName": "MemSourceProps",
         "color": "#A8120F",
@@ -557,8 +562,8 @@
         ]
     },
 
-    "example.shape.Project": {
-        "type": "example.shape.Project",
+    "pipestudio.shape.Project": {
+        "type": "pipestudio.shape.Project",
         "nature" : "operator",
         "templateName": "ProjectProps",
         "color": "#B6BF0D",
@@ -584,8 +589,8 @@
         ]
     },
 
-    "example.shape.RScript": {
-        "type": "example.shape.RScript",
+    "pipestudio.shape.RScript": {
+        "type": "pipestudio.shape.RScript",
         "nature" : "operator",
         "templateName": "RScriptProps",
         "color": "#428bca",
@@ -617,8 +622,8 @@
         ]
     },
 
-    "example.shape.RelationHashJoin": {
-        "type": "example.shape.RelationHashJoin",
+    "pipestudio.shape.RelationHashJoin": {
+        "type": "pipestudio.shape.RelationHashJoin",
         "nature" : "operator",
         "templateName": "RHashProps",
         "color": "#428bca",
@@ -654,8 +659,8 @@
         ]
     },
 
-    "example.shape.SPARQLJoin": {
-        "type": "example.shape.SPARQLJoin",
+    "pipestudio.shape.SPARQLJoin": {
+        "type": "pipestudio.shape.SPARQLJoin",
         "nature" : "operator",
         "templateName": "SPARQLJoinProps",
         "color": "#00B2BF",
@@ -684,8 +689,8 @@
         ]
     },
 
-    "example.shape.SlidingWindow": {
-        "type": "example.shape.SlidingWindow",
+    "pipestudio.shape.SlidingWindow": {
+        "type": "pipestudio.shape.SlidingWindow",
         "nature" : "operator",
         "templateName": "WinProps",
         "color": "#00B2BF",
@@ -711,8 +716,8 @@
         ]
     },
 
-    "example.shape.SocketSink": {
-        "type": "example.shape.SocketSink",
+    "pipestudio.shape.SocketSink": {
+        "type": "pipestudio.shape.SocketSink",
         "nature" : "operator",
         "templateName": "SSinkProps",
         "color": "#3F00ED",
@@ -738,8 +743,8 @@
         ]
     },
 
-    "example.shape.SocketSource": {
-        "type": "example.shape.SocketSource",
+    "pipestudio.shape.SocketSource": {
+        "type": "pipestudio.shape.SocketSource",
         "nature" : "operator",
         "templateName": "SSourceProps",
         "color": "#428bca",
@@ -764,8 +769,8 @@
         ]
     },
 
-    "example.shape.StreamWriter": {
-        "type": "example.shape.StreamWriter",
+    "pipestudio.shape.StreamWriter": {
+        "type": "pipestudio.shape.StreamWriter",
         "nature" : "operator",
         "templateName": "SWriterProps",
         "color": "#3F00ED",
@@ -791,8 +796,8 @@
         ]
     },
 
-    "example.shape.SymmetricHashJoin": {
-        "type": "example.shape.SymmetricHashJoin",
+    "pipestudio.shape.SymmetricHashJoin": {
+        "type": "pipestudio.shape.SymmetricHashJoin",
         "nature" : "operator",
         "templateName": "SHashProps",
         "color": "#3F00ED",
@@ -821,8 +826,8 @@
         ]
     },
 
-    "example.shape.Triplifier": {
-        "type": "example.shape.Triplifier",
+    "pipestudio.shape.Triplifier": {
+        "type": "pipestudio.shape.Triplifier",
         "nature" : "operator",
         "templateName": "TriplifierProps",
         "color": "#962809",
@@ -848,8 +853,35 @@
         ]
     },
 
-    "example.shape.Tuplifier": {
-        "type": "example.shape.Tuplifier",
+    "pipestudio.shape.TumblingWindow": {
+        "type": "pipestudio.shape.TumblingWindow",
+        "nature" : "operator",
+        "templateName": "WinProps",
+        "color": "#00B2BF",
+        "helpText": "<h2 id='window'>Window<a href='#window'></a></h2>&#x000A;<p><code>sliding_window</code> represents a sliding window operator which invalidates tuples based on a given time interval. Each incoming tuple is forwarded to the output pipe and after the specified time interval (the window length) a corresponding outdated tuple is produced indicating the invalidation of the original tuple. In contrast, <code>tumbling_window</code>implements a tumbling window semantics where all tuples are outdated and the window is started from scratch as soon is the window size is exceeded. Currently, the following types of windows are supported: </p>&#x000A;&#x000A;<ul>&#x000A;<li>range windows where the <code>size</code> specifies a time interval and </li>&#x000A;<li>row windows where the <code>size</code> specifies the maximum number of valid tuples.</li>&#x000A;</ul>&#x000A;&#x000A;<p>A sliding window operator can spill tuples to disk in order to avoid memory overflow. If defined by <code>persistent = &quot;true&quot;</code> all valid tuples are written to a file organized as circular buffer and deleted. As soon as the invalidation time is reached, the tuple is read into memory again and sent as outdated tuple.</p>&#x000A;&#x000A;<ul>&#x000A;<li>Clauses: <code>using</code> (parameters: <code>type</code>, <code>size</code>, <code>slide_len</code>, <code>persistent</code>)</li>&#x000A;</ul>&#x000A;<h3 id='example'>Example<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>$res := sliding_window($in) using (type = &quot;range&quot;, size = 120, slide_len = 60);&#x000A;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Tumbling Window",
+        "params": [
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pipestudio.shape.Tuplifier": {
+        "type": "pipestudio.shape.Tuplifier",
         "nature" : "operator",
         "templateName": "TuplifierProps",
         "color": "#00B2BF",
@@ -878,8 +910,8 @@
         ]
     },
 
-    "example.shape.TwitterReader": {
-        "type": "example.shape.TwitterReader",
+    "pipestudio.shape.TwitterReader": {
+        "type": "pipestudio.shape.TwitterReader",
         "nature" : "operator",
         "templateName": "TwitterReaderProps",
         "color": "#03692A",
@@ -901,8 +933,8 @@
         ]
     },
 
-    "example.shape.Union": {
-        "type": "example.shape.Union",
+    "pipestudio.shape.Union": {
+        "type": "pipestudio.shape.Union",
         "nature" : "operator",
         "templateName": "UnionProps",
         "color": "#D9534F",
@@ -929,8 +961,8 @@
         ]
     },
 
-    "example.shape.User_Defined": {
-        "type": "example.shape.User_Defined",
+    "pipestudio.shape.User_Defined": {
+        "type": "pipestudio.shape.User_Defined",
         "nature" : "operator",
         "templateName": "UserDefinedProps",
         "color": "#567842",
@@ -950,8 +982,8 @@
         ]
     },
 
-    "example.shape.Use_Predefined": {
-        "type": "example.shape.Use_Predefined",
+    "pipestudio.shape.Use_Predefined": {
+        "type": "pipestudio.shape.Use_Predefined",
         "nature" : "operator",
         "color": "#567842",
         "helpText": "FIXME: Write help text for me!",
@@ -969,8 +1001,8 @@
         "params": []
     },
 
-    "example.shape.ZmqPublisher": {
-        "type": "example.shape.ZmqPublisher",
+    "pipestudio.shape.ZmqPublisher": {
+        "type": "pipestudio.shape.ZmqPublisher",
         "nature" : "operator",
         "templateName": "ZMQPublisherProps",
         "color": "#11F5F5",
@@ -996,8 +1028,8 @@
         ]
     },
 
-    "example.shape.ZmqPull": {
-        "type": "example.shape.ZmqPull",
+    "pipestudio.shape.ZmqPull": {
+        "type": "pipestudio.shape.ZmqPull",
         "nature" : "operator",
         "templateName": "ZMQPullProps",
         "color": "#872BB5",
@@ -1022,8 +1054,8 @@
         ]
     },
 
-    "example.shape.ZmqPush": {
-        "type": "example.shape.ZmqPush",
+    "pipestudio.shape.ZmqPush": {
+        "type": "pipestudio.shape.ZmqPush",
         "nature" : "operator",
         "templateName": "ZMQPushProps",
         "color": "#3F00ED",
@@ -1049,8 +1081,8 @@
         ]
     },
     
-    "example.shape.ZmqSubscriber": {
-        "type": "example.shape.ZmqSubscriber",
+    "pipestudio.shape.ZmqSubscriber": {
+        "type": "pipestudio.shape.ZmqSubscriber",
         "nature" : "operator",
         "templateName": "ZMQSubscriberProps",
         "color": "#872BB5",

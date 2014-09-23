@@ -2,62 +2,38 @@
 <html>
 <head>
 
-<!--META-->
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Signup!</title>
+	<!--META-->
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="nikhilrane">
+    <link rel="icon" href="./public/images/favicon.png">
+	<title>Signup!</title>
+	<!-- Bootstrap core CSS -->
+    <link href="./public/css/bootstrap.css" rel="stylesheet">
+    <link href="./public/css/application.css" rel="stylesheet">
 
-<!--STYLESHEETS-->
-<link href="./public/css/login_page_style.css" rel="stylesheet" type="text/css" />
-<style type='text/css'>
-	.user-icon {
-	  top:200px; /* Positioning fix for slide-in, got lazy to think up of simpler method. */
-	  background: rgba(65,72,72,0.75) url(./public/images/user-icon.png) no-repeat center;  
-	}
+    <!-- Custom styles for this template -->
+    <link href="./public/css/starter-template.css" rel="stylesheet">
 
-	.pass-icon {
-	  top:273px;
-	  background: rgba(65,72,72,0.75) url(./public/images/pass-icon.png) no-repeat center;
-	}
-</style>
+	<!--STYLESHEETS-->
+	<link href="./public/css/login_page_style.css" rel="stylesheet" type="text/css" />
 
-<!--SCRIPTS-->
-<script src="./public/js/jquery-1.11.1.js"></script>
-<!--Slider-in icons-->
-<script type="text/javascript">
-$(document).ready(function() {
-	$(".username").focus(function() {
-		$(".user-icon").css("left","-48px");
-	});
-	$(".username").blur(function() {
-		$(".user-icon").css("left","0px");
-	});
+	<!--SCRIPTS-->
+	<script src="./public/js/jquery-1.11.1.js"></script>
+    <script src="./public/js/bootstrap.js"></script>
+
+	<!--Slider-in icons-->
+	<script type="text/javascript">
 	
-	$(".password").focus(function() {
-		$(".pass-icon").css("left","-48px");
-	});
-	$(".password").blur(function() {
-		$(".pass-icon").css("left","0px");
-	});
-
-	$(".confirm-password").focus(function() {
-		$(".pass-icon").css("left","-48px");
-	});
-	$(".confirm-password").blur(function() {
-		$(".pass-icon").css("left","0px");
-	});
-});
-</script>
+	</script>
 
 </head>
 <body>
 
 <!--WRAPPER-->
-<div id="wrapper">
-
-	<!--SLIDE-IN ICONS-->
-    <div class="user-icon"></div>
-    <div class="pass-icon"></div>
-    <!--END SLIDE-IN ICONS-->
+<div id="wrapper" style="top:40%">
 
 <!--SIGNUP FORM-->
 <form name="signup-form" class="login-form" action="/signup" method="post">
@@ -71,16 +47,49 @@ $(document).ready(function() {
 	
 	<!--CONTENT-->
     <div class="content">
-	<!--FULL NAME--><input name="fullName" type="text" class="input" value="First &amp; Last name" onfocus="this.value=''" /><!--END FULL NAME-->
-	<!--USERNAME--><input name="username" type="text" class="input username" value="Username" onfocus="this.value=''" /><!--END USERNAME-->
-    <!--PASSWORD--><input name="password" type="password" class="input password" value="Password" onfocus="this.value=''" /><!--END PASSWORD-->
-    <!--PASSWORD--><input name="confirm_password" type="password" class="input confirm-password" value="Confirm Password" onfocus="this.value=''" /><!--END CONFIRM-PASSWORD-->
+	
+
+    	<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-font"></span></div>
+				<input class="form-control" name="fullName" type="text" placeholder="First &amp; Last name">
+			</div>
+		</div>
+
+	    <div class="form-group">
+			<div class="input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
+				<input class="form-control" name="emailID" type="email" placeholder="Email ID">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+				<input class="form-control" name="username" type="text" placeholder="Username">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+				<input class="form-control" name="password" type="password" placeholder="Password">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+				<input class="form-control" name="confirm_password" type="password" placeholder="Confirm Password">
+			</div>
+		</div>
     </div>
     <!--END CONTENT-->
     
     <!--FOOTER-->
     <div class="footer">
-    <!--SIGNUP BUTTON--><input type="submit" name="submit" value="Signup" class="button" /><!--END SIGNUP BUTTON-->
+    	<!--LOGIN BUTTON--><input style="float:left;" type="submit" name="submit" value="Login" class="register" /><!--END LOGIN BUTTON-->
+    	<!--SIGNUP BUTTON--><input type="submit" name="submit" value="Signup" class="button" /><!--END SIGNUP BUTTON-->
     </div>
     <!--END FOOTER-->
 

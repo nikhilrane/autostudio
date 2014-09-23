@@ -106,7 +106,7 @@ function createHash(string){
 //
 // Possible errors: the passwords are not the same, and a user
 // with that username already exists.
-function createUser(fullName, username, password, password_confirmation, callback){
+function createUser(fullName, emailAdd, username, password, password_confirmation, callback){
   var coll = mongo.collection('users');
   
   if (password !== password_confirmation) {
@@ -118,6 +118,7 @@ function createUser(fullName, username, password, password_confirmation, callbac
     var hashedPassword = createHash(password + salt);
     var userObject = {
       fullName: fullName,
+      email: emailAdd,
       username: username,
       salt: salt,
       hashedPassword: hashedPassword
@@ -140,13 +141,19 @@ function createUser(fullName, username, password, password_confirmation, callbac
 
 
 app.post('/signup', function(req, res){
+
+  //check if this is actually a login call.
+  if(req.body.submit === "Login") {
+    res.redirect('/login');
+  }
   
   var fullName = req.body.fullName;
+  var emailAdd = req.body.emailID;
   var username = req.body.username;
   var password = req.body.password;
   var confirm_password = req.body.confirm_password;
 
-  createUser(fullName, username, password, confirm_password, function(err, user){
+  createUser(fullName, emailAdd, username, password, confirm_password, function(err, user){
     if (err) {
       res.render('signup', {error: err});
     } else {

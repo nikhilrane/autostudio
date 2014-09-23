@@ -33,6 +33,9 @@ autostudio.Toolbar = Class.extend({
       "                    <li><a href='/contact'>Contact</a>"+
       "                    </li>"+
       "                </ul>"+
+      "                <ul class='nav navbar-nav navbar-right'>"+
+      "                    <li><a href='/logout'>Logout</a></li>"+
+      "                </ul>"+
       "            </div>"+
       "        </div>"+
       "    </div>"+

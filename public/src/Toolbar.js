@@ -28,9 +28,9 @@ autostudio.Toolbar = Class.extend({
       "            </div>"+
       "            <div class='collapse navbar-collapse'>"+
       "                <ul class='nav navbar-nav'>"+
-      "                    <li><a href='#about'>About</a>"+
+      "                    <li><a href='/about'>About</a>"+
       "                    </li>"+
-      "                    <li><a href='#contact'>Contact</a>"+
+      "                    <li><a href='/contact'>Contact</a>"+
       "                    </li>"+
       "                </ul>"+
       "            </div>"+
@@ -109,13 +109,35 @@ autostudio.Toolbar = Class.extend({
     this.saveButton.click($.proxy(function(){
 
       if(!this.saveButton.parent().hasClass("disabled")) {
-        app.saveDefinition();
+        
+        if((app.loadedDefinitionId !== undefined && app.loadedDefinitionId.length > 0)) {
+          app.saveDefinition();
+        
+        } else {
+          (new autostudio.dialog.SaveAsDialog()).show();
+        }
       }
 
     },this));
 
     li.addClass("disabled");
     li.append(this.saveButton);
+    mainUL.append(li);
+
+
+    li = $('<li></li>');
+    this.saveAsButton  = $('<a href="#">Save As</a>');
+    buttonGroup.append(li);
+    this.saveAsButton.click($.proxy(function(){
+
+      if(!this.saveAsButton.parent().hasClass("disabled")) {
+        (new autostudio.dialog.SaveAsDialog()).show();
+      }
+
+    },this));
+
+    li.addClass("disabled");
+    li.append(this.saveAsButton);
     mainUL.append(li);
     mainUL.append('<li class="divider"></li>');
 
@@ -403,8 +425,10 @@ autostudio.Toolbar = Class.extend({
 		
     if( !(!event.getStack().canUndo() && !event.getStack().canRedo()) ) {
       this.saveButton.parent().removeClass("disabled");
+      this.saveAsButton.parent().removeClass("disabled");
     } else {
       this.saveButton.parent().addClass("disabled");
+      this.saveAsButton.parent().addClass("disabled");
     }
     
 	}

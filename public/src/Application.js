@@ -150,10 +150,13 @@ autostudio.Application = Class.extend(
       //   },this));
     },
 
-    createDefinition: function(definitionId)
+    createDefinition: function(definitionId, toClear)
     {
       $("#loadedFileName").text("loading...");
-      this.view.clear();
+      if(toClear) {
+        this.view.clear();
+      }
+      
       this.loadedDefinitionId = definitionId;
       $("#loadedFileName").html("<span class='muted'><u>Flow-Design:</u></span> "+definitionId);
     },

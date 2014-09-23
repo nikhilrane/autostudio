@@ -1,6 +1,6 @@
 
 
-autostudio.dialog.NewDialog = Class.extend({
+autostudio.dialog.SaveAsDialog = Class.extend({
     
     init:function(){
       
@@ -12,14 +12,14 @@ autostudio.dialog.NewDialog = Class.extend({
             var _this = this;
             
             container.modal();
-            $(".modal-title").text("Create new Flow-Design");
+            $(".modal-title").text("Save As...");
 
             // Form part
             //
             var output =
                         '<form id="newFileNameForm">'+
                         '  <label>Name of the Flow-Design</label>'+
-                        '  <input id="newFileName" type="text" class="form-control input-lg" placeholder="name of the new flow-design">'+
+                        '  <input id="newFileName" type="text" class="form-control input-lg" placeholder="name of flow-design">'+
                         '</form>';
             // var compiled = Hogan.compile(template);
             // var output = $(compiled.render({}));
@@ -34,7 +34,7 @@ autostudio.dialog.NewDialog = Class.extend({
             
             // button bar
             //
-            output = '<button class="btn btn-primary">Create</button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>';
+            output = '<button class="btn btn-primary">Save</button><button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>';
             // compiled = Hogan.compile(template);
             // output = compiled.render({});
             container.find('.modal-footer').html(output);
@@ -54,6 +54,7 @@ autostudio.dialog.NewDialog = Class.extend({
         if(!S(id).endsWith(pstudioJSON.fileExtension)) {
             id = id + pstudioJSON.fileExtension;
         }
-        app.createDefinition(id, true);
+        app.createDefinition(id, false);
+        app.saveDefinition();
     }
 });

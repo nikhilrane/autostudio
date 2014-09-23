@@ -105,6 +105,23 @@ app.get('/', function(req, res){
   res.redirect('/login');
 });
 
+
+/*
+ * Send the 'about' page.
+ */
+app.get('/about', function(req, res) {
+  res.status(200).sendfile('./public/about.html');
+});
+
+
+/*
+ * Send the 'contact' page.
+ */
+app.get('/contact', function(req, res) {
+  res.status(200).sendfile('./public/contact.html');
+});
+
+
 // Initialize the public directory for exposing client side
 app.use('/public', express.static('public'));
 

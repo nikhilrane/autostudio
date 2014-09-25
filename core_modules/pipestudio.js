@@ -165,7 +165,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
             }
 
             // Send an email notification to registered email ID if email_notification flag is set
-            if(documentData.email_notification == "true") {
+            if(documentData !== null && documentData.email_notification == "true") {
 
               var emailText = 'The execution of <b>' + fileName  + '</b> is complete. The executed script and execution log is attached to this email.<br /><br />';
               emailText = emailText + "\n The output files are available under <i>";
@@ -787,16 +787,13 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var fileName = req.body.toGenerate.name;
     var user = req.body.toGenerate.username;
 
-    sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Generating script....................STARTED", type: "message"});
-      
     var generatedScript = generateScript(parsedData);
 
-    //FIXME Remove these hardcoded tags, let's handle on client side
-    sendSocketMessage(fileName, user, false, sessionID, eventName, {output: "Script generation....................COMPLETE\n\nScript:\n<font color='#008C8C'>" + generatedScript + "</font>", type: "message"});
-
-    saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
+    if(fileName !== undefined && fileName !== null && fileName.length <= 0) {
+      saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
+    }
     
-    res.end(JSON.stringify({ result: true }));
+    res.end(JSON.stringify({ result: generatedScript }));
   });
 
 
@@ -831,7 +828,11 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var user = req.body.toGenerate.username;
     var files = req.body.toGenerate.files;
 
-    if(files === undefined) {
+    if( fileName === undefined || fileName === null || (fileName !== null && fileName !== undefined && fileName.length <= 0) ) {
+      fileName = "noname.pflow";
+    }
+
+    if(files === undefined || files === null) {
       files = [];
     }
 

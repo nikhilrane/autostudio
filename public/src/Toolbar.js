@@ -200,11 +200,52 @@ autostudio.Toolbar = Class.extend({
     mainUL.append(li);
 
 
+    li = $('<li></li>');
+    this.exportScriptButton  = $('<a href="#">Export script...</a>');
+    buttonGroup.append(li);
+    this.exportScriptButton.click($.proxy(function() {
+
+      var writer = new draw2d.io.json.Writer();
+      writer.marshal(this.view, $.proxy(function(jsonData) {
+
+        var documentObject = {
+          "documentData" : jsonData, 
+          "name": app.loadedDefinitionId,
+          "username" : sessionStorage.getItem('username')
+          };
+
+        $.ajax({
+            url: '/pipestudio/generateScript',
+            data: { "toGenerate" : documentObject },
+            type: 'POST',
+            success: function(scriptText) {
+              var dataString = JSON.parse(scriptText).result;
+
+              var blob = new Blob([dataString], {type: "text/plain;charset=utf-8"});
+              var name = "script" + pstudioJSON.fileExtension;
+              if(app.loadedDefinitionId !== undefined && app.loadedDefinitionId !== null && app.loadedDefinitionId.length > 0) {
+                name = app.loadedDefinitionId;
+              }
+              saveAs(blob, name);
+            },
+            error: function(err) {
+                console.log("Failure in parse" + JSON.stringify(err));
+            },
+        });
+      },this));
+
+
+
+    },this)).attr("disabled", false);
+    li.append(this.exportScriptButton);
+    mainUL.append(li);
+
+
     mainUL.append('<li class="divider"></li>');
 
     
     li = $('<li></li>');
-    this.generateScriptButton  = $('<a href="#">Generate Script</a>');
+    this.generateScriptButton  = $('<a href="#">Show Script</a>');
 
     buttonGroup.append(li);
     this.generateScriptButton.click($.proxy(function()  {
@@ -214,9 +255,7 @@ autostudio.Toolbar = Class.extend({
 
 
       var writer = new draw2d.io.json.Writer();
-      // alert("calling parse...");
       writer.marshal(this.view, $.proxy(function(jsonData) {
-        // alert("Inside marshal, cookie: " + document.cookie);
 
         var documentObject = {
           "documentData" : jsonData, 
@@ -224,15 +263,16 @@ autostudio.Toolbar = Class.extend({
           "username" : sessionStorage.getItem('username')
           };
 
-          // alert("sending: " + JSON.stringify(documentObject));
-
         $.ajax({
             url: '/pipestudio/generateScript',
-            // dataType: "jsonp",
             data: { "toGenerate" : documentObject },
             type: 'POST',
-            success: function(script) {
-                console.log("Success in parse! \n" + JSON.stringify(script));
+            success: function(scriptText) {
+              var compiled = templates["ScriptText"];
+              var script = JSON.parse(scriptText).result;
+              $("#modalDiv").html("");
+              $("#modalDiv").append(compiled.render({"name": app.loadedDefinitionId, "script": script}));
+              $("#scriptTextDiv").modal();
             },
             error: function(err) {
                 console.log("Failure in parse" + JSON.stringify(err));

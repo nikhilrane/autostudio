@@ -334,10 +334,10 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var currentStatement = "";
     var operatorProps = pstudio_config.get(operator[TYPE_KEY]);   //get all properties of *this* operator type
 
-    if(operator.type === "example.shape.Use_Predefined") {
+    if(operator.type === "pipestudio.shape.Use_Predefined") {
       /* constructs: <operator_id>_output = macro_name */
       currentStatement = operator[ID_KEY] + OUTPUT_KEY + EQUALS_KEY + operator.label;
-    } else if(operator.type === "example.shape.User_Defined") {
+    } else if(operator.type === "pipestudio.shape.User_Defined") {
       currentStatement = DEFINE_KEY + operator.label;
     } else {
       /* constructs: <operator_id>_output = <operator> */
@@ -386,9 +386,11 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
         if( S(key).contains(COMMENT_KEY) ) {      //if this is a comment, we enclose it within /*\n ... \n*/
 
-          currentStatement = COMMENT_START_KEY + value + COMMENT_END_KEY + NEW_LINE_KEY + currentStatement + NEW_LINE_KEY;
+          currentStatement = COMMENT_START_KEY + value + COMMENT_END_KEY + NEW_LINE_KEY + currentStatement;
 
         } else {
+
+          currentStatement = currentStatement + BLANK_SPACE_KEY;   //This \n removed because pipeflow complains about it
 
           //put the value in () brackets if not already inside one, BELOW PART OF PUTTING () BRACKETS IS COMMENTED AS PIPEFLOW COMPLAINS ABOUT IT
           if( operatorProps.parameters[key].bracketsRequired && S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
@@ -401,11 +403,15 @@ module.exports = function(app, mongo, io, cookie, transporter) {
           currentStatement = currentStatement + key + BLANK_SPACE_KEY + value;
 
           //if this is the last parameter, append a ';' otherwise append a new line character 
-          if(j == params.length - 2) {    //here it is '-2' because there is one "comment" parameter too
-            currentStatement = currentStatement + SEMI_COLON_KEY;
-          } else {
-            currentStatement = currentStatement + BLANK_SPACE_KEY;   //This \n removed because pipeflow complains about it
-          }
+          // if(j < params.length - 1) {    //here it is '-2' because there is one "comment" parameter too
+          //   currentStatement = currentStatement + BLANK_SPACE_KEY;   //This \n removed because pipeflow complains about it
+          // } else {
+          //   currentStatement = currentStatement + SEMI_COLON_KEY;
+          // }
+        }
+
+        if(j == params.length - 1) {    //we are done with all parameters, so append semicolon.
+          currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;
         }
 
       }
@@ -418,7 +424,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
     // If it is user defined operator, we have to put it at the top
     // so that the references below find it
-    if(operator.type === "example.shape.User_Defined") {
+    if(operator.type === "pipestudio.shape.User_Defined") {
       statusVariables.finalString = currentStatement + statusVariables.finalString;
     }
 

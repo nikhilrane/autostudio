@@ -100,53 +100,32 @@ function createHash(string){
   return crypto.createHash('sha256').update(string).digest('hex');
 }
 
-// This creates a new user and calls the callback with
-// two arguments: err, if there was an error, and the created user
-// if a new user was created.
-//
-// Possible errors: the passwords are not the same, and a user
-// with that username already exists.
+/* This creates a new user and calls the callback with
+ * two arguments: err, if there was an error, and the created user
+ * if a new user was created.
+ */
 function createUser(fullName, emailAdd, username, password, password_confirmation, callback){
   var coll = mongo.collection('users');
   
-  if (password !== password_confirmation) {
-    var err = 'The passwords do not match';
-    callback(err);
-  } else {
-    var query      = {username:username};
-    var salt       = createSalt();
-    var hashedPassword = createHash(password + salt);
-    var userObject = {
-      fullName: fullName,
-      email: emailAdd,
-      username: username,
-      salt: salt,
-      hashedPassword: hashedPassword
-    };
+  var salt = createSalt();
+  var hashedPassword = createHash(password + salt);
+  var userObject = {
+    fullName: fullName,
+    email: emailAdd,
+    username: username,
+    salt: salt,
+    hashedPassword: hashedPassword
+  };
+
+  coll.insert(userObject, function(err,user){
+    callback(err,user);
+  });
     
-    // make sure this username does not exist already
-    coll.findOne(query, function(err, user){
-      if (user) {
-        err = 'The username you entered already exists!';
-        callback(err);
-      } else {
-        // create the new user
-        coll.insert(userObject, function(err,user){
-          callback(err,user);
-        });
-      }
-    });
-  }
 }
 
 
 app.post('/signup', function(req, res){
 
-  //check if this is actually a login call.
-  if(req.body.submit === "Login") {
-    res.redirect('/login');
-  }
-  
   var fullName = req.body.fullName;
   var emailAdd = req.body.emailID;
   var username = req.body.username;
@@ -156,15 +135,34 @@ app.post('/signup', function(req, res){
   createUser(fullName, emailAdd, username, password, confirm_password, function(err, user){
     if (err) {
       res.render('signup', {error: err});
+      res.end(JSON.stringify( { result: false, error: err }));
     } else {
       
       // This way subsequent requests will know the user is logged in.
       req.session.username = user.username;
-      
-      res.redirect('/');  
+      res.end(JSON.stringify( { result: true }));
     }
   });
 });
+
+
+/*
+ * Checks if given username already exists; if yes, returns <code> true </code> otherwise <code> false </code>.
+ */
+app.post('/validateUserName', function(req, res) {
+  var username = req.body.username;
+  var coll = mongo.collection('users');
+
+  coll.findOne({username: username}, function(err, user){
+    if (user) {
+      res.end(JSON.stringify( { result: true }));
+    } else {
+      res.end(JSON.stringify( { result: false }));
+    }
+  });
+
+});
+
 
 
 // This finds a user matching the username and password that were given
@@ -192,13 +190,6 @@ function authenticateUser(username, password, callback){
 
 app.post('/login', function(req, res){
 
-  //check if this is actually a signup call.
-  if(req.body.submit === "Sign Up!") {
-    res.redirect('/signup');
-  }
-
-  // These two variables come from the form on
-  // the views/login.hbs page
   var username = req.body.username;
   var password = req.body.password;
   
@@ -206,10 +197,10 @@ app.post('/login', function(req, res){
     if (user) {
       // This way subsequent requests will know the user is logged in.
       req.session.username = user.username;
+      res.end(JSON.stringify( { result: true }));
 
-      res.redirect('/home');
     } else {
-      res.render('login', {badCredentials: true});
+      res.end(JSON.stringify( { result: false }));
     }
   });
 });

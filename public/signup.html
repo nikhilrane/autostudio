@@ -26,7 +26,91 @@
 
 	<!--Slider-in icons-->
 	<script type="text/javascript">
-	
+
+		$(function() {
+			$("#errorAlert").hide();
+		});
+
+		function goToLogin() {
+			window.location = "/login";
+		}
+
+		function validate() {
+			console.log("form val: " + $("#signUpForm").serialize());
+			var errorAlert = $("#errorAlert");
+			var password = $("input[name='password']");
+			var confirm_password = $("input[name='confirm_password']");
+			var username = $("input[name='username']");
+
+			//reset all errors
+			errorAlert.text("");
+			errorAlert.hide();
+			username.parent(".input-group").removeClass("has-error");
+			password.parent(".input-group").removeClass("has-error");
+			confirm_password.parent(".input-group").removeClass("has-error");
+
+
+			//first, check the username
+			$.ajax({
+	            url: '/validateUserName',
+	            data: { "username" : username.val() },
+	            type: 'POST',
+	            success: function (data) {
+
+	              if(JSON.parse(data).result === true) {
+
+					errorAlert.text("The username you entered already exists!");
+					errorAlert.show("fast");
+					username.parent(".input-group").addClass("has-error");
+
+	              } else {
+
+					//username is okay, let's validate passwords
+					if(password.val() !== confirm_password.val()) {
+						//display passwords do not match error
+						password.parent(".input-group").addClass("has-error");
+						confirm_password.parent(".input-group").addClass("has-error");
+						errorAlert.text("The passwords do not match.");
+						errorAlert.show("fast");
+						return;
+					}
+
+					//we are here, that means we can create a new user
+					$.ajax({
+			            url: '/signup',
+			            data: $("#signUpForm").serialize(),
+			            type: 'POST',
+			            success: function (data) {
+
+			              // console.log("Got list: " + JSON.stringify(data));
+
+			              if(JSON.parse(data).result === true) {
+			              	//this means the user is created successfully, let's go to login page
+			              	sessionStorage.setItem('messageForLogin', username.val());
+			              	window.location = "/login";
+			              } else {
+			              	//this should not happen but to be fail safe
+			              	errorAlert.text(JSON.parse(data).error);
+			              	errorAlert.show("fast");
+			              }
+
+			            },
+			            error: function (err) {
+			                console.log("Failure in creating user: " + JSON.stringify(err));
+			                errorAlert.text(err);
+			                errorAlert.show("fast");
+			            },
+			        });
+
+	              }
+
+	            },
+	            error: function (err) {
+	                console.log("Failure in validating username: " + JSON.stringify(err));
+	            },
+        	});
+        	
+		}
 	</script>
 
 </head>
@@ -36,7 +120,7 @@
 <div id="wrapper" style="top:40%">
 
 <!--SIGNUP FORM-->
-<form name="signup-form" class="login-form" action="/signup" method="post">
+<form id="signUpForm" name="signup-form" class="login-form" action="/signup" method="post">
 
 	<!--HEADER-->
     <div class="header">
@@ -47,7 +131,8 @@
 	
 	<!--CONTENT-->
     <div class="content">
-	
+
+    	<div id="errorAlert" class="alert alert-danger" role="alert"></div>
 
     	<div class="form-group">
 			<div class="input-group">
@@ -88,13 +173,15 @@
     
     <!--FOOTER-->
     <div class="footer">
-    	<!--LOGIN BUTTON--><input style="float:left;" type="submit" name="submit" value="Login" class="register" /><!--END LOGIN BUTTON-->
-    	<!--SIGNUP BUTTON--><input type="submit" name="submit" value="Signup" class="button" /><!--END SIGNUP BUTTON-->
-    </div>
+		<input style="float:left;" type="button"  value="Back to Login..." class="register" onclick="goToLogin()" />
+		<input type="button" value="Signup" class="button" onclick="validate()" />
+	</div>
     <!--END FOOTER-->
 
 </form>
 <!--END SIGNUP FORM-->
+
+
 
 </div>
 <!--END WRAPPER-->

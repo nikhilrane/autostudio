@@ -2,38 +2,81 @@
 <html>
 <head>
 
-<!--META-->
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Login Form</title>
+	<!--META-->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Login Form</title>
 
-<!--STYLESHEETS-->
-<link href="./public/css/login_page_style.css" rel="stylesheet" type="text/css" />
+	<!-- Bootstrap core CSS -->
+    <link href="./public/css/bootstrap.css" rel="stylesheet">
+    <link href="./public/css/application.css" rel="stylesheet">
 
-<!--SCRIPTS-->
-<script src="./public/js/jquery-1.11.1.js"></script>
-<!--Slider-in icons-->
-<script type="text/javascript">
-$(document).ready(function() {
-	$(".username").focus(function() {
-		$(".user-icon").css("left","-48px");
-	});
-	$(".username").blur(function() {
-		$(".user-icon").css("left","0px");
-	});
-	
-	$(".password").focus(function() {
-		$(".pass-icon").css("left","-48px");
-	});
-	$(".password").blur(function() {
-		$(".pass-icon").css("left","0px");
-	});
-});
+    <!-- Custom styles for this template -->
+    <link href="./public/css/starter-template.css" rel="stylesheet">
 
-function storeUser() {
-	sessionStorage.setItem('username', $("input[name='username']").val());
-	sessionStorage.removeItem('fullName');
-}
-</script>
+	<!--STYLESHEETS-->
+	<link href="./public/css/login_page_style.css" rel="stylesheet" type="text/css" />
+
+	<!--SCRIPTS-->
+	<script src="./public/js/jquery-1.11.1.js"></script>
+    <script src="./public/js/bootstrap.js"></script>
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$(".username").focus(function() {
+			$(".user-icon").css("left","-48px");
+		});
+		$(".username").blur(function() {
+			$(".user-icon").css("left","0px");
+		});
+		
+		$(".password").focus(function() {
+			$(".pass-icon").css("left","-48px");
+		});
+		$(".password").blur(function() {
+			$(".pass-icon").css("left","0px");
+		});
+
+		$("#errorAlert").hide();
+		$("#successAlert").hide();
+
+		if(sessionStorage.getItem("messageForLogin") !== null && sessionStorage.getItem("messageForLogin") !== undefined) {
+			$("#successAlert").html("User <b>" + sessionStorage.getItem("messageForLogin") + "</b> created successfully! Please login... ");
+			$("#successAlert").show("fast");
+
+		}
+	});
+
+
+	function verifyUser() {
+		$.ajax({
+            url: '/login',
+            data: $("#loginForm").serialize(),
+            type: 'POST',
+            success: function (data) {
+            	console.log("Got: " + JSON.parse(data).result);
+                if(JSON.parse(data).result === false) {
+                	$("#errorAlert").text("Incorrect username or password. Please enter again.");
+                	$("#errorAlert").show("slow");
+                } else {
+                	sessionStorage.setItem('username', $("input[name='username']").val());
+					sessionStorage.removeItem('fullName');
+					sessionStorage.removeItem('messageForLogin');
+					window.location = "/home";
+                }
+            },
+            error: function (err) {
+                console.log("Failure in verifying credentials" + JSON.stringify(err));
+                $("#errorAlert").text("Error while verifying user. Please enter again.");
+            },
+		});
+
+		
+	}
+
+	function goToSignUp() {
+		window.location = "/signup";
+	}
+	</script>
 
 </head>
 <body>
@@ -47,7 +90,7 @@ function storeUser() {
     <!--END SLIDE-IN ICONS-->
 
 <!--LOGIN FORM-->
-<form name="login-form" class="login-form" action="/login" method="post">
+<form id="loginForm" name="login-form" class="login-form" action="/login" method="post">
 
 	<!--HEADER-->
     <div class="header">
@@ -58,15 +101,29 @@ function storeUser() {
 	
 	<!--CONTENT-->
     <div class="content">
-	<!--USERNAME--><input name="username" type="text" class="input username" value="Username" onfocus="this.value=''" /><!--END USERNAME-->
-    <!--PASSWORD--><input name="password" type="password" class="input password" value="Password" onfocus="this.value=''" /><!--END PASSWORD-->
+    	<div id="successAlert" class="alert alert-success" role="alert"></div>
+    	<div id="errorAlert" class="alert alert-danger" role="alert"></div>
+
+    	<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+				<input class="form-control" name="username" type="text" placeholder="Username">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+				<input class="form-control" name="password" type="password" placeholder="Password">
+			</div>
+		</div>
     </div>
     <!--END CONTENT-->
     
     <!--FOOTER-->
     <div class="footer">
-    <!--LOGIN BUTTON--><input type="submit" name="submit" value="Login" class="button" onclick="storeUser()" /><!--END LOGIN BUTTON-->
-    <!--REGISTER BUTTON--><input type="submit" name="submit" value="Sign Up!" class="register" /><!--END REGISTER BUTTON-->
+	    <input style="float:left;" type="button"  value="Sign Up!" class="register" onclick="goToSignUp()" />
+		<input type="button" value="Login" class="button" onclick="verifyUser()" />
     </div>
     <!--END FOOTER-->
 

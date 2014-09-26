@@ -402,12 +402,6 @@ module.exports = function(app, mongo, io, cookie, transporter) {
 
           currentStatement = currentStatement + key + BLANK_SPACE_KEY + value;
 
-          //if this is the last parameter, append a ';' otherwise append a new line character 
-          // if(j < params.length - 1) {    //here it is '-2' because there is one "comment" parameter too
-          //   currentStatement = currentStatement + BLANK_SPACE_KEY;   //This \n removed because pipeflow complains about it
-          // } else {
-          //   currentStatement = currentStatement + SEMI_COLON_KEY;
-          // }
         }
 
         if(j == params.length - 1) {    //we are done with all parameters, so append semicolon.

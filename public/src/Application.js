@@ -82,7 +82,7 @@ autostudio.Application = Class.extend(
                  closable:false,
                  spacing_open:0,
                  spacing_closed:0,
-                 size:"7%",
+                 size:"9%",
                  paneSelector: "#palette"
 	         },
 	         center: {
@@ -90,7 +90,7 @@ autostudio.Application = Class.extend(
                  closable:false,
                  spacing_open:0,
                  spacing_closed:0,
-                 size:"93%",
+                 size:"91%",
                  paneSelector: "#view"
 	          }
 	       });
@@ -158,7 +158,7 @@ autostudio.Application = Class.extend(
       }
       
       this.loadedDefinitionId = definitionId;
-      $("#loadedFileName").html("<span class='muted'><u>Flow-Design:</u></span> "+definitionId);
+      $("#loadedFileName").html(definitionId);
     },
 
 
@@ -310,7 +310,7 @@ autostudio.Application = Class.extend(
       	this.loadedDefinitionId = definitionId;
         var reader = new autostudio.Reader();
         reader.unmarshal(this.view, jsonDocument);
-        $("#loadedFileName").html("<span class='muted'><u>Flow-Design:</u></span> "+definitionId);
+        $("#loadedFileName").html(definitionId);
     },
 
     updateFigureParameter: function(paramName, paramValue) {

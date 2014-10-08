@@ -657,7 +657,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
 
     var today = new Date();
-    var dateString = today.getDate() + UNDERSCORE_KEY + today.getMonth() + UNDERSCORE_KEY + today.getFullYear();
+    var dateString = today.getDate() + UNDERSCORE_KEY + (today.getMonth() + 1) + UNDERSCORE_KEY + today.getFullYear();
 
     // This will create a path: ./executions/output/<username>/<date_month_year>/<filename_dateTime>
     var dirPath = path.join(EXECUTIONS_DIR, user, dateString, fileName + UNDERSCORE_KEY + today.toJSON());

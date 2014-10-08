@@ -44,7 +44,7 @@ autostudio.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
 
         }
 
-        this.port.setConnectionAnchor(new draw2d.layout.anchor.ShortesPathConnectionAnchor(this.port));
+        this.port.setConnectionAnchor(new draw2d.layout.anchor.CenterEdgeConnectionAnchor(this.port));
       }
     }
 

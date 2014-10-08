@@ -53,9 +53,9 @@ autostudio.Toolbar = Class.extend({
 		
 		// the branding
 		// buttonBar.append($("<b><span id='title' style='font-size:24px;color:#278A03;font-family:sans-serif' class='muted'>PipeStudio</span></b>"));
-		buttonBar.append($('<div class="col-xs-1"> <h3 style="margin-top:5px;">' + pstudioJSON.appName + ' </h3> </div>'));
+		buttonBar.append($('<div class="col-xs-1"> <h4 style="margin-top:5px;">' + pstudioJSON.appName + ' </h4> </div>'));
 
-    var buttonGroup = $('<div class="col-xs-1 btn-group"></div>');
+    var buttonGroup = $('<div class="col-xs-1 btn-group" style="width:11%;"></div>');
     buttonGroup.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Flow-Design  <span class="caret"></span></button>');
     buttonBar.append(buttonGroup);
 
@@ -285,7 +285,7 @@ autostudio.Toolbar = Class.extend({
     mainUL.append(li);
 
     li = $('<li></li>');
-    this.executeScriptButton  = $('<a href="#">Generate &amp; Execute Script</a>');
+    this.executeScriptButton  = $('<a href="#">Execute Script</a>');
 
     buttonGroup.append(li);
     this.executeScriptButton.click($.proxy(function()  {
@@ -423,22 +423,22 @@ autostudio.Toolbar = Class.extend({
 		
 
     //Connection type dropdown
-    buttonGroup = $('<div class="col-xs-3 btn-group"><span class="label label-default">Connection Types:</span></div>');
+    buttonGroup = $('<div class="col-xs-2 btn-group"><span class="label label-default">Connections:</span></div>');
     buttonBar.append(buttonGroup);
-    connectionMenu = $('<select id="connections_menu" class="selectpicker"></select>');
+    connectionMenu = $('<select id="connections_menu" class="selectpicker span1"></select>');
 
     var compiledTemplate = templates["ConnectionTypeList"];
     var renderedTemplate = $(compiledTemplate.render(pstudioJSON));
     connectionMenu.append(renderedTemplate);
     buttonGroup.append(connectionMenu);
 
-    var alertDiv = $('<div id="alertDiv" class="col-xs-2 btn-group alert alert-success successBorder" role="alert"></div>');
+    var alertDiv = $('<div id="alertDiv" class="col-xs-2 btn-group alert alert-success successBorder" style="font-size:12px;" role="alert"></div>');
     alertDiv.append('<span class="glyphicon glyphicon-ok-sign"></span>');
     alertDiv.append('&nbsp;&nbsp;Flow-Design Saved.');
     alertDiv.hide();
     buttonBar.append(alertDiv);
 		
-		buttonBar.append("<div id='loadedFileName'></div>");
+		buttonBar.append("<div class='col-xs-2' id='loadedFileName'></div>");
 	},
 
 	/**

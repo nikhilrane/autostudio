@@ -49,6 +49,14 @@
 			password.parent(".input-group").removeClass("has-error");
 			confirm_password.parent(".input-group").removeClass("has-error");
 
+			//check if there is no username entered
+			if(!username.val().length > 0) {
+				errorAlert.text("Please enter a username!");
+				errorAlert.show("fast");
+				username.parent(".input-group").addClass("has-error");
+				return;
+			}
+
 
 			//first, check the username
 			$.ajax({

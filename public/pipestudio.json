@@ -158,7 +158,7 @@
             "operators": [
                 {
                     "src": "Macro_Def.png",
-                    "name": "M_Def",
+                    "name": "Macro Definition",
                     "type": "pipestudio.shape.Macro_Def"
                 },
                 {

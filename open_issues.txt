@@ -5,7 +5,6 @@ App
 
 *UI:
  - "," related values are not correctly parsed for operator properties
- - Ask for flow-design name if not already entered
 
 *Database:
  - Make changes to load everything from DB.

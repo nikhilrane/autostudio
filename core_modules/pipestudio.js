@@ -707,8 +707,8 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var coll = mongo.collection(pstudio_config.get(DB_NAME));
 
     //TODO: check if we support localStorage and change columns below
-    var stream = coll.find({ username : user }, {_id:0, name: 1, status: 1, email_notification: 1}).sort({accessedTimestamp: -1}).limit(5).stream();
-    var jsonData = JSON.parse('{"tuples": [], "appName":"pipestudio" }');
+    var stream = coll.find({ username : user }, {_id:0, name: 1, appName: 1, status: 1, email_notification: 1}).sort({accessedTimestamp: -1}).limit(5).stream();
+    var jsonData = JSON.parse('{"tuples": []}');      // CHANGED_HERE
     stream.on("data", function(item) {
 
       if(item.email_notification == "true") {

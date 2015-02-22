@@ -1,0 +1,987 @@
+{
+    "_comment_line2": "---------------I hold whole *PigStudio* app.---------------",
+    "appName" : "PigStudio",
+    "urlPrefix": "pigstudio",
+    "fileExtension": ".pig",
+    "_comment_line3": "---------------List of operator's images--------------------",
+    "imgList" : [
+        {
+            "operatorsType": "source",
+            "operatorsTypeName" : "Source",
+            "operators": [
+                {
+                    "src": "Load.png",
+                    "name": "Load",
+                    "type": "pigstudio.shape.Load"
+                }
+            ]
+        },
+        {
+            "operatorsType": "between",
+            "operatorsTypeName" : "Between",
+            "operators": [
+                {
+                    "src": "Project.png",
+                    "name": "Projection",
+                    "type": "pigstudio.shape.Projection"
+                },
+                {
+                    "src": "Union.png",
+                    "name": "Union",
+                    "type": "pigstudio.shape.Union"
+                },
+                {
+                    "src": "Filter.png",
+                    "name": "Filter",
+                    "type": "pigstudio.shape.Filter"
+                },
+                {
+                    "src": "OrderBy.png",
+                    "name": "Order By",
+                    "type": "pigstudio.shape.OrderBy"
+                },
+                {
+                    "src": "GroupBy.png",
+                    "name": "Group By",
+                    "type": "pigstudio.shape.GroupBy"
+                },
+                {
+                    "src": "Distinct.png",
+                    "name": "Distinct",
+                    "type": "pigstudio.shape.Distinct"
+                },
+                {
+                    "src": "Limit.png",
+                    "name": "Limit",
+                    "type": "pigstudio.shape.Limit"
+                },
+                {
+                    "src": "Sample.png",
+                    "name": "Sample",
+                    "type": "pigstudio.shape.Sample"
+                },
+                {
+                    "src": "Dump.png",
+                    "name": "Dump",
+                    "type": "pigstudio.shape.Dump"
+                },
+                {
+                    "src": "Stream.png",
+                    "name": "Stream",
+                    "type": "pigstudio.shape.Stream"
+                },
+                {
+                    "src": "Describe.png",
+                    "name": "Describe",
+                    "type": "pigstudio.shape.Describe"
+                },
+                {
+                    "src": "Explain.png",
+                    "name": "Explain",
+                    "type": "pigstudio.shape.Explain"
+                },
+                {
+                    "src": "Illustrate.png",
+                    "name": "Illustrate",
+                    "type": "pigstudio.shape.Illustrate"
+                },
+                {
+                    "src": "Average.png",
+                    "name": "Average",
+                    "type": "pigstudio.shape.Average"
+                },
+                {
+                    "src": "Concat.png",
+                    "name": "Concat",
+                    "type": "pigstudio.shape.Concat"
+                },
+                {
+                    "src": "Count.png",
+                    "name": "Count",
+                    "type": "pigstudio.shape.Count"
+                },
+                {
+                    "src": "CountStar.png",
+                    "name": "Count Star",
+                    "type": "pigstudio.shape.CountStar"
+                },
+                {
+                    "src": "Difference.png",
+                    "name": "Difference",
+                    "type": "pigstudio.shape.Difference"
+                },
+                {
+                    "src": "IsEmpty.png",
+                    "name": "IsEmpty",
+                    "type": "pigstudio.shape.IsEmpty"
+                },
+                {
+                    "src": "Max.png",
+                    "name": "Max",
+                    "type": "pigstudio.shape.Max"
+                },
+                {
+                    "src": "Min.png",
+                    "name": "Min",
+                    "type": "pigstudio.shape.Min"
+                },
+                {
+                    "src": "Size.png",
+                    "name": "Size",
+                    "type": "pigstudio.shape.Size"
+                },
+                {
+                    "src": "Sum.png",
+                    "name": "Sum",
+                    "type": "pigstudio.shape.Sum"
+                },
+                {
+                    "src": "Tokenize.png",
+                    "name": "Tokenize",
+                    "type": "pigstudio.shape.Tokenize"
+                },
+                {
+                    "src": "Join.png",
+                    "name": "Join",
+                    "type": "pigstudio.shape.Join"
+                }
+            ]
+        }
+    ],
+
+    "_comment_line142": "---------------Connection types and their images----",
+    "connectionTypes": [
+        {
+            "type": "pigstudio.connection.SimpleConnection",
+            "imagePath": "",
+            "name": "Simple"
+        },
+        {
+            "type": "pigstudio.connection.UniDirectional",
+            "imagePath": "",
+            "name": "Uni-Directional"
+        },
+        {
+            "type": "pigstudio.connection.BiDirectional",
+            "imagePath": "",
+            "name": "Bi-Directional"
+        },
+        {
+            "type": "pigstudio.connection.TargetSideBar",
+            "imagePath": "",
+            "name": "Target Side Bar"
+        },
+        {
+            "type": "pigstudio.connection.BothSideBar",
+            "imagePath": "",
+            "name": "Both Side Bar"
+        },
+        {
+            "type": "pigstudio.connection.TargetSideCircle",
+            "imagePath": "",
+            "name": "Target Side Circle"
+        },
+        {
+            "type": "pigstudio.connection.BothSideCircle",
+            "imagePath": "",
+            "name": "Both Side Circle"
+        },
+        {
+            "type": "pigstudio.connection.TargetSideDiamond",
+            "imagePath": "",
+            "name": "Target Side Diamond"
+        },
+        {
+            "type": "pigstudio.connection.BothSideDiamond",
+            "imagePath": "",
+            "name": "Both Side Diamond"
+        }
+    ],
+
+    "_comment_line191": "----------Connection types and their decorations----",
+    "pigstudio.connection.SimpleConnection": {
+        "type": "pigstudio.connection.SimpleConnection",
+        "nature" : "connection",
+        "color":"#A8120F",
+        "params": [
+            {
+                "on": ""
+            },
+            {
+                "generate": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+    "pigstudio.connection.UniDirectional": {
+        "type": "pigstudio.connection.UniDirectional",
+        "nature" : "connection",
+        "target": "draw2d.decoration.connection.ArrowDecorator"
+    },
+    "pigstudio.connection.BiDirectional": {
+        "type": "pigstudio.connection.BiDirectional",
+        "nature" : "connection",
+        "source": "draw2d.decoration.connection.ArrowDecorator",
+        "target": "draw2d.decoration.connection.ArrowDecorator"
+    },
+    "pigstudio.connection.TargetSideBar": {
+        "type": "pigstudio.connection.TargetSideBar",
+        "nature" : "connection",
+        "target": "draw2d.decoration.connection.BarDecorator"
+    },
+    "pigstudio.connection.BothSideBar": {
+        "type": "pigstudio.connection.BothSideBar",
+        "nature" : "connection",
+        "source": "draw2d.decoration.connection.BarDecorator",
+        "target": "draw2d.decoration.connection.BarDecorator"
+    },
+    "pigstudio.connection.TargetSideCircle": {
+        "type": "pigstudio.connection.TargetSideCircle",
+        "nature" : "connection",
+        "target": "draw2d.decoration.connection.CircleDecorator"
+    },
+    "pigstudio.connection.BothSideCircle": {
+        "type": "pigstudio.connection.BothSideCircle",
+        "nature" : "connection",
+        "source": "draw2d.decoration.connection.CircleDecorator",
+        "target": "draw2d.decoration.connection.CircleDecorator"
+    },
+    "pigstudio.connection.TargetSideDiamond": {
+        "type": "pigstudio.connection.TargetSideDiamond",
+        "nature" : "connection",
+        "target": "draw2d.decoration.connection.DiamondDecorator"
+    },
+    "pigstudio.connection.BothSideDiamond": {
+        "type": "pigstudio.connection.BothSideDiamond",
+        "nature" : "connection",
+        "source": "draw2d.decoration.connection.DiamondDecorator",
+        "target": "draw2d.decoration.connection.DiamondDecorator"
+    },
+
+    "_comment_line296": "-------------Operator types and their properties----",
+
+    "pigstudio.shape.Load": {
+        "type": "pigstudio.shape.Load",
+        "nature" : "operator",
+        "color": "#00B2BF",
+        "helpText": "<h2 id='load'>Load<a href='#load'></a></h2>&#x000A;<p><code>load</code> loads data from the file system.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>LOAD 'data' [USING function] [AS schema];</code></pre>",
+        "ports": [
+            {
+                "type": "output",
+                "location": "bottom"
+            }
+        ],
+        "label": "Load",
+        "params": [
+            {
+                "file": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "as": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Filter": {
+        "type": "pigstudio.shape.Filter",
+        "nature" : "operator",
+        "color": "#24A807",
+        "helpText": "<h2 id='filter'>Filter<a href='#filter'></a></h2>&#x000A;<p><code>filter</code> selects tuples from a relation based on some condition.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = FILTER alias  BY expression;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Filter",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "by": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Projection": {
+        "type": "pigstudio.shape.Projection",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='projection'>Projection<a href='#projection'></a></h2>&#x000A;<p><code>FOREACH</code> Generates data transformations based on columns of data.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias  = FOREACH { block | nested_block };</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Projection",
+        "params": [
+            {
+                "generate": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.OrderBy": {
+        "type": "pigstudio.shape.OrderBy",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='orderby'>Order By<a href='#orderby'></a></h2>&#x000A;<p><code>ORDER BY</code> Sorts a relation based on one or more fields.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = ORDER alias BY { * [ASC|DESC] | field_alias [ASC|DESC] [, field_alias [ASC|DESC] …] } [PARALLEL n];</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Order By",
+        "params": [
+            {
+                "by": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.GroupBy": {
+        "type": "pigstudio.shape.GroupBy",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='groupby'>Group<a href='#groupby'></a></h2>&#x000A;<p><code>GROUP</code> Groups the data in one or more relations.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = GROUP alias { ALL | BY expression} [, alias ALL | BY expression …] [USING 'collected' | 'merge'] [PARTITION BY partitioner] [PARALLEL n];</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Group By",
+        "params": [
+            {
+                "by": ""
+            },
+            {
+                "using": ""
+            },
+            {
+                "partition_by": ""
+            },
+            {
+                "parallel": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Distinct": {
+        "type": "pigstudio.shape.Distinct",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='distinct'>Distinct<a href='#distinct'></a></h2>&#x000A;<p><code>DISTINCT</code> Removes duplicate tuples in a relation.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = DISTINCT alias [PARTITION BY partitioner] [PARALLEL n];</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Distinct",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "partition_by": ""
+            },
+            {
+                "parallel": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Limit": {
+        "type": "pigstudio.shape.Limit",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='limit'>Limit<a href='#limit'></a></h2>&#x000A;<p><code>LIMIT</code> Limits the number of output tuples.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = LIMIT alias  n;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Limit",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "amount": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Sample": {
+        "type": "pigstudio.shape.Sample",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='sample'>Sample<a href='#sample'></a></h2>&#x000A;<p><code>SAMPLE</code> Selects a random sample of data based on the specified sample size.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = SAMPLE alias size;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Sample",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "size": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Dump": {
+        "type": "pigstudio.shape.Dump",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='dump'>Dump<a href='#dump'></a></h2>&#x000A;<p><code>DUMP</code> Dumps or displays results to screen.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = DUMP alias;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Dump",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Stream": {
+        "type": "pigstudio.shape.Stream",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='stream'>Stream<a href='#stream'></a></h2>&#x000A;<p><code>STREAM</code> Sends data to an external script or program.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = STREAM alias [, alias …] THROUGH {`command` | cmd_alias } [AS schema];</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Stream",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "through": ""
+            },
+            {
+                "as": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Describe": {
+        "type": "pigstudio.shape.Describe",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='describe'>Describe<a href='#describe'></a></h2>&#x000A;<p><code>DESCRIBE</code> Returns the schema of a relation.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>DESCRIBE alias;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Describe",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Explain": {
+        "type": "pigstudio.shape.Explain",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='explain'>Explain<a href='#explain'></a></h2>&#x000A;<p><code>EXPLAIN</code> Displays execution plans.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>EXPLAIN alias;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Explain",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Illustrate": {
+        "type": "pigstudio.shape.Illustrate",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='illustrate'>Illustrate<a href='#illustrate'></a></h2>&#x000A;<p><code>ILLUSTRATE</code> Displays a step-by-step execution of a sequence of statements.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>ILLUSTRATE alias;</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Illustrate",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Average": {
+        "type": "pigstudio.shape.Average",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='avg'>Average<a href='#avg'></a></h2>&#x000A;<p><code>AVG</code> Computes the average of the numeric values in a single-column bag.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>AVG(expression);</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Average",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Concat": {
+        "type": "pigstudio.shape.Concat",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='concat'>Concat<a href='#concat'></a></h2>&#x000A;<p><code>CONCAT</code> Concatenates two or more expressions of identical type.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>CONCAT (expression, expression, [...expression])</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Concat",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Count": {
+        "type": "pigstudio.shape.Count",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='count'>Count<a href='#count'></a></h2>&#x000A;<p><code>COUNT</code> Computes the number of elements in a bag.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>COUNT(expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Count",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.CountStar": {
+        "type": "pigstudio.shape.CountStar",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='countstar'>CountStar<a href='#countstar'></a></h2>&#x000A;<p><code>COUNT_STAR</code> Computes the number of elements in a bag.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>COUNT_STAR(expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "CountStar",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Difference": {
+        "type": "pigstudio.shape.Difference",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='difference'>Difference<a href='#difference'></a></h2>&#x000A;<p><code>DIFFERENCE</code> Compares two fields in a tuple.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>DIFF (expression, expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Difference",
+        "params": [
+            {
+                "expression1": ""
+            },
+            {
+                "expression2": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.IsEmpty": {
+        "type": "pigstudio.shape.IsEmpty",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='isempty'>IsEmpty<a href='#isempty'></a></h2>&#x000A;<p><code>IsEmpty</code> Checks if a bag or map is empty.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>IsEmpty(expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "IsEmpty",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Max": {
+        "type": "pigstudio.shape.Max",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='max'>Max<a href='#max'></a></h2>&#x000A;<p><code>MAX</code> Computes the maximum of the numeric values or chararrays in a single-column bag. MAX requires a preceding GROUP ALL statement for global maximums and a GROUP BY statement for group maximums.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>MAX(expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Max",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Min": {
+        "type": "pigstudio.shape.Min",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='min'>Min<a href='#min'></a></h2>&#x000A;<p><code>MIN</code> Computes the minimum of the numeric values or chararrays in a single-column bag. MIN requires a preceding GROUP… ALL statement for global minimums and a GROUP … BY statement for group minimums.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>MIN(expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Min",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Size": {
+        "type": "pigstudio.shape.Size",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='size'>Size<a href='#size'></a></h2>&#x000A;<p><code>SIZE</code> Computes the number of elements based on any Pig data type.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>SIZE(expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Size",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Sum": {
+        "type": "pigstudio.shape.Sum",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='sum'>Sum<a href='#sum'></a></h2>&#x000A;<p><code>SUM</code> Computes the sum of the numeric values in a single-column bag. SUM requires a preceding GROUP ALL statement for global sums and a GROUP BY statement for group sums.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>SUM(expression)</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Sum",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Tokenize": {
+        "type": "pigstudio.shape.Tokenize",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='tokenize'>Tokenize<a href='#tokenize'></a></h2>&#x000A;<p><code>TOKENIZE</code> Splits a string and outputs a bag of words.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>TOKENIZE(expression [, 'field_delimiter'])</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Tokenize",
+        "params": [
+            {
+                "expression": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Join": {
+        "type": "pigstudio.shape.Join",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='join'>Join<a href='#join'></a></h2>&#x000A;<p><code>JOIN</code> Performs an inner join of two or more relations based on common field values.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = JOIN alias BY {expression|'('expression [, expression …]')'} (, alias BY {expression|'('expression [, expression …]')'} …) [USING 'replicated' | 'skewed' | 'merge' | 'merge-sparse'] [PARTITION BY partitioner] [PARALLEL n]; </code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Join",
+        "params": [
+            {
+                "alias": ""
+            },
+            {
+                "by": ""
+            },
+            {
+                "partition_by": ""
+            },
+            {
+                "parallel": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    },
+
+    "pigstudio.shape.Union": {
+        "type": "pigstudio.shape.Union",
+        "nature" : "operator",
+        "color": "#B6BF0D",
+        "helpText": "<h2 id='union'>Union<a href='#union'></a></h2>&#x000A;<p><code>UNION</code> Computes the union of two or more relations.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = UNION [ONSCHEMA] alias, alias [, alias …];</code></pre>",
+        "ports": [
+            {
+                "type": "input",
+                "location": "left"
+            },
+            {
+                "type": "output",
+                "location": "right"
+            }
+        ],
+        "label": "Union",
+        "params": [
+            {
+                "aliases": ""
+            },
+            {
+                "comment": ""
+            }
+        ]
+    }
+}

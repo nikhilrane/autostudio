@@ -256,7 +256,7 @@ autostudio.shape.GenericShape = draw2d.shape.basic.Rectangle.extend({
   //        var temp = {};
   //        temp[paramName] = paramValue;
     this.parameters[paramName] = paramValue;
-    console.log("setting for " + this.id + ": " + paramName + " : " + paramValue + "\n all: " + JSON.stringify(this.parameters));
+  // console.log("setting for " + this.id + ": " + paramName + " : " + paramValue + "\n all: " + JSON.stringify(this.parameters));
   },
 
 

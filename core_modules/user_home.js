@@ -23,6 +23,15 @@ module.exports = function(app, mongo) {
 
 
   /*
+   * TODO: Remove this repetition.
+   * This is the same call as above, just serving a different App.s
+   */
+  app.get('/pigstudio', requireUser, function(req, res){
+    res.status(200).sendfile('./public/autostudio.html');
+  });
+
+
+  /*
    * Send the user's home page.
    */
   app.get('/home', requireUser, function(req, res) {

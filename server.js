@@ -74,6 +74,7 @@ var mongo = require('./core_modules/db_crud_ops') (app, config, logger);
 var routes_auth = require('./core_modules/authentication') (app, mongo);
 var routes_user_home = require('./core_modules/user_home') (app, mongo);
 var pipestudio = require('./core_modules/pipestudio') (app, mongo, io, cookie, transporter);
+var pigstudio = require('./core_modules/pigstudio') (app, mongo, io, cookie, transporter);
 
 
 // Initialize the socket.io library once here so we can just reuse it later

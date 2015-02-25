@@ -269,7 +269,7 @@
         "type": "pigstudio.shape.Load",
         "nature" : "operator",
         "color": "#00B2BF",
-        "helpText": "<h2 id='load'>Load<a href='#load'></a></h2>&#x000A;<p><code>load</code> loads data from the file system.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>LOAD 'data' [USING function] [AS schema];</code></pre>",
+        "helpText": "<h2 id='load'>Load<a href='#load'></a></h2>&#x000A;<p><code>load</code> loads data from the file system.</p><h3 id='example'>Example:<a href='#example'></a></h3>&#x000A;<div class='highlighted-data white'>&#x000A;  <div class='highlight'>&#x000A;    <pre><code class=''>alias = LOAD 'data' [USING function] [AS schema];</code></pre>",
         "ports": [
             {
                 "type": "output",
@@ -279,7 +279,7 @@
         "label": "Load",
         "params": [
             {
-                "file": ""
+                "data": ""
             },
             {
                 "using": ""
@@ -310,9 +310,6 @@
         ],
         "label": "Filter",
         "params": [
-            {
-                "alias": ""
-            },
             {
                 "by": ""
             },
@@ -427,9 +424,6 @@
         "label": "Distinct",
         "params": [
             {
-                "alias": ""
-            },
-            {
                 "partition_by": ""
             },
             {
@@ -459,9 +453,6 @@
         "label": "Limit",
         "params": [
             {
-                "alias": ""
-            },
-            {
                 "amount": ""
             },
             {
@@ -487,9 +478,6 @@
         ],
         "label": "Sample",
         "params": [
-            {
-                "alias": ""
-            },
             {
                 "size": ""
             },
@@ -517,9 +505,6 @@
         "label": "Dump",
         "params": [
             {
-                "alias": ""
-            },
-            {
                 "comment": ""
             }
         ]
@@ -542,9 +527,6 @@
         ],
         "label": "Stream",
         "params": [
-            {
-                "alias": ""
-            },
             {
                 "through": ""
             },
@@ -575,9 +557,6 @@
         "label": "Describe",
         "params": [
             {
-                "alias": ""
-            },
-            {
                 "comment": ""
             }
         ]
@@ -601,9 +580,6 @@
         "label": "Explain",
         "params": [
             {
-                "alias": ""
-            },
-            {
                 "comment": ""
             }
         ]
@@ -626,9 +602,6 @@
         ],
         "label": "Illustrate",
         "params": [
-            {
-                "alias": ""
-            },
             {
                 "comment": ""
             }

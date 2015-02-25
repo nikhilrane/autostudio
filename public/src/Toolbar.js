@@ -48,11 +48,8 @@ autostudio.Toolbar = Class.extend({
 		this.html.append(north);
 		north.append(compiled.render({}));
 		north.append(buttonBar);
-
-		// this.html.append(buttonBar);
 		
 		// the branding
-		// buttonBar.append($("<b><span id='title' style='font-size:24px;color:#278A03;font-family:sans-serif' class='muted'>PipeStudio</span></b>"));
 		buttonBar.append($('<div class="col-xs-1"> <h4 style="margin-top:5px;">' + pstudioJSON.appName + ' </h4> </div>'));
 
     var buttonGroup = $('<div class="col-xs-1 btn-group" style="width:11%;"></div>');
@@ -82,9 +79,10 @@ autostudio.Toolbar = Class.extend({
       $('#execOutput').html("");
 
     	$.ajax({
-            url: '/pipestudio/getList',
+            url: '/' + pstudioJSON.urlPrefix + '/getList',
             // dataType: "jsonp",
-            data: { "username" : sessionStorage.getItem('username') },
+            data: { "username" : sessionStorage.getItem('username'),
+                    "appName" : pstudioJSON.appName },
             type: 'GET',
             success: function (fileList) {
               var compiled = templates["DocumentsList"];
@@ -215,7 +213,7 @@ autostudio.Toolbar = Class.extend({
           };
 
         $.ajax({
-            url: '/pipestudio/generateScript',
+            url: '/' + pstudioJSON.urlPrefix + '/generateScript',
             data: { "toGenerate" : documentObject },
             type: 'POST',
             success: function(scriptText) {
@@ -264,7 +262,7 @@ autostudio.Toolbar = Class.extend({
           };
 
         $.ajax({
-            url: '/pipestudio/generateScript',
+            url: '/' + pstudioJSON.urlPrefix + '/generateScript',
             data: { "toGenerate" : documentObject },
             type: 'POST',
             success: function(scriptText) {
@@ -312,7 +310,7 @@ autostudio.Toolbar = Class.extend({
     this.downloadButton.click($.proxy(function()  {
 
       $.ajax({
-            url: '/pipestudio/downloadExecs',
+            url: '/' + pstudioJSON.urlPrefix + '/downloadExecs',
             data: { "username" : sessionStorage.getItem('username') },
             type: 'GET',
             success: function(fileList) {

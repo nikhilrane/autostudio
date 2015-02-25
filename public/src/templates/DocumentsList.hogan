@@ -85,7 +85,7 @@
 
     function getDocument(docName) {
         $.ajax({
-            url: '/pipestudio/getDoc',
+            url: '/' + pstudioJSON.urlPrefix + '/getDoc',
             data: {
                 "documentName": docName,
                 "username": sessionStorage.getItem("username")
@@ -103,7 +103,7 @@
 
     function deleteDocument(trID, docName) {
         $.ajax({
-            url: '/pipestudio/deleteDoc',
+            url: '/' + pstudioJSON.urlPrefix + '/deleteDoc',
             data: {
                 "documentName": docName,
                 "documentID": trID,

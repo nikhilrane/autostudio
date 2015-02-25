@@ -60,7 +60,7 @@
                         var li = $('<li> </li>');
                         var node = $('<span></span>');
 //downloadForm.append($('<label for="filePath">' + name + '</label>'));
-var downloadForm = $('<form action="/pipestudio/downloadFile" method="post"> </form>');
+var downloadForm = $('<form action="/" + pstudioJSON.urlPrefix + "/downloadFile" method="post"> </form>');
 downloadForm.append($('<i class="icon-file"></i>'));
 downloadForm.append($('<input style="display:none;" name="username" value="' + sessionStorage.getItem("username") + '"></input>'));
 downloadForm.append($('<input style="display:none;" name="fileToDownload" value="' + file + '"></input>'));
@@ -81,7 +81,7 @@ downloadForm.append($('<button type="submit" class="btn btn-info btn-xs"><span c
                     function downloadFile(filePath) {
                         alert("path: " + filePath);
                         $.ajax({
-                            url: '/pipestudio/downloadFile',
+                            url: '/' + pstudioJSON.urlPrefix + '/downloadFile',
                             data: {
                                 "username": sessionStorage.getItem('username'),
 								"fileToDownload": filePath

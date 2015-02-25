@@ -273,7 +273,7 @@ autostudio.Application = Class.extend(
 
         var documentObject = {
           "name": this.loadedDefinitionId,
-          "appName": 'PipeStudio',
+          "appName": pstudioJSON.appName,
           "documentData" : jsonData, 
           "status": 'Unparsed',
           "email_notification": '',
@@ -283,7 +283,7 @@ autostudio.Application = Class.extend(
           };
 
         $.ajax({
-            url: '/pipestudio/save',
+            url: '/' + pstudioJSON.urlPrefix + '/save',
             // dataType: "jsonp",
             data: { "toStore" : documentObject},
             type: 'POST',

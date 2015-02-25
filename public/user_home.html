@@ -172,9 +172,9 @@
         $(".bs-example-modal-lg").modal();
       }
 
-      function getDoc(documentName) {
+      function getDoc(appName, documentName) {
         $.ajax({
-                url: '/pipestudio/getDoc',
+                url: '/' + appName + '/getDoc',
                 data: { "documentName" : documentName, username : sessionStorage.getItem('username')},
                 type: 'GET',
                 success: function (jsonData) {
@@ -187,10 +187,10 @@
               });
       }
 
-      function displayInfo(documentName) {
+      function displayInfo(appName, documentName) {
 
         $.ajax({
-                url: '/pipestudio/getExecMessages',
+                url: '/' + appName + '/getExecMessages',
                 data: { "documentName" : documentName, username : sessionStorage.getItem('username')},
                 type: 'GET',
                 success: function (jsonData) {
@@ -223,9 +223,9 @@
             });
       }
 
-      function checkboxChanged(checked, docName) {
+      function checkboxChanged(appName, checked, docName) {
         $.ajax({
-                url: '/pipestudio/notify',
+                url: '/' + appName + '/notify',
                 data: {
                   "documentName" : docName,
                   username : sessionStorage.getItem('username'),

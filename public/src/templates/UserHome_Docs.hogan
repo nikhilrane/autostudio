@@ -13,13 +13,13 @@
 	{{#tuples}}
 		<tr>
 			<td></td>
-			<td> <a href="#" onclick='getDoc("{{name}}")'>{{name}}</a> </td>
+			<td> <a href="#" onclick='getDoc("{{appName}}", "{{name}}")'>{{name}}</a> </td>
 			<td> {{appName}} </td>
 			<td> {{status}} </td>
 			<td> <button class='btn btn-danger btn-sm' onclick='executeDoc("{{appName}}", "{{name}}")'><span class="glyphicon glyphicon-play"></span></button>
-				&nbsp;<button class='btn btn-info btn-sm' onclick='displayInfo("{{name}}")'><span class="glyphicon glyphicon-stats"></span></button>
+				&nbsp;<button class='btn btn-info btn-sm' onclick='displayInfo("{{appName}}", "{{name}}")'><span class="glyphicon glyphicon-stats"></span></button>
 			</td>
-			<td style="padding-left:3em;"><label class='btn btn-info'><input type='checkbox' {{email_notification}} onchange="checkboxChanged(this.checked, '{{name}}')"> </label> </td>
+			<td style="padding-left:3em;"><label class='btn btn-info'><input type='checkbox' {{email_notification}} onchange="checkboxChanged('{{appName}}', this.checked, '{{name}}')"> </label> </td>
 		</tr>
 	{{/tuples}}
 	</tbody>

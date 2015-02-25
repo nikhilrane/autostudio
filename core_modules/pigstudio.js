@@ -9,12 +9,16 @@ var formidable = require('formidable');
 var util = require('util');
 
 // We load config file blindly; its the developer's responsibility to keep it error-free!
-pstudio_config.file({ file : './config/pipestudio_parser_config.json' });
+pstudio_config.file({ file : './config/pigstudio_parser_config.json' });
 
 //Constants
 const EXECUTIONS_DIR = "/home/nikhilrane/git_rep/autostudio/executions/output";
-const SCRIPT_PATH = "/home/nikhilrane/git_rep/autostudio/executions/scripts/pipestudio_executor";
+const SCRIPT_PATH = "/home/nikhilrane/git_rep/autostudio/executions/scripts/pigstudio_executor";
+
+// NEED THIS VARIABLE STILL?
 const COMPILER_PATH = "pflow_compiler";
+
+
 const UPLOAD_DIR = "/home/nikhilrane/git_rep/autostudio/uploads";
 const DB_NAME = "dbName";
 
@@ -64,8 +68,8 @@ const RETURNS_KEY = " returns ";
 const MACRO_INPUT_PREFIX = "$in";
 const MACRO_OUTPUT_PREFIX = "$out";
 const INPUT_PREFIX = "$input";
-const OUTPUT_PREFIX = "$result";
-const FINAL_PREFIX = "$finalResult";
+const OUTPUT_PREFIX = "result";
+const FINAL_PREFIX = "finalResult";
 
 
 
@@ -334,93 +338,126 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var currentStatement = "";
     var operatorProps = pstudio_config.get(operator[TYPE_KEY]);   //get all properties of *this* operator type
 
-    if(operator.type === "pipestudio.shape.Use_Predefined") {
-      /* constructs: <operator_id>_output = macro_name */
-      currentStatement = operator[ID_KEY] + OUTPUT_KEY + EQUALS_KEY + operator.label;
-    } else if(operator.type === "pipestudio.shape.User_Defined") {
-      currentStatement = DEFINE_KEY + operator.label;
-    } else {
-      /* constructs: <operator_id>_output = <operator> */
-      currentStatement = operator[ID_KEY] + OUTPUT_KEY + EQUALS_KEY + operatorProps[OPERATOR_KEY];
-    }
+    /* constructs: <operator_id>_output = <operator> */
+    currentStatement = operator[ID_KEY] + OUTPUT_KEY + EQUALS_KEY + operatorProps[OPERATOR_KEY];
 
     //if this operator has an input, put dummy values to process during connection processing
     var noOfInputs = operatorProps[NO_OF_INPUT_KEY];
 
     if( noOfInputs === 0) {    //if no inputs, just append () to operator. For instance, file_source()
       
-      /* <operator_id>_output = <operator>() */
-      currentStatement = currentStatement + ROUND_OPEN_KEY + ROUND_CLOSE_KEY;
+      // TODO: REMOVE CODE FROM HERE IF NOTHING TO DO !!!
+      /* <operator_id>_output = <operator> */
+      //currentStatement = currentStatement + ;
       
     } else {      //loop through number of inputs and append dummy strings
 
-      /* constructs something like: <operator_id>_output = <operator>(<operator_id>_input0, <operator_id>_input1, ... ) */
+      /* constructs something like: <operator_id>_output = <operator> <operator_id>_input0  <operator_id>_input1, ...  */
           
-          currentStatement = currentStatement + ROUND_OPEN_KEY;
+          // currentStatement = currentStatement + ROUND_OPEN_KEY;
           
           for(var ip = 0; ip < noOfInputs; ip++)
           {
-            currentStatement = currentStatement + operator[ID_KEY] + INPUT_KEY + ip;
+            currentStatement = currentStatement + BLANK_SPACE_KEY + operator[ID_KEY] + INPUT_KEY + ip;
             
-            if(ip < noOfInputs - 1)   //avoid last ',' if this is the last input
+            if(ip < noOfInputs - 1)   //avoid last ' ' if this is the last input
             {
-              currentStatement = currentStatement + COMMA_KEY;
+              currentStatement = currentStatement + BLANK_SPACE_KEY;
             }
           }
           
-          currentStatement = currentStatement + ROUND_CLOSE_KEY;
+          // currentStatement = currentStatement + ROUND_CLOSE_KEY;
     }
 
-    //append parameters
+    console.log("currentStatement1: " + currentStatement);
+
+    /* append parameters (if any) */
     var params = operator.userData[PARAMETERS_KEY];
     if(params !== undefined && params.length > 0) {
 
-      currentStatement = currentStatement + BLANK_SPACE_KEY;
+      //currentStatement = currentStatement + BLANK_SPACE_KEY;
+
+      // Let's construct an array of parameters here and then use it as per config file.
+      // In this way, we also avoid false parameters
+      var currentParamArray = {};
+      for(var j = 0; j < params.length; j++) {
+        var currentParam = params[j];
+        var k = Object.keys(currentParam);    //TODO: key is actually surrounded by []. Check if this occurs in the parsed script too!
+        var v = S(currentParam[k]).trim().s;
+        currentParamArray[k] = v;
+      }
+
+      // Loop through the config file for parameters here
+      for(var key in operatorProps[PARAMETERS_KEY]) {
+
+        if(operatorProps[PARAMETERS_KEY].hasOwnProperty(key) && currentParamArray[key] !== undefined) {
+
+          var value = S(currentParamArray[key]).trim().s;
+
+          if( S(key).contains(COMMENT_KEY) ) {      //if this is a comment, we enclose it within /*\n ... \n*/
+
+            currentStatement = COMMENT_START_KEY + value + COMMENT_END_KEY + NEW_LINE_KEY + currentStatement;
+
+          } else {
+
+            currentStatement = currentStatement + BLANK_SPACE_KEY;
+
+            //put the value in () brackets if not already inside one, BELOW PART OF PUTTING () BRACKETS IS COMMENTED AS PIPEFLOW COMPLAINS ABOUT IT
+            if( operatorProps.parameters[key].bracketsRequired && S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
+              value = ROUND_OPEN_KEY + value;
+
+              //we assume that closing bracket is also missing and blindly append it; else parsing it will be complex.
+              value = value + ROUND_CLOSE_KEY;
+            }
+
+            currentStatement = currentStatement + key.toUpperCase() + BLANK_SPACE_KEY + value;
+
+          }
+        }
+      }
 
       //Here, each paramater is going to be an Object. Let's parse into JSONObject and get corresponding value.
-      for(var j = 0; j < params.length; j++) {
+      // for(var j = 0; j < params.length; j++) {
 
-        var currentParam = params[j];
-        var key = Object.keys(currentParam);    //TODO: key is actually surrounded by []. Check if this occurs in the parsed script too!
-        var value = S(currentParam[key]).trim().s;
+      //   var currentParam = params[j];
+      //   var key = Object.keys(currentParam);    //TODO: key is actually surrounded by []. Check if this occurs in the parsed script too!
+      //   var value = S(currentParam[key]).trim().s;
 
-        if( S(key).contains(COMMENT_KEY) ) {      //if this is a comment, we enclose it within /*\n ... \n*/
+      //   if( S(key).contains(COMMENT_KEY) ) {      //if this is a comment, we enclose it within /*\n ... \n*/
 
-          currentStatement = COMMENT_START_KEY + value + COMMENT_END_KEY + NEW_LINE_KEY + currentStatement;
+      //     currentStatement = COMMENT_START_KEY + value + COMMENT_END_KEY + NEW_LINE_KEY + currentStatement;
 
-        } else {
+      //   } else {
 
-          currentStatement = currentStatement + BLANK_SPACE_KEY;   //This \n removed because pipeflow complains about it
+      //     currentStatement = currentStatement + BLANK_SPACE_KEY;
 
-          //put the value in () brackets if not already inside one, BELOW PART OF PUTTING () BRACKETS IS COMMENTED AS PIPEFLOW COMPLAINS ABOUT IT
-          if( operatorProps.parameters[key].bracketsRequired && S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
-            value = ROUND_OPEN_KEY + value;
+      //     //put the value in () brackets if not already inside one, BELOW PART OF PUTTING () BRACKETS IS COMMENTED AS PIPEFLOW COMPLAINS ABOUT IT
+      //     if( operatorProps.parameters[key].bracketsRequired && S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
+      //       value = ROUND_OPEN_KEY + value;
 
-            //we assume that closing bracket is also missing and blindly append it; else parsing it will be complex.
-            value = value + ROUND_CLOSE_KEY;
-          }
+      //       //we assume that closing bracket is also missing and blindly append it; else parsing it will be complex.
+      //       value = value + ROUND_CLOSE_KEY;
+      //     }
 
-          currentStatement = currentStatement + key + BLANK_SPACE_KEY + value;
+      //     currentStatement = currentStatement + key + BLANK_SPACE_KEY + value;
 
-        }
+      //   }
 
-        if(j == params.length - 1) {    //we are done with all parameters, so append semicolon.
-          currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;
-        }
+      //   if(j == params.length - 1) {    //we are done with all parameters, so append semicolon.
+      //     currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;
+      //   }
 
-      }
-    } else {
-      currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;    //if there are no parameters, just put semicolon and we are done.
+      // }
     }
+    
+    currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;    //if there are no parameters, just put semicolon and we are done.
+
 
     var operatorID = operator[ID_KEY];
     statusVariables.processedOperators[operatorID] = currentStatement;
 
-    // If it is user defined operator, we have to put it at the top
-    // so that the references below find it
-    if(operator.type === "pipestudio.shape.User_Defined") {
-      statusVariables.finalString = currentStatement + statusVariables.finalString;
-    }
+
+    console.log("currentStatement2: " + currentStatement);
 
     return currentStatement;
   }
@@ -669,7 +706,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Streams the document list from database.
    */
-  app.get('/pipestudio/getList', function(req, res) {
+  app.get('/pigstudio/getList', function(req, res) {
 
     //we can get username from both ways (in request set by express-session or request data)
     var user = req.query.username;
@@ -694,11 +731,10 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   });
 
 
-
   /*
    * Streams the document list from database sorted as per the last time they were accessed.
    */
-  app.get('/pipestudio/getHomePageList', function(req, res) {
+  app.get('/pigstudio/getHomePageList', function(req, res) {
 
     //we can get username from both ways (in request set by express-session or request data)
     var user = req.query.username;
@@ -732,7 +768,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Get the selected document and return its source to be rendered by Draw2D Touch.
    */
-  app.get('/pipestudio/getDoc', function(req, res) {
+  app.get('/pigstudio/getDoc', function(req, res) {
 
     //we can get username from both ways (in request set by express-session or request data)
     var docName = req.query.documentName;
@@ -761,7 +797,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Saves the data sent from client into database.
    */
-  app.post('/pipestudio/save', function(req, res) {
+  app.post('/pigstudio/save', function(req, res) {
 
     var jsonData = req.body.toStore;
 
@@ -781,7 +817,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Receives Draw2D Touch output from client, generates script and saves it into database.
    */
-  app.post('/pipestudio/generateScript', function(req, res) {
+  app.post('/pigstudio/generateScript', function(req, res) {
 
     var eventName = 'generating_script';
     var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
@@ -790,6 +826,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var user = req.body.toGenerate.username;
 
     var generatedScript = generateScript(parsedData);
+    console.log("generated: " + generatedScript);
 
     if(fileName !== undefined && fileName !== null && fileName.length <= 0) {
       saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);
@@ -802,7 +839,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Handles files uploads sent with execution request.
    */
-  app.post('/pipestudio/uploadFile', function(req, res) {
+  app.post('/pigstudio/uploadFile', function(req, res) {
 
     var form = new formidable.IncomingForm();
     form.uploadDir = UPLOAD_DIR;
@@ -821,7 +858,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Starts script execution.
    */
-  app.post('/pipestudio/executeScript', function(req, res) {
+  app.post('/pigstudio/executeScript', function(req, res) {
 
     var eventName = 'executing_script';
     var sessionID = cookie.parse(req.headers.cookie)['connect.sid'];
@@ -860,7 +897,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Walks the execution output directory and sends a complete JSON which can be rendered by client in a tree UI.
    */
-  app.get('/pipestudio/downloadExecs', function(req, res) {
+  app.get('/pigstudio/downloadExecs', function(req, res) {
 
     var user = req.query.username;
     var pathToWalk = path.join(EXECUTIONS_DIR, user);
@@ -885,7 +922,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Sends the requested file to client for download.
    */
-  app.post('/pipestudio/downloadFile', function(req, res) {
+  app.post('/pigstudio/downloadFile', function(req, res) {
     var user = req.body.username;
     var filePath = req.body.fileToDownload;
     var finalPath = filePath.replace("output", path.join(EXECUTIONS_DIR, user));
@@ -904,7 +941,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Called when the user requests for messages from Home page.
    */
-  app.get('/pipestudio/getExecMessages', function(req, res) {
+  app.get('/pigstudio/getExecMessages', function(req, res) {
 
     var user = req.query.username;
     var fileName = req.query.documentName;
@@ -922,7 +959,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Deletes the document from database.
    */
-  app.post('/pipestudio/deleteDoc', function(req, res) {
+  app.post('/pigstudio/deleteDoc', function(req, res) {
     var user = req.body.username;
     var documentName = req.body.documentName;
     // var documentID = "ObjectId(\"" + req.body.documentID + "\")";
@@ -942,7 +979,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
   /*
    * Toggles the email_notification flag from Home page.
    */
-  app.post('/pipestudio/notify', function(req, res) {
+  app.post('/pigstudio/notify', function(req, res) {
     var user = req.body.username;
     var documentName = req.body.documentName;
     var notify = req.body.notify;

@@ -39,7 +39,7 @@ const SQUARE_CLOSE_KEY = "]";
 const ID_KEY = "id";
 const INPUT_KEY = "_input";
 const OUTPUT_KEY = "_output";
-const EQUALS_KEY = " := ";
+const EQUALS_KEY = " = ";
 const NEW_LINE_KEY = "\n";
 const BLANK_SPACE_KEY = " ";
 const SEMI_COLON_KEY = ";";
@@ -369,7 +369,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
           // currentStatement = currentStatement + ROUND_CLOSE_KEY;
     }
 
-    console.log("currentStatement1: " + currentStatement);
+    //console.log("currentStatement1: " + currentStatement);
 
     /* append parameters (if any) */
     var params = operator.userData[PARAMETERS_KEY];
@@ -399,65 +399,31 @@ module.exports = function(app, mongo, io, cookie, transporter) {
             currentStatement = COMMENT_START_KEY + value + COMMENT_END_KEY + NEW_LINE_KEY + currentStatement;
 
           } else {
-
             currentStatement = currentStatement + BLANK_SPACE_KEY;
 
-            //put the value in () brackets if not already inside one, BELOW PART OF PUTTING () BRACKETS IS COMMENTED AS PIPEFLOW COMPLAINS ABOUT IT
-            if( operatorProps.parameters[key].bracketsRequired && S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
-              value = ROUND_OPEN_KEY + value;
+            //put the value in "enclosers" if not already inside one
+            if( operatorProps.parameters[key].openingEncloser && S(value).trim().length > 0 && !S(value).startsWith(operatorProps.parameters[key].openingEncloser) )
+              value = operatorProps.parameters[key].openingEncloser + value;
 
-              //we assume that closing bracket is also missing and blindly append it; else parsing it will be complex.
-              value = value + ROUND_CLOSE_KEY;
-            }
+            if( operatorProps.parameters[key].closingEncloser && S(value).trim().length > 0 && !S(value).endsWith(operatorProps.parameters[key].closingEncloser) )
+              value = value + operatorProps.parameters[key].closingEncloser;
 
             currentStatement = currentStatement + key.toUpperCase() + BLANK_SPACE_KEY + value;
-
           }
+
         }
       }
 
-      //Here, each paramater is going to be an Object. Let's parse into JSONObject and get corresponding value.
-      // for(var j = 0; j < params.length; j++) {
-
-      //   var currentParam = params[j];
-      //   var key = Object.keys(currentParam);    //TODO: key is actually surrounded by []. Check if this occurs in the parsed script too!
-      //   var value = S(currentParam[key]).trim().s;
-
-      //   if( S(key).contains(COMMENT_KEY) ) {      //if this is a comment, we enclose it within /*\n ... \n*/
-
-      //     currentStatement = COMMENT_START_KEY + value + COMMENT_END_KEY + NEW_LINE_KEY + currentStatement;
-
-      //   } else {
-
-      //     currentStatement = currentStatement + BLANK_SPACE_KEY;
-
-      //     //put the value in () brackets if not already inside one, BELOW PART OF PUTTING () BRACKETS IS COMMENTED AS PIPEFLOW COMPLAINS ABOUT IT
-      //     if( operatorProps.parameters[key].bracketsRequired && S(value).trim().length > 0 && !S(value).startsWith(ROUND_OPEN_KEY) ) {
-      //       value = ROUND_OPEN_KEY + value;
-
-      //       //we assume that closing bracket is also missing and blindly append it; else parsing it will be complex.
-      //       value = value + ROUND_CLOSE_KEY;
-      //     }
-
-      //     currentStatement = currentStatement + key + BLANK_SPACE_KEY + value;
-
-      //   }
-
-      //   if(j == params.length - 1) {    //we are done with all parameters, so append semicolon.
-      //     currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;
-      //   }
-
-      // }
     }
     
-    currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;    //if there are no parameters, just put semicolon and we are done.
+    currentStatement = currentStatement + SEMI_COLON_KEY + NEW_LINE_KEY;    //done, or no parameters, just put semicolon so the work is over.
 
 
     var operatorID = operator[ID_KEY];
     statusVariables.processedOperators[operatorID] = currentStatement;
 
 
-    console.log("currentStatement2: " + currentStatement);
+    //console.log("currentStatement2: " + currentStatement);
 
     return currentStatement;
   }
@@ -826,7 +792,7 @@ module.exports = function(app, mongo, io, cookie, transporter) {
     var user = req.body.toGenerate.username;
 
     var generatedScript = generateScript(parsedData);
-    console.log("generated: " + generatedScript);
+    //console.log("generated: " + generatedScript);
 
     if(fileName !== undefined && fileName !== null && fileName.length <= 0) {
       saveScriptToDB(generatedScript, fileName, user, sessionID, eventName);

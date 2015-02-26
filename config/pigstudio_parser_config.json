@@ -13,19 +13,23 @@
         "parameters": {
             "data": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": "'",
+                "closingEncloser": "'"
             },
             "using": {
                 "required": false,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "as": {
                 "required": false,
-                "bracketsRequired": false
+                "openingEncloser": "(",
+                "closingEncloser": ")"
             },
-            "comment": {
+			"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -37,11 +41,13 @@
         "parameters": {
             "by": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -53,11 +59,13 @@
         "parameters": {
             "generate": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -69,11 +77,13 @@
         "parameters": {
             "by": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -85,23 +95,28 @@
         "parameters": {
             "by": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "using": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "partition_by": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "parallel": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -113,15 +128,18 @@
         "parameters": {
             "partition_by": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "parallel": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -133,11 +151,13 @@
         "parameters": {
             "amount": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -149,11 +169,13 @@
         "parameters": {
             "size": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -163,9 +185,10 @@
         "type": "pigstudio.shape.Dump",
         "noOfInputs": 1,
         "parameters": {
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -177,15 +200,18 @@
         "parameters": {
             "through": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "as": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -195,9 +221,10 @@
         "type": "pigstudio.shape.Describe",
         "noOfInputs": 1,
         "parameters": {
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -207,9 +234,10 @@
         "type": "pigstudio.shape.Explain",
         "noOfInputs": 1,
         "parameters": {
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -219,9 +247,10 @@
         "type": "pigstudio.shape.Illustrate",
         "noOfInputs": 1,
         "parameters": {
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -233,11 +262,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -249,11 +280,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -265,11 +298,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -281,11 +316,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -297,15 +334,18 @@
         "parameters": {
             "expression1": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "expression2": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -317,11 +357,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -333,11 +375,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -349,11 +393,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -365,11 +411,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -381,11 +429,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -397,11 +447,13 @@
         "parameters": {
             "expression": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -413,23 +465,28 @@
         "parameters": {
             "alias": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "by": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "partition_by": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
             "parallel": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     },
@@ -441,11 +498,13 @@
         "parameters": {
             "aliases": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser": false,
+                "closingEncloser": false
             },
-            "comment": {
+"comment": {
                 "required": true,
-                "bracketsRequired": false
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
             }
         }
     }   

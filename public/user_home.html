@@ -162,7 +162,7 @@
       function executeDoc(appName, documentName) {
         // console.log("To execute: " + appName + ", " + documentName);
         var formData = {
-          "appName": appName,
+          "appName": appName.toLowerCase(),
           "documentName": documentName,
           "homePage": true
         };
@@ -174,12 +174,12 @@
 
       function getDoc(appName, documentName) {
         $.ajax({
-                url: '/' + appName + '/getDoc',
+                url: '/' + appName.toLowerCase() + '/getDoc',
                 data: { "documentName" : documentName, username : sessionStorage.getItem('username')},
                 type: 'GET',
                 success: function (jsonData) {
                     sessionStorage.setItem('docData', JSON.stringify(JSON.parse(jsonData).result));
-                    $('#pipestudio').trigger('click');
+                    $('#' + appName.toLowerCase()).trigger('click');
                 },
                 error: function (err) {
                     console.log("Failure in GET" + JSON.stringify(err));
@@ -190,7 +190,7 @@
       function displayInfo(appName, documentName) {
 
         $.ajax({
-                url: '/' + appName + '/getExecMessages',
+                url: '/' + appName.toLowerCase() + '/getExecMessages',
                 data: { "documentName" : documentName, username : sessionStorage.getItem('username')},
                 type: 'GET',
                 success: function (jsonData) {
@@ -225,7 +225,7 @@
 
       function checkboxChanged(appName, checked, docName) {
         $.ajax({
-                url: '/' + appName + '/notify',
+                url: '/' + appName.toLowerCase() + '/notify',
                 data: {
                   "documentName" : docName,
                   username : sessionStorage.getItem('username'),

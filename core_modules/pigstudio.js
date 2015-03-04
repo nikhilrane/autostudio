@@ -9,7 +9,8 @@ var formidable = require('formidable');
 var util = require('util');
 
 // We load config file blindly; its the developer's responsibility to keep it error-free!
-pstudio_config.file({ file : './config/pigstudio_parser_config.json' });
+//pstudio_config.file({ file : './config/pigstudio_parser_config.json' });
+pstudio_config.file({ file : './config/pipestudio_parser_config.json' });
 
 //Constants
 const EXECUTIONS_DIR = "/home/nikhilrane/git_rep/autostudio/executions/output";

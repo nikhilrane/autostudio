@@ -528,5 +528,515 @@
 
     "_comment": "***Below are properties for execution of ---PipeStudio--- app.***",
 
-    "pflow_compiler": "/home/nikhilrane/git_rep/autostudio/executions/scripts/compiler.ini"
+    "pflow_compiler": "/home/nikhilrane/git_rep/autostudio/executions/scripts/compiler.ini",
+
+    "_comment": "***I hold all config data for ---pigstudio--- app.***",
+    "dbName": "pstudio",
+    
+    "_comment": "***Below are properties for execution of ---pigstudio--- app.***",
+
+    
+    "_comment": "***Below are properties of operators for ---pigstudio--- app.***",
+    "pigstudio.shape.Load": {
+        "operator": "LOAD",
+        "type": "pigstudio.shape.Load",
+        "noOfInputs": 0,
+        "parameters": {
+            "data": {
+                "required": true,
+                "openingEncloser": "'",
+                "closingEncloser": "'"
+            },
+            "using": {
+                "required": false,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "as": {
+                "required": false,
+                "openingEncloser": "(",
+                "closingEncloser": ")"
+            },
+            "comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Filter": {
+        "operator": "FILTER",
+        "type": "pigstudio.shape.Filter",
+        "noOfInputs": 1,
+        "parameters": {
+            "by": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Projection": {
+        "operator": "FOREACH",
+        "type": "pigstudio.shape.Projection",
+        "noOfInputs": 1,
+        "parameters": {
+            "generate": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.OrderBy": {
+        "operator": "ORDER BY",
+        "type": "pigstudio.shape.OrderBy",
+        "noOfInputs": 1,
+        "parameters": {
+            "by": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.GroupBy": {
+        "operator": "GROUP BY",
+        "type": "pigstudio.shape.GroupBy",
+        "noOfInputs": 1,
+        "parameters": {
+            "by": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "using": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "partition_by": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "parallel": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Distinct": {
+        "operator": "DISTINCT",
+        "type": "pigstudio.shape.Distinct",
+        "noOfInputs": 1,
+        "parameters": {
+            "partition_by": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "parallel": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Limit": {
+        "operator": "LIMIT",
+        "type": "pigstudio.shape.Limit",
+        "noOfInputs": 1,
+        "parameters": {
+            "amount": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Sample": {
+        "operator": "SAMPLE",
+        "type": "pigstudio.shape.Sample",
+        "noOfInputs": 1,
+        "parameters": {
+            "size": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Dump": {
+        "operator": "DUMP",
+        "type": "pigstudio.shape.Dump",
+        "noOfInputs": 1,
+        "parameters": {
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Stream": {
+        "operator": "STREAM",
+        "type": "pigstudio.shape.Stream",
+        "noOfInputs": 1,
+        "parameters": {
+            "through": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "as": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Describe": {
+        "operator": "DESCRIBE",
+        "type": "pigstudio.shape.Describe",
+        "noOfInputs": 1,
+        "parameters": {
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Explain": {
+        "operator": "EXPLAIN",
+        "type": "pigstudio.shape.Explain",
+        "noOfInputs": 1,
+        "parameters": {
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Illustrate": {
+        "operator": "illustrate",
+        "type": "pigstudio.shape.Illustrate",
+        "noOfInputs": 1,
+        "parameters": {
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Average": {
+        "operator": "AVG",
+        "type": "pigstudio.shape.Average",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Concat": {
+        "operator": "CONCAT",
+        "type": "pigstudio.shape.Concat",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Count": {
+        "operator": "COUNT",
+        "type": "pigstudio.shape.Count",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.CountStar": {
+        "operator": "COUNT_STAR",
+        "type": "pigstudio.shape.CountStar",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Difference": {
+        "operator": "DIFFERENCE",
+        "type": "pigstudio.shape.Difference",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression1": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "expression2": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.IsEmpty": {
+        "operator": "IsEmpty",
+        "type": "pigstudio.shape.IsEmpty",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Max": {
+        "operator": "MAX",
+        "type": "pigstudio.shape.Max",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Min": {
+        "operator": "MIN",
+        "type": "pigstudio.shape.Min",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Size": {
+        "operator": "SIZE",
+        "type": "pigstudio.shape.Size",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Sum": {
+        "operator": "SUM",
+        "type": "pigstudio.shape.Sum",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Tokenize": {
+        "operator": "TOKENIZE",
+        "type": "pigstudio.shape.Tokenize",
+        "noOfInputs": 1,
+        "parameters": {
+            "expression": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Join": {
+        "operator": "JOIN",
+        "type": "pigstudio.shape.Join",
+        "noOfInputs": 1,
+        "parameters": {
+            "alias": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "by": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "partition_by": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+            "parallel": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    },
+
+    "pigstudio.shape.Union": {
+        "operator": "UNION",
+        "type": "pigstudio.shape.Union",
+        "noOfInputs": 1,
+        "parameters": {
+            "aliases": {
+                "required": true,
+                "openingEncloser": false,
+                "closingEncloser": false
+            },
+"comment": {
+                "required": true,
+                "openingEncloser":"/*\n",
+                "closingEncloser": "\n*/"
+            }
+        }
+    }
 }
